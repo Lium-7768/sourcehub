@@ -13,7 +13,7 @@ export function renderAdminUi(): Response {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SourceHub Admin UI</title>
+  <title>SourceHub</title>
   <style>
     :root {
       color-scheme: dark;
@@ -23,7 +23,7 @@ export function renderAdminUi(): Response {
       --text: #e9eefc;
       --muted: #99a4c3;
       --line: #29355f;
-      --primary: #6ea8fe;
+      --primary: #5b8cff;
       --green: #29c36a;
       --red: #ff6b6b;
       --yellow: #ffcc66;
@@ -35,19 +35,9 @@ export function renderAdminUi(): Response {
       background: linear-gradient(180deg, #09101f 0%, #0d1430 100%);
       color: var(--text);
     }
-    .wrap {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 24px;
-    }
+    .wrap { max-width: 1400px; margin: 0 auto; padding: 24px; }
     h1, h2, h3 { margin: 0 0 12px; }
     p { margin: 0; color: var(--muted); }
-    .grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: 1.1fr 1.3fr;
-      margin-top: 16px;
-    }
     .panel {
       background: rgba(18, 25, 51, 0.95);
       border: 1px solid var(--line);
@@ -55,14 +45,14 @@ export function renderAdminUi(): Response {
       padding: 16px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
     }
-    .toolbar, .row {
+    .toolbar {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       align-items: center;
+      margin-top: 12px;
     }
-    .toolbar { margin-top: 12px; }
-    input, select, textarea, button {
+    input, textarea, button {
       font: inherit;
       border-radius: 10px;
       border: 1px solid var(--line);
@@ -70,23 +60,107 @@ export function renderAdminUi(): Response {
       color: var(--text);
       padding: 10px 12px;
     }
-    input, select, textarea { width: 100%; }
+    input { min-width: 180px; }
     textarea {
+      width: 100%;
       min-height: 180px;
       resize: vertical;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 13px;
     }
-    button {
-      cursor: pointer;
-      background: #233264;
-    }
+    button { cursor: pointer; background: #233264; }
     button.primary { background: #2f5fd7; }
     button.green { background: #18653a; }
     button.red { background: #7c2631; }
     button.ghost { background: transparent; }
     .muted { color: var(--muted); }
-    .stack { display: grid; gap: 12px; }
+    .small { font-size: 12px; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #20305f;
+      color: #dbe7ff;
+      font-size: 12px;
+    }
+    .status-success { color: #8ef0a4; }
+    .status-failed { color: #ff9a9a; }
+    .status-running { color: #ffd37d; }
+    .status-idle, .status-skipped { color: #aeb8d9; }
+    .table-wrap {
+      overflow: auto;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 960px;
+      background: rgba(255,255,255,0.02);
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(41, 53, 95, 0.9);
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #111936;
+      color: #cfe0ff;
+      z-index: 1;
+    }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0a1126;
+      padding: 12px;
+      font-size: 12px;
+      margin: 0;
+      color: #c8d5f5;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 16, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 30;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      width: min(1100px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #0f1732;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+      padding: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 14px;
+    }
     .list { display: grid; gap: 10px; margin-top: 12px; }
     .item {
       border: 1px solid var(--line);
@@ -100,35 +174,16 @@ export function renderAdminUi(): Response {
       gap: 12px;
       align-items: flex-start;
     }
-    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #20305f;
-      color: #dbe7ff;
-      font-size: 12px;
+    .section-title {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
     }
-    .status-success { color: #8ef0a4; }
-    .status-failed { color: #ff9a9a; }
-    .status-running { color: #ffd37d; }
-    .status-idle, .status-skipped { color: #aeb8d9; }
-    pre {
-      white-space: pre-wrap;
-      word-break: break-word;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #0a1126;
-      padding: 12px;
-      font-size: 12px;
-      margin: 0;
-      color: #c8d5f5;
-    }
-    .small { font-size: 12px; }
-    .section-title { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .hidden { display: none; }
+    code { color: #d6e6ff; }
     @media (max-width: 980px) {
+      .header { flex-direction: column; }
       .grid { grid-template-columns: 1fr; }
       .item-head { flex-direction: column; }
     }
@@ -136,58 +191,111 @@ export function renderAdminUi(): Response {
 </head>
 <body>
   <div class="wrap">
-    <h1>SourceHub Admin UI</h1>
-    <p>最小可用后台。填入 <code>ADMIN_TOKEN</code> 后，可以看 source、创建 source、启停、手动 sync、看 sync-runs。</p>
-
-    <div class="grid">
-      <section class="panel stack">
-        <div>
-          <h2>连接</h2>
-          <div class="toolbar">
-            <input id="tokenInput" type="password" placeholder="粘贴 ADMIN_TOKEN" />
-            <button id="saveTokenBtn" class="primary">保存 token</button>
-            <button id="checkBtn" class="ghost">测试连接</button>
-          </div>
-          <p id="authStatus" class="muted small" style="margin-top:8px;">还没连接</p>
+    <div class="header">
+      <div>
+        <h1>SourceHub</h1>
+        <p>一个页面，两层视图：默认先看公开数据表；需要管理时，再打开 admin modal。</p>
+        <div class="badges">
+          <span class="badge">Public table</span>
+          <span class="badge">Admin modal</span>
         </div>
+      </div>
+      <div class="toolbar" style="margin-top:0;">
+        <input id="sourceIdFilter" placeholder="可选：填 source_id 过滤公开数据" />
+        <button id="loadPublicBtn" class="ghost">刷新公开表格</button>
+        <button id="openAdminBtn" class="primary">打开 Admin</button>
+      </div>
+    </div>
 
+    <section class="panel">
+      <div class="section-title">
         <div>
-          <div class="section-title">
-            <h2>创建 source</h2>
-            <button id="fillTextBtn" class="ghost">填 text_url 示例</button>
-          </div>
-          <p class="muted small">直接贴 JSON body。默认给你一个最小模板。</p>
-          <textarea id="createBody"></textarea>
-          <div class="toolbar">
-            <button id="createBtn" class="green">创建</button>
-            <button id="cronBtn" class="ghost">跑一次 cron</button>
-            <button id="reloadBtn" class="ghost">刷新列表</button>
-          </div>
+          <h2>公开数据</h2>
+          <p class="small muted">这里不需要 token。只展示公开 source 的 items。</p>
         </div>
+        <span id="publicCount" class="small muted"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>source_id</th>
+              <th>kind</th>
+              <th>item_key</th>
+              <th>value</th>
+              <th>updated_at</th>
+            </tr>
+          </thead>
+          <tbody id="publicTableBody">
+            <tr><td colspan="5" class="muted">加载中…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
+  <div id="adminModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="section-title">
         <div>
-          <h2>输出</h2>
-          <pre id="output">等待操作…</pre>
+          <h2>Admin</h2>
+          <p class="small muted">这里只在需要管理 source / sync 的时候用。</p>
         </div>
-      </section>
+        <div class="toolbar" style="margin-top:0;">
+          <button id="closeAdminBtn" class="ghost">关闭</button>
+        </div>
+      </div>
 
-      <section class="panel stack">
-        <div>
-          <div class="section-title">
-            <h2>Sources</h2>
-            <span id="sourceCount" class="muted small"></span>
+      <div class="grid">
+        <section class="panel">
+          <div>
+            <h3>连接</h3>
+            <div class="toolbar">
+              <input id="tokenInput" type="password" placeholder="粘贴 ADMIN_TOKEN" />
+              <button id="saveTokenBtn" class="primary">保存 token</button>
+              <button id="checkBtn" class="ghost">测试连接</button>
+            </div>
+            <p id="authStatus" class="muted small" style="margin-top:8px;">还没连接</p>
           </div>
-          <div id="sources" class="list"></div>
-        </div>
 
-        <div>
-          <div class="section-title">
-            <h2>最近 sync-runs</h2>
-            <span id="runCount" class="muted small"></span>
+          <div style="margin-top:16px;">
+            <div class="section-title">
+              <h3>创建 source</h3>
+              <button id="fillTextBtn" class="ghost">填 text_url 示例</button>
+            </div>
+            <p class="small muted">直接贴 JSON body。</p>
+            <textarea id="createBody"></textarea>
+            <div class="toolbar">
+              <button id="createBtn" class="green">创建</button>
+              <button id="cronBtn" class="ghost">跑一次 cron</button>
+              <button id="reloadBtn" class="ghost">刷新 admin 数据</button>
+            </div>
           </div>
-          <div id="runs" class="list"></div>
-        </div>
-      </section>
+
+          <div style="margin-top:16px;">
+            <h3>输出</h3>
+            <pre id="output">等待操作…</pre>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div>
+            <div class="section-title">
+              <h3>Sources</h3>
+              <span id="sourceCount" class="small muted"></span>
+            </div>
+            <div id="sources" class="list"></div>
+          </div>
+
+          <div style="margin-top:16px;">
+            <div class="section-title">
+              <h3>最近 sync-runs</h3>
+              <span id="runCount" class="small muted"></span>
+            </div>
+            <div id="runs" class="list"></div>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 
@@ -200,6 +308,10 @@ export function renderAdminUi(): Response {
     const runsEl = document.getElementById('runs');
     const sourceCount = document.getElementById('sourceCount');
     const runCount = document.getElementById('runCount');
+    const publicTableBody = document.getElementById('publicTableBody');
+    const publicCount = document.getElementById('publicCount');
+    const sourceIdFilter = document.getElementById('sourceIdFilter');
+    const adminModal = document.getElementById('adminModal');
 
     const defaultCreateBody = {
       name: 'demo text source',
@@ -238,6 +350,14 @@ export function renderAdminUi(): Response {
       return 'status-' + String(status || 'idle').toLowerCase();
     }
 
+    function openAdminModal() {
+      adminModal.classList.add('open');
+    }
+
+    function closeAdminModal() {
+      adminModal.classList.remove('open');
+    }
+
     async function api(path, options = {}) {
       const token = getToken();
       const headers = new Headers(options.headers || {});
@@ -252,6 +372,45 @@ export function renderAdminUi(): Response {
         throw error;
       }
       return body;
+    }
+
+    async function publicApi(path) {
+      const res = await fetch(path);
+      const text = await res.text();
+      let body;
+      try { body = text ? JSON.parse(text) : null; } catch { body = { raw: text }; }
+      if (!res.ok) throw new Error((body && body.error) || ('HTTP ' + res.status));
+      return body;
+    }
+
+    function renderPublicTable(items) {
+      publicCount.textContent = items.length + ' 条';
+      if (!items.length) {
+        publicTableBody.innerHTML = '<tr><td colspan="5" class="muted">暂无公开数据</td></tr>';
+        return;
+      }
+      publicTableBody.innerHTML = items.map((item) => (
+        '<tr>'
+        + '<td>' + escapeHtml(String(item.source_id || '')) + '</td>'
+        + '<td>' + escapeHtml(String(item.kind || '')) + '</td>'
+        + '<td>' + escapeHtml(String(item.item_key || '')) + '</td>'
+        + '<td><pre>' + escapeHtml(JSON.stringify(item.value_json ? JSON.parse(item.value_json) : item.value || {}, null, 2)) + '</pre></td>'
+        + '<td>' + escapeHtml(String(item.updated_at || '')) + '</td>'
+        + '</tr>'
+      )).join('');
+    }
+
+    async function loadPublicItems() {
+      try {
+        const sourceId = sourceIdFilter.value.trim();
+        const query = new URLSearchParams();
+        query.set('limit', '100');
+        if (sourceId) query.set('source_id', sourceId);
+        const data = await publicApi('/api/public/items?' + query.toString());
+        renderPublicTable(data.items || []);
+      } catch (err) {
+        publicTableBody.innerHTML = '<tr><td colspan="5" class="status-failed">' + escapeHtml(err.message || String(err)) + '</td></tr>';
+      }
     }
 
     function renderSources(items) {
@@ -312,7 +471,7 @@ export function renderAdminUi(): Response {
       )).join('');
     }
 
-    async function loadAll() {
+    async function loadAdminData() {
       try {
         const [sources, runs] = await Promise.all([
           api('/api/admin/sources'),
@@ -329,9 +488,20 @@ export function renderAdminUi(): Response {
       }
     }
 
+    document.getElementById('openAdminBtn').addEventListener('click', () => {
+      openAdminModal();
+      if (getToken()) loadAdminData();
+    });
+    document.getElementById('closeAdminBtn').addEventListener('click', closeAdminModal);
+    adminModal.addEventListener('click', (event) => {
+      if (event.target === adminModal) closeAdminModal();
+    });
+
+    document.getElementById('loadPublicBtn').addEventListener('click', loadPublicItems);
+
     document.getElementById('saveTokenBtn').addEventListener('click', () => {
       saveToken();
-      loadAll();
+      loadAdminData();
     });
 
     document.getElementById('checkBtn').addEventListener('click', async () => {
@@ -341,7 +511,7 @@ export function renderAdminUi(): Response {
         authStatus.textContent = '连接正常';
         authStatus.className = 'small status-success';
         setOutput(data);
-        loadAll();
+        loadAdminData();
       } catch (err) {
         authStatus.textContent = '连接失败：' + err.message;
         authStatus.className = 'small status-failed';
@@ -353,13 +523,14 @@ export function renderAdminUi(): Response {
       createBody.value = JSON.stringify(defaultCreateBody, null, 2);
     });
 
-    document.getElementById('reloadBtn').addEventListener('click', loadAll);
+    document.getElementById('reloadBtn').addEventListener('click', loadAdminData);
 
     document.getElementById('cronBtn').addEventListener('click', async () => {
       try {
         const data = await api('/api/admin/cron/run-once', { method: 'POST' });
         setOutput(data);
-        loadAll();
+        loadAdminData();
+        loadPublicItems();
       } catch (err) {
         setOutput(err.payload || err.message || String(err));
       }
@@ -374,7 +545,8 @@ export function renderAdminUi(): Response {
           body: JSON.stringify(body),
         });
         setOutput(data);
-        loadAll();
+        loadAdminData();
+        loadPublicItems();
       } catch (err) {
         setOutput(err.payload || err.message || String(err));
       }
@@ -396,14 +568,16 @@ export function renderAdminUi(): Response {
         if (action === 'sync') {
           const data = await api('/api/admin/sources/' + id + '/sync', { method: 'POST' });
           setOutput(data);
-          loadAll();
+          loadAdminData();
+          loadPublicItems();
           return;
         }
         if (action === 'toggle') {
           const enabled = target.getAttribute('data-enabled') === '1';
           const data = await api('/api/admin/sources/' + id + '/' + (enabled ? 'disable' : 'enable'), { method: 'POST' });
           setOutput(data);
-          loadAll();
+          loadAdminData();
+          loadPublicItems();
           return;
         }
       } catch (err) {
@@ -411,9 +585,11 @@ export function renderAdminUi(): Response {
       }
     });
 
-    if (getToken()) {
-      loadAll();
-    }
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeAdminModal();
+    });
+
+    loadPublicItems();
   </script>
 </body>
 </html>`;
