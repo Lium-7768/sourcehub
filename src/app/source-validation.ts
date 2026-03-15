@@ -265,7 +265,7 @@ export function mergeExistingSourceForValidation(
 ) {
   return {
     name: input.name ?? existing.name,
-    type: existing.type,
+    type: input.type ?? existing.type,
     enabled: input.enabled ?? Boolean(existing.enabled),
     is_public: input.is_public ?? Boolean(existing.is_public),
     config: input.config ?? JSON.parse(existing.config_json ?? '{}'),

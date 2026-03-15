@@ -144,6 +144,8 @@ curl -X PUT "$BASE_URL/api/admin/sources/SOURCE_ID" \
   }'
 ```
 
+> `sync_interval_min` 当前必须是 `5 ~ 1440` 的整数。
+
 ## 5.2 更新 config
 
 ```bash
@@ -155,6 +157,26 @@ curl -X PUT "$BASE_URL/api/admin/sources/SOURCE_ID" \
       "url": "https://www.cloudflare.com/ips-v4",
       "kind": "ip",
       "parse_mode": "regex_ip"
+    }
+  }'
+```
+
+## 5.3 切换 source 类型（连同 config 一起更新）
+
+```bash
+curl -X PUT "$BASE_URL/api/admin/sources/SOURCE_ID" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "type": "json_api",
+    "config": {
+      "url": "https://example.com/api/nodes",
+      "kind": "demo",
+      "extract_path": "data.items",
+      "field_map": {
+        "itemKey": "id",
+        "name": "name"
+      }
     }
   }'
 ```
@@ -247,6 +269,14 @@ curl "$BASE_URL/api/admin/sync-runs?trigger_type=cron&status=skipped" \
 curl "$BASE_URL/api/admin/sync-runs/RUN_ID" \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ```
+
+失败时，`message` 现在更偏向短错误码，常见有：
+- `runtime_validation_failed`
+- `upstream_fetch_failed`
+- `upstream_empty`
+- `invalid_upstream_shape`
+- `frequency_control`
+- `source_disabled`
 
 ---
 

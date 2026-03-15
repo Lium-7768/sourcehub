@@ -30,10 +30,12 @@ export interface CreateSourceInput {
   is_public?: boolean;
   tags?: string[];
   config: Record<string, unknown>;
+  sync_interval_min?: number;
 }
 
 export interface UpdateSourceInput {
   name?: string;
+  type?: SourceType;
   enabled?: boolean;
   is_public?: boolean;
   tags?: string[];

@@ -7,6 +7,16 @@ import { runCloudflareDnsSource } from '../source-adapters/cloudflare-dns.adapte
 import { runTextUrlSource } from '../source-adapters/text-url.adapter';
 import { runJsonApiSource } from '../source-adapters/json-api.adapter';
 
+class SyncExecutionError extends Error {
+  code: string;
+
+  constructor(code: string, message: string) {
+    super(message);
+    this.name = 'SyncExecutionError';
+    this.code = code;
+  }
+}
+
 function minutesSinceLastSync(lastSyncAt: string | null): number {
   if (!lastSyncAt) return Number.POSITIVE_INFINITY;
   const diffMs = Date.now() - new Date(lastSyncAt).getTime();
@@ -19,24 +29,24 @@ function getEffectiveSyncIntervalMin(source: SourceRow): number {
 
 function assertSourceCanSync(source: SourceRow, triggerType: 'manual' | 'cron') {
   if (!source.enabled) {
-    throw new Error('Source is disabled');
+    throw new SyncExecutionError('source_disabled', 'Source is disabled');
   }
 
   const intervalMin = getEffectiveSyncIntervalMin(source);
   const elapsed = minutesSinceLastSync(source.last_sync_at);
   if (elapsed < intervalMin) {
     const waitMin = Math.ceil(intervalMin - elapsed);
-    throw new Error(`Sync blocked by frequency control. Try again in about ${waitMin} minute(s)`);
+    throw new SyncExecutionError('frequency_control', `Sync blocked by frequency control. Try again in about ${waitMin} minute(s)`);
   }
 
   if (triggerType === 'cron' && source.last_status === 'running') {
-    throw new Error('Source is already running');
+    throw new SyncExecutionError('source_running', 'Source is already running');
   }
 }
 
 async function runSourceAdapter(env: Env, source: SourceRow) {
   if (source.type === 'cloudflare_dns') {
-    if (!env.CF_API_TOKEN) throw new Error('Missing CF_API_TOKEN in runtime env');
+    if (!env.CF_API_TOKEN) throw new SyncExecutionError('missing_runtime_secret', 'Missing CF_API_TOKEN in runtime env');
     return runCloudflareDnsSource(source, env.CF_API_TOKEN);
   }
 
@@ -48,12 +58,35 @@ async function runSourceAdapter(env: Env, source: SourceRow) {
     return runJsonApiSource(source);
   }
 
-  throw new Error(`Source type not implemented yet: ${source.type}`);
+  throw new SyncExecutionError('source_type_not_implemented', `Source type not implemented yet: ${source.type}`);
+}
+
+function toSyncFailure(err: unknown): { code: string; message: string } {
+  if (err instanceof SourceValidationError) {
+    return { code: 'runtime_validation_failed', message: JSON.stringify({ fields: err.fields }) };
+  }
+  if (err instanceof SyncExecutionError) {
+    return { code: err.code, message: err.message };
+  }
+
+  const message = err instanceof Error ? err.message : String(err);
+
+  if (/Failed to fetch text|Failed to fetch json/i.test(message)) {
+    return { code: 'upstream_fetch_failed', message };
+  }
+  if (/empty content|empty array|does not contain object items|produced no valid items|returned no valid DNS records/i.test(message)) {
+    return { code: 'upstream_empty', message };
+  }
+  if (/extract_path must resolve to an array|missing a usable stable key/i.test(message)) {
+    return { code: 'invalid_upstream_shape', message };
+  }
+
+  return { code: 'sync_failed', message };
 }
 
 export async function syncSource(env: Env, sourceId: string, triggerType: 'manual' | 'cron' = 'manual') {
   const source = await getSourceById(env, sourceId);
-  if (!source) throw new Error('Source not found');
+  if (!source) throw new SyncExecutionError('source_not_found', 'Source not found');
 
   assertSourceCanSync(source, triggerType);
   const runId = await createSyncRun(env, sourceId, triggerType);
@@ -64,7 +97,7 @@ export async function syncSource(env: Env, sourceId: string, triggerType: 'manua
       throw new SourceValidationError(runtimeValidation.fields);
     }
 
-    await markSourceSyncStatus(env, sourceId, 'running');
+    await markSourceSyncStatus(env, sourceId, 'running', null, { touchLastSyncAt: false });
     const result = await runSourceAdapter(env, source);
 
     let inserted = 0;
@@ -85,14 +118,14 @@ export async function syncSource(env: Env, sourceId: string, triggerType: 'manua
       await updateSourceItemCount(env, sourceId);
     }
 
-    await finishSyncRun(env, runId, 'success', `Sync completed: inserted=${inserted}, updated=${updated}`, null, result.fetchedCount, inserted, updated, 0);
+    await finishSyncRun(env, runId, 'success', 'sync_success', null, result.fetchedCount, inserted, updated, 0);
     await markSourceSyncStatus(env, sourceId, 'success');
 
     return { runId, inserted, updated, ...result };
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    await finishSyncRun(env, runId, 'failed', 'Sync failed', message, 0);
-    await markSourceSyncStatus(env, sourceId, 'failed', message);
+    const failure = toSyncFailure(err);
+    await finishSyncRun(env, runId, 'failed', failure.code, failure.message, 0);
+    await markSourceSyncStatus(env, sourceId, 'failed', `${failure.code}: ${failure.message}`);
     throw err;
   }
 }
@@ -106,7 +139,7 @@ export async function runScheduledSyncs(env: Env) {
     const elapsed = minutesSinceLastSync(source.last_sync_at);
     if (elapsed < intervalMin) {
       const message = `Skipped: not due yet (${Math.floor(elapsed)}/${intervalMin} min)`;
-      const runId = await createFinishedSyncRun(env, source.id, 'cron', 'skipped', message);
+      const runId = await createFinishedSyncRun(env, source.id, 'cron', 'skipped', 'not_due_yet', message);
       results.push({
         sourceId: source.id,
         status: 'skipped',
@@ -120,9 +153,9 @@ export async function runScheduledSyncs(env: Env) {
       const result = await syncSource(env, source.id, 'cron');
       results.push({ sourceId: source.id, status: 'synced', runId: result.runId });
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      const runId = await createFinishedSyncRun(env, source.id, 'cron', 'failed', 'Scheduled sync failed', message);
-      results.push({ sourceId: source.id, status: 'failed', message, runId });
+      const failure = toSyncFailure(err);
+      const runId = await createFinishedSyncRun(env, source.id, 'cron', 'failed', failure.code, failure.message);
+      results.push({ sourceId: source.id, status: 'failed', message: failure.message, runId });
     }
   }
 

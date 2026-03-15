@@ -42,6 +42,7 @@ export async function getSourceById(env: Env, id: string): Promise<SourceRow | n
 export async function createSource(env: Env, input: CreateSourceInput): Promise<string> {
   const id = makeId('src');
   const now = nowIso();
+  const syncIntervalMin = Math.max(5, Math.min(1440, Number(input.sync_interval_min ?? 60)));
   await env.DB.prepare(
     `INSERT INTO sources (
       id, name, type, enabled, is_public, config_json, tags_json,
@@ -55,17 +56,31 @@ export async function createSource(env: Env, input: CreateSourceInput): Promise<
     input.is_public === true ? 1 : 0,
     JSON.stringify(input.config),
     JSON.stringify(input.tags ?? []),
-    60,
+    syncIntervalMin,
     now,
     now,
   ).run();
   return id;
 }
 
-export async function markSourceSyncStatus(env: Env, id: string, status: string, lastError: string | null = null) {
+export async function markSourceSyncStatus(
+  env: Env,
+  id: string,
+  status: string,
+  lastError: string | null = null,
+  options?: { touchLastSyncAt?: boolean }
+) {
+  const touchLastSyncAt = options?.touchLastSyncAt ?? true;
+  if (touchLastSyncAt) {
+    await env.DB.prepare(
+      `UPDATE sources SET last_status = ?, last_error = ?, last_sync_at = ?, updated_at = ? WHERE id = ?`
+    ).bind(status, lastError, nowIso(), nowIso(), id).run();
+    return;
+  }
+
   await env.DB.prepare(
-    `UPDATE sources SET last_status = ?, last_error = ?, last_sync_at = ?, updated_at = ? WHERE id = ?`
-  ).bind(status, lastError, nowIso(), nowIso(), id).run();
+    `UPDATE sources SET last_status = ?, last_error = ?, updated_at = ? WHERE id = ?`
+  ).bind(status, lastError, nowIso(), id).run();
 }
 
 export async function updateSource(env: Env, id: string, input: UpdateSourceInput): Promise<boolean> {
@@ -77,6 +92,7 @@ export async function updateSource(env: Env, id: string, input: UpdateSourceInpu
   await env.DB.prepare(
     `UPDATE sources
       SET name = ?,
+          type = ?,
           enabled = ?,
           is_public = ?,
           config_json = ?,
@@ -86,6 +102,7 @@ export async function updateSource(env: Env, id: string, input: UpdateSourceInpu
       WHERE id = ?`
   ).bind(
     input.name ?? existing.name,
+    input.type ?? existing.type,
     input.enabled === undefined ? existing.enabled : input.enabled ? 1 : 0,
     input.is_public === undefined ? existing.is_public : input.is_public ? 1 : 0,
     JSON.stringify(input.config ?? JSON.parse(existing.config_json ?? '{}')),

@@ -19,6 +19,7 @@
 - 结构化校验错误返回（`validation_failed` + `fields`）
 - sync 前运行时校验（避免“配置看着合法，一跑就炸”）
 - adapter 级失败收口（空结果 / 无效 key / 无效 IP / 过滤后无数据会直接报错）
+- sync 失败分类更清晰（`runtime_validation_failed` / `upstream_fetch_failed` / `upstream_empty` / `invalid_upstream_shape` 等）
 
 > 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
 
@@ -292,6 +293,19 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 - source 配置结构不合法
 - source 配置虽然存在，但达不到当前更严格规则
 - sync 前运行时校验失败
+- 上游返回空数据、坏结构或无法形成有效 item
+
+### sync-runs 失败分类
+当前 `sync_runs.message` 会尽量收敛为短错误码，常见包括：
+- `runtime_validation_failed`
+- `upstream_fetch_failed`
+- `upstream_empty`
+- `invalid_upstream_shape`
+- `frequency_control`
+- `source_disabled`
+- `source_running`
+
+详细错误文本看 `sync_runs.error_text`。
 
 ### `429` / 频控拦截
 常见于：
