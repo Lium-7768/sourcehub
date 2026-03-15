@@ -300,6 +300,15 @@ export function renderAdminUi(): Response {
   </div>
 
   <script>
+    function escapeHtml(input) {
+      return String(input)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     const tokenInput = document.getElementById('tokenInput');
     const authStatus = document.getElementById('authStatus');
     const createBody = document.getElementById('createBody');
