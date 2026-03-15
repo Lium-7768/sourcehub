@@ -18,6 +18,10 @@
 
 > 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
 
+## License
+
+MIT
+
 ## 文档
 
 - 部署与运维：`DEPLOYMENT.md`
@@ -64,14 +68,24 @@ npx wrangler d1 migrations apply sourcehub --remote
 
 ### 4. 准备部署凭据
 
+可以参考：
+
+```bash
+cp .env.example .env
+```
+
+需要理解这 4 个值：
+
+- `CLOUDFLARE_API_TOKEN`：给 Wrangler CLI 部署 / `whoami` 使用
+- `CLOUDFLARE_ACCOUNT_ID`：Cloudflare 账号 ID
+- `CF_API_TOKEN`：给 Worker runtime 调 Cloudflare API 使用
+- `ADMIN_TOKEN`：保护 `/api/admin/*`
+
+先检查 deploy 凭据：
+
 ```bash
 export CLOUDFLARE_API_TOKEN=YOUR_DEPLOY_TOKEN
 export CLOUDFLARE_ACCOUNT_ID=YOUR_ACCOUNT_ID
-```
-
-先检查：
-
-```bash
 npx wrangler whoami
 ```
 
@@ -87,6 +101,108 @@ printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN
 ```bash
 npx wrangler deploy
 ```
+
+## Source 配置示例
+
+### `text_url`
+
+适合：
+- 每行一个值的文本源
+- IP 列表
+- 简单文本列表
+
+示例：
+
+```json
+{
+  "name": "demo text source",
+  "type": "text_url",
+  "enabled": true,
+  "is_public": true,
+  "tags": ["demo", "ip"],
+  "config": {
+    "url": "https://www.cloudflare.com/ips-v4",
+    "kind": "ip",
+    "parse_mode": "line"
+  }
+}
+```
+
+可选 `parse_mode`：
+- `line`
+- `regex_ip`
+
+---
+
+### `json_api`
+
+适合：
+- 返回 JSON 的接口源
+- 需要从 JSON 中抽字段
+
+示例：
+
+```json
+{
+  "name": "demo json api",
+  "type": "json_api",
+  "enabled": true,
+  "is_public": false,
+  "tags": ["api", "demo"],
+  "config": {
+    "url": "https://example.com/api/nodes",
+    "extract_path": "data.items",
+    "kind": "dns_record",
+    "field_map": {
+      "itemKey": "id",
+      "name": "name",
+      "type": "type",
+      "content": "content"
+    },
+    "headers": {
+      "Authorization": "Bearer YOUR_UPSTREAM_TOKEN"
+    }
+  }
+}
+```
+
+常用配置：
+- `url`
+- `extract_path`
+- `kind`
+- `field_map`
+- `headers`
+
+---
+
+### `cloudflare_dns`
+
+适合：
+- 读取你自己 Cloudflare Zone 下的 DNS 记录
+
+示例：
+
+```json
+{
+  "name": "demo cf dns",
+  "type": "cloudflare_dns",
+  "enabled": true,
+  "is_public": false,
+  "tags": ["cloudflare", "dns"],
+  "config": {
+    "zone_id": "YOUR_ZONE_ID",
+    "record_types": ["A", "AAAA", "CNAME"],
+    "name_filter": "api"
+  }
+}
+```
+
+常用配置：
+- `zone_id`
+- `record_types`
+- `name_filter`
+
+> 这个 source 依赖 Worker runtime secret：`CF_API_TOKEN`
 
 ## Admin 鉴权
 
@@ -109,6 +225,33 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 - `source_id=...`
 - `status=running|success|failed|skipped`
 - `trigger_type=manual|cron`
+
+## 常见错误 / 返回
+
+### `404 Not found`
+- 路由不存在
+- 或者资源 ID 不存在
+
+### `401 Unauthorized`
+- 没带 `Authorization: Bearer ...`
+- 或 `ADMIN_TOKEN` 不正确
+
+### `429` / 频控拦截
+常见于：
+- 刚同步完立刻再次 sync
+
+典型文案：
+
+```text
+Sync blocked by frequency control. Try again in about X minute(s)
+```
+
+### disabled source 拦截
+典型文案：
+
+```text
+Source is disabled
+```
 
 ## Cron 调试
 
@@ -140,6 +283,12 @@ POST /api/admin/cron/run-once
 5. `npx wrangler deploy`
 6. 打线上 API 回归测试
 7. 测通后再宣告完成
+
+## CI
+
+项目当前已包含最轻量 GitHub Actions：
+- 安装依赖
+- 执行 `npm run check`
 
 ## 说明
 
