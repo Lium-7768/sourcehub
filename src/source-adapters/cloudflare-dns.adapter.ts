@@ -23,9 +23,9 @@ export async function runCloudflareDnsSource(source: SourceRow, apiToken: string
   const normalized: NormalizedDnsRecordItem[] = records
     .filter((record) => matchNameFilter(String(record.name ?? ''), config.name_filter))
     .map((record) => {
-      const name = String(record.name ?? '');
-      const type = String(record.type ?? '');
-      const content = String(record.content ?? '');
+      const name = String(record.name ?? '').trim();
+      const type = String(record.type ?? '').trim();
+      const content = String(record.content ?? '').trim();
 
       return {
         kind: 'dns_record' as const,
@@ -40,7 +40,12 @@ export async function runCloudflareDnsSource(source: SourceRow, apiToken: string
           ttl: record.ttl ?? null,
         },
       };
-    });
+    })
+    .filter((item) => item.value.name && item.value.type && item.value.content);
+
+  if (!normalized.length) {
+    throw new Error('cloudflare_dns returned no valid DNS records after filtering');
+  }
 
   return {
     fetchedCount: normalized.length,

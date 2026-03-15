@@ -25,14 +25,35 @@ function getByPath(input: unknown, path?: string): unknown {
   }, input);
 }
 
-function mapItem(raw: Record<string, unknown>, kind: string, fieldMap: Record<string, string>): NormalizedJsonItem {
+function normalizeItemKey(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed ? trimmed : null;
+  }
+  if (typeof value === 'number' || typeof value === 'bigint') {
+    return String(value);
+  }
+  return null;
+}
+
+function mapItem(raw: Record<string, unknown>, kind: string, fieldMap: Record<string, string>, index: number): NormalizedJsonItem {
   const value: Record<string, unknown> = {};
 
   for (const [targetKey, sourcePath] of Object.entries(fieldMap)) {
     value[targetKey] = getByPath(raw, sourcePath);
   }
 
-  const itemKey = String(value.item_key ?? value.id ?? value.ip ?? value.domain ?? crypto.randomUUID());
+  const itemKey =
+    normalizeItemKey(value.itemKey) ??
+    normalizeItemKey(value.item_key) ??
+    normalizeItemKey(value.id) ??
+    normalizeItemKey(value.ip) ??
+    normalizeItemKey(value.domain);
+
+  if (!itemKey) {
+    throw new Error(`json_api item at index ${index} is missing a usable stable key after field_map`);
+  }
+
   delete value.item_key;
 
   return {
@@ -51,13 +72,23 @@ export async function runJsonApiSource(source: SourceRow) {
   if (!Array.isArray(extracted)) {
     throw new Error('json_api extract_path must resolve to an array');
   }
+  if (!extracted.length) {
+    throw new Error('json_api extract_path resolved to an empty array');
+  }
 
   const kind = config.kind ?? 'json_record';
   const fieldMap = config.field_map ?? { item_key: 'id' };
 
-  const items = extracted
-    .filter((item): item is Record<string, unknown> => !!item && typeof item === 'object' && !Array.isArray(item))
-    .map((item) => mapItem(item, kind, fieldMap));
+  const objectItems = extracted.filter((item): item is Record<string, unknown> => !!item && typeof item === 'object' && !Array.isArray(item));
+  if (!objectItems.length) {
+    throw new Error('json_api extract_path array does not contain object items');
+  }
+
+  const items = objectItems.map((item, index) => mapItem(item, kind, fieldMap, index));
+
+  if (!items.length) {
+    throw new Error('json_api produced no valid items');
+  }
 
   return {
     fetchedCount: items.length,

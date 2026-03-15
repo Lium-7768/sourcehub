@@ -18,6 +18,7 @@
 - Source 基础配置校验（create / update）
 - 结构化校验错误返回（`validation_failed` + `fields`）
 - sync 前运行时校验（避免“配置看着合法，一跑就炸”）
+- adapter 级失败收口（空结果 / 无效 key / 无效 IP / 过滤后无数据会直接报错）
 
 > 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
 
