@@ -26,6 +26,7 @@ MIT
 ## 文档
 
 - 部署与运维：`DEPLOYMENT.md`
+- API 调用示例：`API_EXAMPLES.md`
 
 ## 当前可用 API
 
@@ -337,3 +338,4 @@ POST /api/admin/cron/run-once
 更详细的流程、复盘和踩坑修正，见：
 
 - `DEPLOYMENT.md`
+- `API_EXAMPLES.md`
