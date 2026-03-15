@@ -31,6 +31,8 @@ MIT
 
 - 部署与运维：`DEPLOYMENT.md`
 - API 调用示例：`API_EXAMPLES.md`
+- 自动化测试：`npm test`
+- 线上 smoke check：`npm run smoke`
 
 ## 当前可用 API
 
@@ -130,7 +132,7 @@ npx wrangler deploy
   "config": {
     "url": "https://www.cloudflare.com/ips-v4",
     "kind": "ip",
-    "parse_mode": "line"
+    "parse_mode": "regex_ip"
   }
 }
 ```
@@ -355,11 +357,46 @@ POST /api/admin/cron/run-once
 6. 打线上 API 回归测试
 7. 测通后再宣告完成
 
+## 测试
+
+### 自动化测试
+
+当前已经补上两类基础自动化测试：
+- `tests/source-validation.test.ts`
+  - 覆盖 source payload / runtime validation / merge 行为
+- `tests/adapter-normalization.test.ts`
+  - 覆盖 `text_url` / `json_api` / `cloudflare_dns` adapter 的关键归一化和失败路径
+
+运行：
+
+```bash
+npm test
+```
+
+### 线上 smoke check
+
+项目还提供一套最小线上自测脚本，会真实调用线上 API：
+
+```bash
+export BASE_URL='https://YOUR_WORKER_URL'
+export ADMIN_TOKEN='YOUR_ADMIN_TOKEN'
+npm run smoke
+```
+
+它当前会检查：
+- 根路由可达
+- 可创建 `text_url` source
+- `sync_interval_min` 会真实落库
+- 手动 sync 正常
+- public items/export 正常
+- 非法 `json_api` 创建会返回 `validation_failed`
+
 ## CI
 
-项目当前已包含最轻量 GitHub Actions：
-- 安装依赖
-- 执行 `npm run check`
+项目当前 GitHub Actions 会执行：
+- `npm ci`
+- `npm run check`
+- `npm test`
 
 ## 说明
 

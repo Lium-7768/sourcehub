@@ -302,6 +302,14 @@ npm run check
 
 这一步必须先过。
 
+## 第二点五步：跑基础自动化测试
+
+```bash
+npm test
+```
+
+这一步建议作为发版前默认动作。
+
 ## 第三步：验证 Cloudflare 凭据
 
 ```bash
@@ -345,6 +353,14 @@ curl 'https://YOUR_WORKER_URL/'
 - sync 检查
 - 防刷 / 频控检查
 - cron/run-once 检查（如果改到了 scheduled 逻辑）
+
+如果要跑项目自带的最小线上回归：
+
+```bash
+export BASE_URL='https://YOUR_WORKER_URL'
+export ADMIN_TOKEN='YOUR_ADMIN_TOKEN'
+npm run smoke
+```
 
 ## 第七步：测试通过后再宣告完成
 

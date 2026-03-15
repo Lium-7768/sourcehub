@@ -7,11 +7,14 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "tsx tests/source-validation.test.ts && tsx tests/adapter-normalization.test.ts",
+    "smoke": "node scripts/smoke-check.mjs"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250314.0",
+    "tsx": "^4.20.5",
     "typescript": "^5.8.2",
-    "wrangler": "^4.7.1",
-    "@cloudflare/workers-types": "^4.20250314.0"
+    "wrangler": "^4.7.1"
   }
 }

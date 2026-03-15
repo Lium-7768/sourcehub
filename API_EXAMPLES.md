@@ -38,7 +38,7 @@ curl -X POST "$BASE_URL/api/admin/sources" \
     "config": {
       "url": "https://www.cloudflare.com/ips-v4",
       "kind": "ip",
-      "parse_mode": "line"
+      "parse_mode": "regex_ip"
     }
   }'
 ```
@@ -349,7 +349,12 @@ curl -X POST "$BASE_URL/api/admin/sources" \
 
 ```json
 {
-  "error": "text_url config.url is required"
+  "error": "validation_failed",
+  "details": {
+    "fields": {
+      "config.url": "required"
+    }
+  }
 }
 ```
 
@@ -372,7 +377,12 @@ curl -X PUT "$BASE_URL/api/admin/sources/SOURCE_ID" \
 
 ```json
 {
-  "error": "text_url config.parse_mode must be line or regex_ip"
+  "error": "validation_failed",
+  "details": {
+    "fields": {
+      "config.parse_mode": "must be line or regex_ip"
+    }
+  }
 }
 ```
 
