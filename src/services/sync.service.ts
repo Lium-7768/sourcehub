@@ -1,6 +1,6 @@
 import type { Env, SourceRow } from '../app/types';
 import { getSourceById, listEnabledSources, markSourceSyncStatus } from '../db/sources.repo';
-import { createSyncRun, finishSyncRun } from '../db/sync-runs.repo';
+import { createFinishedSyncRun, createSyncRun, finishSyncRun } from '../db/sync-runs.repo';
 import { upsertItems, updateSourceItemCount } from '../db/items.repo';
 import { runCloudflareDnsSource } from '../source-adapters/cloudflare-dns.adapter';
 import { runTextUrlSource } from '../source-adapters/text-url.adapter';
@@ -93,26 +93,30 @@ export async function syncSource(env: Env, sourceId: string, triggerType: 'manua
 
 export async function runScheduledSyncs(env: Env) {
   const sources = await listEnabledSources(env);
-  const results: Array<{ sourceId: string; status: 'synced' | 'skipped' | 'failed'; message?: string }> = [];
+  const results: Array<{ sourceId: string; status: 'synced' | 'skipped' | 'failed'; message?: string; runId?: string }> = [];
 
   for (const source of sources) {
     const intervalMin = getEffectiveSyncIntervalMin(source);
     const elapsed = minutesSinceLastSync(source.last_sync_at);
     if (elapsed < intervalMin) {
+      const message = `Skipped: not due yet (${Math.floor(elapsed)}/${intervalMin} min)`;
+      const runId = await createFinishedSyncRun(env, source.id, 'cron', 'skipped', message);
       results.push({
         sourceId: source.id,
         status: 'skipped',
-        message: `Not due yet (${Math.floor(elapsed)}/${intervalMin} min)`,
+        message,
+        runId,
       });
       continue;
     }
 
     try {
-      await syncSource(env, source.id, 'cron');
-      results.push({ sourceId: source.id, status: 'synced' });
+      const result = await syncSource(env, source.id, 'cron');
+      results.push({ sourceId: source.id, status: 'synced', runId: result.runId });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      results.push({ sourceId: source.id, status: 'failed', message });
+      const runId = await createFinishedSyncRun(env, source.id, 'cron', 'failed', 'Scheduled sync failed', message);
+      results.push({ sourceId: source.id, status: 'failed', message, runId });
     }
   }
 

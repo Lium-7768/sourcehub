@@ -25,6 +25,42 @@ export async function createSyncRun(env: Env, sourceId: string, triggerType: str
   return id;
 }
 
+export async function createFinishedSyncRun(
+  env: Env,
+  sourceId: string,
+  triggerType: string,
+  status: string,
+  message: string,
+  errorText: string | null = null,
+  fetchedCount = 0,
+  insertedCount = 0,
+  updatedCount = 0,
+  deactivatedCount = 0,
+): Promise<string> {
+  const id = makeId('run');
+  const now = nowIso();
+  await env.DB.prepare(
+    `INSERT INTO sync_runs (
+      id, source_id, trigger_type, status, fetched_count, inserted_count, updated_count, deactivated_count,
+      message, error_text, started_at, finished_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(
+    id,
+    sourceId,
+    triggerType,
+    status,
+    fetchedCount,
+    insertedCount,
+    updatedCount,
+    deactivatedCount,
+    message,
+    errorText,
+    now,
+    now,
+  ).run();
+  return id;
+}
+
 export async function finishSyncRun(
   env: Env,
   runId: string,
@@ -45,7 +81,7 @@ export async function finishSyncRun(
 
 export async function listSyncRuns(
   env: Env,
-  filters?: { sourceId?: string; status?: string }
+  filters?: { sourceId?: string; status?: string; triggerType?: string }
 ): Promise<SyncRunRow[]> {
   const where: string[] = [];
   const binds: Array<string> = [];
@@ -57,6 +93,10 @@ export async function listSyncRuns(
   if (filters?.status) {
     where.push('status = ?');
     binds.push(filters.status);
+  }
+  if (filters?.triggerType) {
+    where.push('trigger_type = ?');
+    binds.push(filters.triggerType);
   }
 
   const sql = `SELECT * FROM sync_runs${where.length ? ` WHERE ${where.join(' AND ')}` : ''} ORDER BY started_at DESC`;

@@ -13,6 +13,8 @@
 - 基础同步频率控制
 - Public API 基础防刷（limit / cache / 导出上限）
 - Admin 列表最小筛选（sources / sync-runs）
+- Cron 可观测性（`sync_runs` 记录 `cron` 的 `success / skipped / failed`）
+- Admin 调试入口：`POST /api/admin/cron/run-once`
 
 ## 当前可用 API
 
@@ -26,6 +28,7 @@
 - `POST /api/admin/sources/:id/sync`
 - `GET /api/admin/sync-runs`
 - `GET /api/admin/sync-runs/:id`
+- `POST /api/admin/cron/run-once`
 - `GET /api/public/items`
 - `GET /api/public/export/:sourceId?format=json|txt`
 
@@ -84,82 +87,7 @@ npm run dev
 Authorization: Bearer YOUR_ADMIN_TOKEN
 ```
 
-## 7. 新增一个 Cloudflare source
-
-```json
-{
-  "name": "my cf zone",
-  "type": "cloudflare_dns",
-  "enabled": true,
-  "is_public": false,
-  "tags": ["owned", "cf"],
-  "config": {
-    "zone_id": "YOUR_ZONE_ID",
-    "record_types": ["A", "AAAA", "CNAME"],
-    "name_filter": "*.example.com"
-  }
-}
-```
-
-## 8. 新增一个 text_url source
-
-逐行解析：
-
-```json
-{
-  "name": "public ip list",
-  "type": "text_url",
-  "enabled": true,
-  "is_public": true,
-  "tags": ["public", "ip"],
-  "config": {
-    "url": "https://example.com/ip.txt",
-    "kind": "ip",
-    "parse_mode": "line"
-  }
-}
-```
-
-整段文本提取 IP：
-
-```json
-{
-  "name": "regex ip source",
-  "type": "text_url",
-  "enabled": true,
-  "is_public": true,
-  "tags": ["public", "ip"],
-  "config": {
-    "url": "https://example.com/page.txt",
-    "parse_mode": "regex_ip"
-  }
-}
-```
-
-## 9. 新增一个 json_api source
-
-```json
-{
-  "name": "json ip source",
-  "type": "json_api",
-  "enabled": true,
-  "is_public": true,
-  "tags": ["public", "api"],
-  "config": {
-    "url": "https://example.com/api/list",
-    "kind": "ip",
-    "extract_path": "data.items",
-    "field_map": {
-      "item_key": "ip",
-      "ip": "ip",
-      "latency": "latency",
-      "speed": "speed"
-    }
-  }
-}
-```
-
-## 10. 安全收口默认值
+## 7. 安全收口默认值
 
 - `sync_interval_min` 最小 5 分钟，最大 1440 分钟
 - source 被禁用后，不允许再手动 sync
@@ -169,7 +97,7 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 - `GET /api/public/export/:sourceId` 导出上限 `1000`
 - public API 带短缓存头，减轻被刷时的直接压力
 
-## 11. Admin 列表筛选
+## 8. Admin 列表筛选
 
 ### sources
 支持：
@@ -177,47 +105,25 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 - `enabled=true|false|1|0`
 - `is_public=true|false|1|0`
 
-示例：
-```bash
-GET /api/admin/sources?enabled=1
-GET /api/admin/sources?type=text_url&is_public=1
-```
-
 ### sync-runs
 支持：
 - `source_id=...`
-- `status=running|success|failed`
+- `status=running|success|failed|skipped`
+- `trigger_type=manual|cron`
 
-示例：
+## 9. Cron 可观测性
+
+cron 结果会写入 `sync_runs`：
+
+- `trigger_type=cron`
+- `status=success`：定时同步成功
+- `status=skipped`：没到同步时间，主动跳过
+- `status=failed`：定时同步失败
+
+并且现在可以用调试入口主动执行一次：
+
 ```bash
-GET /api/admin/sync-runs?status=failed
-GET /api/admin/sync-runs?source_id=SOURCE_ID&status=success
+POST /api/admin/cron/run-once
 ```
 
-## 12. 常用调用
-
-- `POST /api/admin/sources`（带 `Authorization: Bearer YOUR_ADMIN_TOKEN`）
-- `PUT /api/admin/sources/:id`（带 `Authorization: Bearer YOUR_ADMIN_TOKEN`）
-- `POST /api/admin/sources/:id/enable`（带 `Authorization: Bearer YOUR_ADMIN_TOKEN`）
-- `POST /api/admin/sources/:id/disable`（带 `Authorization: Bearer YOUR_ADMIN_TOKEN`）
-- `POST /api/admin/sources/:id/sync`（带 `Authorization: Bearer YOUR_ADMIN_TOKEN`）
-- `GET /api/admin/sources?enabled=1`
-- `GET /api/admin/sources?type=text_url&is_public=1`
-- `GET /api/admin/sync-runs?status=failed`
-- `GET /api/admin/sync-runs?source_id=SOURCE_ID&status=success`
-- `GET /api/admin/sync-runs/:id`（带 `Authorization: Bearer YOUR_ADMIN_TOKEN`）
-- `GET /api/public/items?kind=dns_record&limit=50`
-- `GET /api/public/items?source_id=SOURCE_ID&limit=50`
-- `GET /api/public/export/SOURCE_ID?format=json`
-- `GET /api/public/export/SOURCE_ID?format=txt`
-
-## 注意
-
-当前版本还是 MVP：
-- 还没有后台登录页面，但已支持最小 Bearer Token 鉴权
-- 已支持 source 更新与启停
-- 已支持把 Cloudflare DNS 记录写入 `items`
-- 已支持 `text_url` source（`line` / `regex_ip`）
-- 已支持 `json_api` source（`extract_path` / `field_map`）
-- 已支持公开查询和按 source 导出
-- 已支持最小安全收口，不再是完全裸奔状态
+这样不需要硬等真实 cron，就能验证 scheduled 逻辑。
