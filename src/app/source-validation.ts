@@ -5,6 +5,7 @@ type ValidationResult =
   | {
       ok: false;
       error: string;
+      fields: Record<string, string>;
     };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -19,17 +20,25 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string' && item.trim().length > 0);
 }
 
+function invalid(field: string, reason: string): ValidationResult {
+  return {
+    ok: false,
+    error: 'validation_failed',
+    fields: { [field]: reason },
+  };
+}
+
 function validateTextUrlConfig(config: Record<string, unknown>): ValidationResult {
   if (!isNonEmptyString(config.url)) {
-    return { ok: false, error: 'text_url config.url is required' };
+    return invalid('config.url', 'required');
   }
 
   if (config.kind !== undefined && !isNonEmptyString(config.kind)) {
-    return { ok: false, error: 'text_url config.kind must be a non-empty string' };
+    return invalid('config.kind', 'must be a non-empty string');
   }
 
   if (config.parse_mode !== undefined && config.parse_mode !== 'line' && config.parse_mode !== 'regex_ip') {
-    return { ok: false, error: 'text_url config.parse_mode must be line or regex_ip' };
+    return invalid('config.parse_mode', 'must be line or regex_ip');
   }
 
   return { ok: true };
@@ -37,35 +46,35 @@ function validateTextUrlConfig(config: Record<string, unknown>): ValidationResul
 
 function validateJsonApiConfig(config: Record<string, unknown>): ValidationResult {
   if (!isNonEmptyString(config.url)) {
-    return { ok: false, error: 'json_api config.url is required' };
+    return invalid('config.url', 'required');
   }
 
   if (config.kind !== undefined && !isNonEmptyString(config.kind)) {
-    return { ok: false, error: 'json_api config.kind must be a non-empty string' };
+    return invalid('config.kind', 'must be a non-empty string');
   }
 
   if (config.extract_path !== undefined && !isNonEmptyString(config.extract_path)) {
-    return { ok: false, error: 'json_api config.extract_path must be a non-empty string' };
+    return invalid('config.extract_path', 'must be a non-empty string');
   }
 
   if (config.field_map !== undefined) {
     if (!isPlainObject(config.field_map)) {
-      return { ok: false, error: 'json_api config.field_map must be an object' };
+      return invalid('config.field_map', 'must be an object');
     }
     for (const [key, value] of Object.entries(config.field_map)) {
       if (!isNonEmptyString(key) || !isNonEmptyString(value)) {
-        return { ok: false, error: 'json_api config.field_map values must be non-empty strings' };
+        return invalid('config.field_map', 'values must be non-empty strings');
       }
     }
   }
 
   if (config.headers !== undefined) {
     if (!isPlainObject(config.headers)) {
-      return { ok: false, error: 'json_api config.headers must be an object' };
+      return invalid('config.headers', 'must be an object');
     }
     for (const value of Object.values(config.headers)) {
       if (!isNonEmptyString(value)) {
-        return { ok: false, error: 'json_api config.headers values must be non-empty strings' };
+        return invalid('config.headers', 'values must be non-empty strings');
       }
     }
   }
@@ -75,15 +84,15 @@ function validateJsonApiConfig(config: Record<string, unknown>): ValidationResul
 
 function validateCloudflareDnsConfig(config: Record<string, unknown>): ValidationResult {
   if (!isNonEmptyString(config.zone_id)) {
-    return { ok: false, error: 'cloudflare_dns config.zone_id is required' };
+    return invalid('config.zone_id', 'required');
   }
 
   if (config.record_types !== undefined && !isStringArray(config.record_types)) {
-    return { ok: false, error: 'cloudflare_dns config.record_types must be an array of non-empty strings' };
+    return invalid('config.record_types', 'must be an array of non-empty strings');
   }
 
   if (config.name_filter !== undefined && !isNonEmptyString(config.name_filter)) {
-    return { ok: false, error: 'cloudflare_dns config.name_filter must be a non-empty string' };
+    return invalid('config.name_filter', 'must be a non-empty string');
   }
 
   return { ok: true };
@@ -91,49 +100,49 @@ function validateCloudflareDnsConfig(config: Record<string, unknown>): Validatio
 
 export function validateSourcePayload(body: unknown, mode: 'create' | 'update'): ValidationResult {
   if (!isPlainObject(body)) {
-    return { ok: false, error: 'request body must be a JSON object' };
+    return invalid('body', 'must be a JSON object');
   }
 
   if (body.name !== undefined && !isNonEmptyString(body.name)) {
-    return { ok: false, error: 'name must be a non-empty string' };
+    return invalid('name', 'must be a non-empty string');
   }
 
   if (body.tags !== undefined && !isStringArray(body.tags)) {
-    return { ok: false, error: 'tags must be an array of non-empty strings' };
+    return invalid('tags', 'must be an array of non-empty strings');
   }
 
   if (body.enabled !== undefined && typeof body.enabled !== 'boolean') {
-    return { ok: false, error: 'enabled must be a boolean' };
+    return invalid('enabled', 'must be a boolean');
   }
 
   if (body.is_public !== undefined && typeof body.is_public !== 'boolean') {
-    return { ok: false, error: 'is_public must be a boolean' };
+    return invalid('is_public', 'must be a boolean');
   }
 
   if (body.sync_interval_min !== undefined) {
     if (typeof body.sync_interval_min !== 'number' || !Number.isFinite(body.sync_interval_min)) {
-      return { ok: false, error: 'sync_interval_min must be a number' };
+      return invalid('sync_interval_min', 'must be a number');
     }
   }
 
   if (mode === 'create') {
     if (!isNonEmptyString(body.name)) {
-      return { ok: false, error: 'name is required' };
+      return invalid('name', 'required');
     }
     if (!isNonEmptyString(body.type)) {
-      return { ok: false, error: 'type is required' };
+      return invalid('type', 'required');
     }
     if (!isPlainObject(body.config)) {
-      return { ok: false, error: 'config is required and must be an object' };
+      return invalid('config', 'required and must be an object');
     }
   }
 
   if (body.type !== undefined && body.type !== 'text_url' && body.type !== 'json_api' && body.type !== 'cloudflare_dns') {
-    return { ok: false, error: 'type must be one of: text_url, json_api, cloudflare_dns' };
+    return invalid('type', 'must be one of: text_url, json_api, cloudflare_dns');
   }
 
   if (body.config !== undefined && !isPlainObject(body.config)) {
-    return { ok: false, error: 'config must be an object' };
+    return invalid('config', 'must be an object');
   }
 
   const type = body.type as SourceType | undefined;

@@ -16,6 +16,7 @@
 - Cron 可观测性（`success / skipped / failed`）
 - Admin 调试入口：`POST /api/admin/cron/run-once`
 - Source 基础配置校验（create / update）
+- 结构化校验错误返回（`validation_failed` + `fields`）
 
 > 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
 
@@ -168,15 +169,6 @@ npx wrangler deploy
 }
 ```
 
-常用配置：
-- `url`
-- `extract_path`
-- `kind`
-- `field_map`
-- `headers`
-
----
-
 ### `cloudflare_dns`
 
 适合：
@@ -199,40 +191,37 @@ npx wrangler deploy
 }
 ```
 
-常用配置：
-- `zone_id`
-- `record_types`
-- `name_filter`
-
 > 这个 source 依赖 Worker runtime secret：`CF_API_TOKEN`
 
-## 基础配置校验
+## 结构化校验错误
 
-当前 create / update 已补最基础校验。
+现在 create / update 的配置校验失败时，会返回结构化错误，而不是只有一句字符串。
 
-### 通用校验
-- `name` 必须是非空字符串
-- `tags` 必须是字符串数组
-- `enabled` / `is_public` 必须是布尔值
-- `sync_interval_min` 必须是数字
-- `type` 必须是：`text_url | json_api | cloudflare_dns`
-- `config` 必须是对象
+示例：
 
-### `text_url` 校验
-- `config.url` 必填
-- `config.kind` 如果传，必须是非空字符串
-- `config.parse_mode` 如果传，只能是 `line` 或 `regex_ip`
+```json
+{
+  "error": "validation_failed",
+  "details": {
+    "fields": {
+      "config.url": "required"
+    }
+  }
+}
+```
 
-### `json_api` 校验
-- `config.url` 必填
-- `config.kind` / `config.extract_path` 如果传，必须是非空字符串
-- `config.field_map` 如果传，必须是对象，且值必须是非空字符串
-- `config.headers` 如果传，必须是对象，且值必须是非空字符串
+再比如：
 
-### `cloudflare_dns` 校验
-- `config.zone_id` 必填
-- `config.record_types` 如果传，必须是非空字符串数组
-- `config.name_filter` 如果传，必须是非空字符串
+```json
+{
+  "error": "validation_failed",
+  "details": {
+    "fields": {
+      "config.parse_mode": "must be line or regex_ip"
+    }
+  }
+}
+```
 
 ## Admin 鉴权
 
@@ -271,13 +260,11 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 - source 配置结构不合法
 - 缺少某类 source 的必填配置
 
-示例：
+现在推荐按：
+- `error`
+- `details.fields`
 
-```text
-text_url config.url is required
-json_api config.field_map must be an object
-cloudflare_dns config.zone_id is required
-```
+来读校验失败原因。
 
 ### `429` / 频控拦截
 常见于：

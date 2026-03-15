@@ -24,7 +24,7 @@ export async function handleAdminSources(request: Request, env: Env, pathname: s
   if (request.method === 'POST' && pathname === '/api/admin/sources') {
     const body = await request.json<any>();
     const validation = validateSourcePayload(body, 'create');
-    if (!validation.ok) return error(validation.error, 400);
+    if (!validation.ok) return error(validation.error, 400, { fields: validation.fields });
 
     const id = await createSource(env, body);
     return json({ success: true, id }, { status: 201 });
@@ -44,7 +44,7 @@ export async function handleAdminSources(request: Request, env: Env, pathname: s
     const body = await request.json<any>();
     const merged = mergeExistingSourceForValidation(existing, body ?? {});
     const validation = validateSourcePayload(merged, 'update');
-    if (!validation.ok) return error(validation.error, 400);
+    if (!validation.ok) return error(validation.error, 400, { fields: validation.fields });
 
     const ok = await updateSource(env, sourceMatch[1], body ?? {});
     if (!ok) return error('Source not found', 404);
