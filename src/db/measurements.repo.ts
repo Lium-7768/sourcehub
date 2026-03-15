@@ -40,6 +40,48 @@ export async function createMeasurement(env: Env, input: UpsertMeasurementInput)
   ).run();
 }
 
+export async function createMeasurementByItemKey(
+  env: Env,
+  input: Omit<UpsertMeasurementInput, 'itemId'> & { sourceId: string; itemKey: string }
+) {
+  const item = await env.DB.prepare(
+    `SELECT id, source_id, item_key FROM items WHERE source_id = ? AND item_key = ? AND is_active = 1 LIMIT 1`
+  ).bind(input.sourceId, input.itemKey).first<{ id: string; source_id: string; item_key: string }>();
+
+  if (!item) {
+    return { item_key: input.itemKey, created: false, error: 'Item not found' };
+  }
+
+  await createMeasurement(env, {
+    itemId: item.id,
+    sourceId: item.source_id,
+    probeType: input.probeType,
+    latencyMs: input.latencyMs,
+    lossPct: input.lossPct,
+    jitterMs: input.jitterMs,
+    status: input.status,
+    region: input.region,
+    score: input.score,
+    checkedAt: input.checkedAt,
+  });
+
+  return { item_key: item.item_key, created: true };
+}
+
+export async function listMeasurementsBySource(env: Env, sourceId: string, limit = 20) {
+  const safeLimit = Math.max(1, Math.min(100, Number(limit || 20)));
+  const { results } = await env.DB.prepare(
+    `SELECT m.id, m.item_id, m.source_id, i.item_key, m.probe_type, m.latency_ms, m.loss_pct, m.jitter_ms,
+            m.status, m.region, m.score, m.checked_at, m.created_at
+     FROM measurements m
+     JOIN items i ON i.id = m.item_id
+     WHERE m.source_id = ?
+     ORDER BY m.checked_at DESC, m.created_at DESC
+     LIMIT ?`
+  ).bind(sourceId, safeLimit).all();
+  return results;
+}
+
 export async function listPublicResults(env: Env, options?: { sourceId?: string; limit?: number }) {
   const limit = Math.max(1, Math.min(100, Number(options?.limit ?? 50)));
   const sourceId = options?.sourceId;

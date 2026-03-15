@@ -232,7 +232,59 @@ curl -X POST "$BASE_URL/api/admin/sources/SOURCE_ID/sync" \
 
 ---
 
-# 8. 查看同步记录
+# 8. 写入 / 查看 measurement
+
+## 8.1 给某个 item 写一条真实测量结果
+
+```bash
+curl -X POST "$BASE_URL/api/admin/sources/SOURCE_ID/measurements" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "item_key": "1.1.1.1",
+    "probe_type": "manual_probe",
+    "latency_ms": 42,
+    "loss_pct": 0,
+    "jitter_ms": 3,
+    "status": "ok",
+    "region": "HKG",
+    "score": 97.5
+  }'
+```
+
+## 8.2 批量给多个 item_key 写同一组测量结果
+
+```bash
+curl -X POST "$BASE_URL/api/admin/sources/SOURCE_ID/measurements" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "item_keys": ["1.1.1.1", "1.0.0.1"],
+    "probe_type": "manual_probe",
+    "latency_ms": 40,
+    "loss_pct": 0,
+    "status": "ok",
+    "region": "HKG",
+    "score": 95
+  }'
+```
+
+## 8.3 查看某个 source 最近的 measurement
+
+```bash
+curl "$BASE_URL/api/admin/sources/SOURCE_ID/measurements?limit=20" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```
+
+## 8.4 查看 public 结果页数据
+
+```bash
+curl "$BASE_URL/api/public/results?limit=20"
+```
+
+---
+
+# 9. 查看同步记录
 
 ## 8.1 查看全部 sync-runs
 

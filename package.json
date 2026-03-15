@@ -8,7 +8,7 @@
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
     "check": "tsc --noEmit",
-    "test": "tsx tests/source-validation.test.ts && tsx tests/adapter-normalization.test.ts",
+    "test": "tsx tests/source-validation.test.ts && tsx tests/adapter-normalization.test.ts && tsx tests/measurements-api.test.ts",
     "smoke": "node scripts/smoke-check.mjs"
   },
   "devDependencies": {
