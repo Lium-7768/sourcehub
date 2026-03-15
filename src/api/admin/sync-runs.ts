@@ -8,8 +8,9 @@ export async function handleAdminSyncRuns(request: Request, env: Env, pathname: 
   if (request.method === 'GET' && pathname === '/api/admin/sync-runs') {
     const sourceId = url.searchParams.get('source_id') ?? undefined;
     const status = url.searchParams.get('status') ?? undefined;
-    const items = await listSyncRuns(env, { sourceId, status });
-    return json({ items, meta: { count: items.length, source_id: sourceId, status } });
+    const triggerType = url.searchParams.get('trigger_type') ?? undefined;
+    const items = await listSyncRuns(env, { sourceId, status, triggerType });
+    return json({ items, meta: { count: items.length, source_id: sourceId, status, trigger_type: triggerType } });
   }
 
   const match = pathname.match(/^\/api\/admin\/sync-runs\/([^/]+)$/);
