@@ -19,6 +19,12 @@ export ADMIN_TOKEN='YOUR_ADMIN_TOKEN'
 curl "$BASE_URL/"
 ```
 
+浏览器也可以直接打开最小后台：
+
+```text
+$BASE_URL/ui
+```
+
 ---
 
 # 2. 创建 source

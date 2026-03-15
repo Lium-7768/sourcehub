@@ -6,6 +6,7 @@ import { handleAdminSyncRuns } from '../api/admin/sync-runs';
 import { handleAdminCron } from '../api/admin/cron';
 import { handlePublicItems } from '../api/public/items';
 import { handlePublicExport } from '../api/public/export';
+import { renderAdminUi } from '../ui/admin';
 
 export async function route(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
@@ -16,6 +17,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
       name: 'sourcehub',
       status: 'ok',
       endpoints: [
+        'GET /ui',
         'GET /api/admin/sources',
         'POST /api/admin/sources',
         'GET /api/admin/sources/:id',
@@ -30,6 +32,10 @@ export async function route(request: Request, env: Env): Promise<Response> {
         'GET /api/public/export/:sourceId?format=json|txt'
       ]
     });
+  }
+
+  if (pathname === '/ui') {
+    return renderAdminUi();
   }
 
   if (pathname.startsWith('/api/admin/sources')) {

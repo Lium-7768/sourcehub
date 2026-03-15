@@ -380,6 +380,7 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 
 ### Source 管理
 
+- `GET /ui`
 - `GET /api/admin/sources`
 - `POST /api/admin/sources`
 - `GET /api/admin/sources/:id`

@@ -33,10 +33,12 @@ MIT
 - API 调用示例：`API_EXAMPLES.md`
 - 自动化测试：`npm test`
 - 线上 smoke check：`npm run smoke`
+- 最小后台 UI：`/ui`
 
 ## 当前可用 API
 
 ### Admin
+- `GET /ui`
 - `GET /api/admin/sources`
 - `POST /api/admin/sources`
 - `GET /api/admin/sources/:id`
