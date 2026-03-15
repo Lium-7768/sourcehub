@@ -1,24 +1,30 @@
 # SourceHub
 
-一个基于 Cloudflare Workers + D1 的 source manager MVP。
+一个基于 **Cloudflare Workers + D1 + Cron Triggers** 的 source manager MVP。
 
-当前已完成的最小能力：
-- D1 表结构初始化
-- Source CRUD（当前支持创建、列表、详情、更新、启停）
+当前版本已经具备：
+
+- Source CRUD（创建 / 列表 / 详情 / 更新 / 启停）
 - `cloudflare_dns` source 同步
 - `text_url` source 同步（支持 `line` / `regex_ip`）
 - `json_api` source 同步（支持 `extract_path` + `field_map`）
-- 手动触发同步 API
-- 保守 cron 定时同步（默认每 30 分钟触发一次）
-- 基础同步频率控制
-- Public API 基础防刷（limit / cache / 导出上限）
-- Admin 列表最小筛选（sources / sync-runs）
-- Cron 可观测性（`sync_runs` 记录 `cron` 的 `success / skipped / failed`）
+- 手动触发同步
+- 保守 cron 定时同步
+- 同步频率控制
+- Public API 基础防刷
+- Admin 列表筛选（sources / sync-runs）
+- Cron 可观测性（`success / skipped / failed`）
 - Admin 调试入口：`POST /api/admin/cron/run-once`
+
+> 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
+
+## 文档
+
+- 部署与运维：`DEPLOYMENT.md`
 
 ## 当前可用 API
 
-- `GET /`
+### Admin
 - `GET /api/admin/sources`
 - `POST /api/admin/sources`
 - `GET /api/admin/sources/:id`
@@ -29,101 +35,114 @@
 - `GET /api/admin/sync-runs`
 - `GET /api/admin/sync-runs/:id`
 - `POST /api/admin/cron/run-once`
+
+### Public
 - `GET /api/public/items`
 - `GET /api/public/export/:sourceId?format=json|txt`
 
-## 1. 安装依赖
+## 快速开始
+
+### 1. 安装依赖
 
 ```bash
 npm install
 ```
 
-## 2. 创建 D1 数据库
+### 2. 创建 D1
 
 ```bash
 npx wrangler d1 create sourcehub
 ```
 
-把返回的 `database_id` 填进 `wrangler.toml` 的 `database_id`。
+把返回的 `database_id` 写入 `wrangler.toml`。
 
-## 3. 执行迁移
-
-```bash
-npx wrangler d1 migrations apply sourcehub --local
-```
-
-部署前再跑一次远程：
+### 3. 跑迁移
 
 ```bash
 npx wrangler d1 migrations apply sourcehub --remote
 ```
 
-## 4. 本地启动
+### 4. 准备部署凭据
 
 ```bash
-npm run dev
+export CLOUDFLARE_API_TOKEN=YOUR_DEPLOY_TOKEN
+export CLOUDFLARE_ACCOUNT_ID=YOUR_ACCOUNT_ID
 ```
 
-## 5. 运行时注入环境变量
-
-本项目当前使用两个运行时环境变量：
-
-- `CF_API_TOKEN`
-- `ADMIN_TOKEN`
-
-本地开发示例：
+先检查：
 
 ```bash
-export CF_API_TOKEN=YOUR_CF_API_TOKEN
-export ADMIN_TOKEN=YOUR_ADMIN_TOKEN
-npm run dev
+npx wrangler whoami
 ```
 
-## 6. 调用 Admin API
+### 5. 写入 Worker runtime secrets
 
-所有 `/api/admin/*` 请求都需要带：
+```bash
+printf '%s' "$CF_API_TOKEN" | npx wrangler secret put CF_API_TOKEN
+printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN
+```
+
+### 6. 部署
+
+```bash
+npx wrangler deploy
+```
+
+## Admin 鉴权
+
+所有 `/api/admin/*` 都要求：
 
 ```http
 Authorization: Bearer YOUR_ADMIN_TOKEN
 ```
 
-## 7. 安全收口默认值
+## 当前筛选能力
 
-- `sync_interval_min` 最小 5 分钟，最大 1440 分钟
-- source 被禁用后，不允许再手动 sync
-- 手动 sync / cron sync 都受频率控制
-- cron 默认每 30 分钟跑一次：`*/30 * * * *`
-- `GET /api/public/items` 默认 `limit=50`，最大 `100`
-- `GET /api/public/export/:sourceId` 导出上限 `1000`
-- public API 带短缓存头，减轻被刷时的直接压力
-
-## 8. Admin 列表筛选
-
-### sources
+### `GET /api/admin/sources`
 支持：
 - `type=text_url|json_api|cloudflare_dns`
-- `enabled=true|false|1|0`
-- `is_public=true|false|1|0`
+- `enabled=1|0|true|false`
+- `is_public=1|0|true|false`
 
-### sync-runs
+### `GET /api/admin/sync-runs`
 支持：
 - `source_id=...`
 - `status=running|success|failed|skipped`
 - `trigger_type=manual|cron`
 
-## 9. Cron 可观测性
+## Cron 调试
 
-cron 结果会写入 `sync_runs`：
-
-- `trigger_type=cron`
-- `status=success`：定时同步成功
-- `status=skipped`：没到同步时间，主动跳过
-- `status=failed`：定时同步失败
-
-并且现在可以用调试入口主动执行一次：
+当前提供：
 
 ```bash
 POST /api/admin/cron/run-once
 ```
 
-这样不需要硬等真实 cron，就能验证 scheduled 逻辑。
+用于：
+- 主动执行一次 scheduled 逻辑
+- 验证 cron 的 `success / skipped / failed`
+- 不必硬等真实 cron
+
+## 当前默认规则
+
+- `sync_interval_min` 最小 5，最大 1440，默认 60
+- disabled source 不允许 sync
+- cron 默认 `*/30 * * * *`
+- `/api/public/items` 默认 `limit=50`，最大 `100`
+- `/api/public/export/:sourceId` 上限 `1000`
+
+## 推荐发布流程
+
+1. 改代码
+2. `npm run check`
+3. `npx wrangler whoami`
+4. 必要时更新 Worker secrets
+5. `npx wrangler deploy`
+6. 打线上 API 回归测试
+7. 测通后再宣告完成
+
+## 说明
+
+更详细的流程、复盘和踩坑修正，见：
+
+- `DEPLOYMENT.md`
