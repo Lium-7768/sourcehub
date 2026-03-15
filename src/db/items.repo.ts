@@ -76,6 +76,18 @@ export async function updateSourceItemCount(env: Env, sourceId: string) {
   ).bind(row?.count ?? 0, nowIso(), sourceId).run();
 }
 
+export async function listActiveItemsBySource(env: Env, sourceId: string, limit = 10) {
+  const safeLimit = Math.max(1, Math.min(100, Number(limit || 10)));
+  const { results } = await env.DB.prepare(
+    `SELECT id, source_id, kind, item_key, value_json, tags_json, updated_at
+     FROM items
+     WHERE source_id = ? AND is_active = 1
+     ORDER BY updated_at DESC
+     LIMIT ?`
+  ).bind(sourceId, safeLimit).all();
+  return results;
+}
+
 export async function listPublicItems(env: Env, options?: { kind?: string; sourceId?: string; limit?: number }) {
   const kind = options?.kind;
   const sourceId = options?.sourceId;

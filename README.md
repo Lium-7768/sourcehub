@@ -49,6 +49,7 @@ MIT
 - `POST /api/admin/sources/:id/sync`
 - `GET /api/admin/sources/:id/measurements`
 - `POST /api/admin/sources/:id/measurements`
+- `POST /api/admin/sources/:id/probe`
 - `GET /api/admin/sync-runs`
 - `GET /api/admin/sync-runs/:id`
 - `POST /api/admin/cron/run-once`

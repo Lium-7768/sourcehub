@@ -5,6 +5,7 @@ import { handleAdminSources } from '../api/admin/sources';
 import { handleAdminSyncRuns } from '../api/admin/sync-runs';
 import { handleAdminCron } from '../api/admin/cron';
 import { handleAdminMeasurements } from '../api/admin/measurements';
+import { handleAdminProbe } from '../api/admin/probe';
 import { handlePublicItems, handlePublicResults } from '../api/public/items';
 import { handlePublicExport } from '../api/public/export';
 import { renderAdminUi } from '../ui/admin';
@@ -28,6 +29,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
         'POST /api/admin/sources/:id/sync',
         'GET /api/admin/sources/:id/measurements',
         'POST /api/admin/sources/:id/measurements',
+        'POST /api/admin/sources/:id/probe',
         'GET /api/admin/sync-runs',
         'GET /api/admin/sync-runs/:id',
         'POST /api/admin/cron/run-once',
@@ -48,6 +50,10 @@ export async function route(request: Request, env: Env): Promise<Response> {
 
     if (/^\/api\/admin\/sources\/[^/]+\/measurements$/.test(pathname)) {
       return handleAdminMeasurements(request, env, pathname);
+    }
+
+    if (/^\/api\/admin\/sources\/[^/]+\/probe$/.test(pathname)) {
+      return handleAdminProbe(request, env, pathname);
     }
 
     return handleAdminSources(request, env, pathname);

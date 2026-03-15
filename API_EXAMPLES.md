@@ -276,7 +276,22 @@ curl "$BASE_URL/api/admin/sources/SOURCE_ID/measurements?limit=20" \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ```
 
-## 8.4 查看 public 结果页数据
+## 8.4 直接对某个 source 跑一次 TCP probe
+
+```bash
+curl -X POST "$BASE_URL/api/admin/sources/SOURCE_ID/probe" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "limit": 5,
+    "attempts": 3,
+    "timeout_ms": 2000,
+    "port": 443,
+    "region": "HKG"
+  }'
+```
+
+## 8.5 查看 public 结果页数据
 
 ```bash
 curl "$BASE_URL/api/public/results?limit=20"
