@@ -34,6 +34,7 @@ MIT
 - 自动化测试：`npm test`
 - 线上 smoke check：`npm run smoke`
 - 最小后台 UI：`/ui`
+- 公开结果接口：`/api/public/results`
 
 ## 当前可用 API
 
@@ -52,6 +53,7 @@ MIT
 
 ### Public
 - `GET /api/public/items`
+- `GET /api/public/results`
 - `GET /api/public/export/:sourceId?format=json|txt`
 
 ## 快速开始

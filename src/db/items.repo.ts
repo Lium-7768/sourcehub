@@ -15,6 +15,7 @@ export async function upsertItems(env: Env, items: UpsertItemInput[]) {
   const now = nowIso();
   let inserted = 0;
   let updated = 0;
+  const itemIds: string[] = [];
 
   for (const item of items) {
     const existing = await env.DB.prepare(
@@ -35,15 +36,17 @@ export async function upsertItems(env: Env, items: UpsertItemInput[]) {
         now,
         existing.id,
       ).run();
+      itemIds.push(existing.id);
       updated += 1;
     } else {
+      const id = makeId('item');
       await env.DB.prepare(
         `INSERT INTO items (
           id, source_id, kind, item_key, value_json, tags_json, checksum,
           is_active, first_seen_at, last_seen_at, created_at, updated_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`
       ).bind(
-        makeId('item'),
+        id,
         item.sourceId,
         item.kind,
         item.itemKey,
@@ -55,11 +58,12 @@ export async function upsertItems(env: Env, items: UpsertItemInput[]) {
         now,
         now,
       ).run();
+      itemIds.push(id);
       inserted += 1;
     }
   }
 
-  return { inserted, updated };
+  return { inserted, updated, itemIds };
 }
 
 export async function updateSourceItemCount(env: Env, sourceId: string) {

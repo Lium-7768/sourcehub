@@ -3,6 +3,7 @@ import { SourceValidationError, validateSourceRuntime } from '../app/source-vali
 import { getSourceById, listEnabledSources, markSourceSyncStatus } from '../db/sources.repo';
 import { createFinishedSyncRun, createSyncRun, finishSyncRun } from '../db/sync-runs.repo';
 import { upsertItems, updateSourceItemCount } from '../db/items.repo';
+import { createMeasurement } from '../db/measurements.repo';
 import { runCloudflareDnsSource } from '../source-adapters/cloudflare-dns.adapter';
 import { runTextUrlSource } from '../source-adapters/text-url.adapter';
 import { runJsonApiSource } from '../source-adapters/json-api.adapter';
@@ -116,6 +117,24 @@ export async function syncSource(env: Env, sourceId: string, triggerType: 'manua
       inserted = stats.inserted;
       updated = stats.updated;
       await updateSourceItemCount(env, sourceId);
+
+      for (let i = 0; i < stats.itemIds.length; i += 1) {
+        const normalized = result.items[i];
+        const host = String(normalized?.value?.ip ?? normalized?.value?.content ?? normalized?.value?.domain ?? normalized?.itemKey ?? '');
+        if (!host) continue;
+
+        await createMeasurement(env, {
+          itemId: stats.itemIds[i],
+          sourceId,
+          probeType: 'sync_placeholder',
+          latencyMs: null,
+          lossPct: null,
+          jitterMs: null,
+          status: 'unknown',
+          region: null,
+          score: null,
+        });
+      }
     }
 
     await finishSyncRun(env, runId, 'success', 'sync_success', null, result.fetchedCount, inserted, updated, 0);

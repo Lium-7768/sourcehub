@@ -35,7 +35,7 @@ export function renderAdminUi(): Response {
       background: linear-gradient(180deg, #09101f 0%, #0d1430 100%);
       color: var(--text);
     }
-    .wrap { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .wrap { max-width: 1480px; margin: 0 auto; padding: 24px; }
     h1, h2, h3 { margin: 0 0 12px; }
     p { margin: 0; color: var(--muted); }
     .panel {
@@ -52,7 +52,7 @@ export function renderAdminUi(): Response {
       align-items: center;
       margin-top: 12px;
     }
-    input, textarea, button {
+    input, textarea, button, select {
       font: inherit;
       border-radius: 10px;
       border: 1px solid var(--line);
@@ -60,7 +60,7 @@ export function renderAdminUi(): Response {
       color: var(--text);
       padding: 10px 12px;
     }
-    input { min-width: 180px; }
+    input, select { min-width: 180px; }
     textarea {
       width: 100%;
       min-height: 180px;
@@ -95,7 +95,7 @@ export function renderAdminUi(): Response {
     .status-success { color: #8ef0a4; }
     .status-failed { color: #ff9a9a; }
     .status-running { color: #ffd37d; }
-    .status-idle, .status-skipped { color: #aeb8d9; }
+    .status-idle, .status-skipped, .status-unknown { color: #aeb8d9; }
     .table-wrap {
       overflow: auto;
       margin-top: 12px;
@@ -105,7 +105,7 @@ export function renderAdminUi(): Response {
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 960px;
+      min-width: 1200px;
       background: rgba(255,255,255,0.02);
     }
     th, td {
@@ -134,6 +134,9 @@ export function renderAdminUi(): Response {
       margin: 0;
       color: #c8d5f5;
     }
+    .metric-good { color: #8ef0a4; font-weight: 600; }
+    .metric-mid { color: #ffd37d; font-weight: 600; }
+    .metric-bad { color: #ff9a9a; font-weight: 600; }
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -180,8 +183,7 @@ export function renderAdminUi(): Response {
       align-items:center;
       gap:12px;
     }
-    .hidden { display: none; }
-    code { color: #d6e6ff; }
+    .rank { font-weight: 700; color: #dbe7ff; }
     @media (max-width: 980px) {
       .header { flex-direction: column; }
       .grid { grid-template-columns: 1fr; }
@@ -194,15 +196,21 @@ export function renderAdminUi(): Response {
     <div class="header">
       <div>
         <h1>SourceHub</h1>
-        <p>一个页面，两层视图：默认先看公开数据表；需要管理时，再打开 admin modal。</p>
+        <p>默认看结果，不默认看底层原始 JSON。admin 只在需要管理时打开。</p>
         <div class="badges">
-          <span class="badge">Public table</span>
+          <span class="badge">Results first</span>
           <span class="badge">Admin modal</span>
         </div>
       </div>
       <div class="toolbar" style="margin-top:0;">
-        <input id="sourceIdFilter" placeholder="可选：填 source_id 过滤公开数据" />
-        <button id="loadPublicBtn" class="ghost">刷新公开表格</button>
+        <input id="sourceIdFilter" placeholder="可选：填 source_id 过滤" />
+        <select id="statusFilter">
+          <option value="">全部状态</option>
+          <option value="ok">ok</option>
+          <option value="unknown">unknown</option>
+          <option value="fail">fail</option>
+        </select>
+        <button id="loadPublicBtn" class="ghost">刷新结果</button>
         <button id="openAdminBtn" class="primary">打开 Admin</button>
       </div>
     </div>
@@ -210,8 +218,8 @@ export function renderAdminUi(): Response {
     <section class="panel">
       <div class="section-title">
         <div>
-          <h2>公开数据</h2>
-          <p class="small muted">这里不需要 token。只展示公开 source 的 items。</p>
+          <h2>结果页</h2>
+          <p class="small muted">先看 host / 延迟 / 丢包 / 状态。还没测到的数据先显示 <code>--</code>。</p>
         </div>
         <span id="publicCount" class="small muted"></span>
       </div>
@@ -219,15 +227,21 @@ export function renderAdminUi(): Response {
         <table>
           <thead>
             <tr>
-              <th>source_id</th>
-              <th>kind</th>
-              <th>item_key</th>
-              <th>value</th>
-              <th>updated_at</th>
+              <th>#</th>
+              <th>host</th>
+              <th>端口</th>
+              <th>地区</th>
+              <th>延迟</th>
+              <th>丢包</th>
+              <th>抖动</th>
+              <th>状态</th>
+              <th>分数</th>
+              <th>最近测试</th>
+              <th>source</th>
             </tr>
           </thead>
           <tbody id="publicTableBody">
-            <tr><td colspan="5" class="muted">加载中…</td></tr>
+            <tr><td colspan="11" class="muted">加载中…</td></tr>
           </tbody>
         </table>
       </div>
@@ -320,6 +334,7 @@ export function renderAdminUi(): Response {
     const publicTableBody = document.getElementById('publicTableBody');
     const publicCount = document.getElementById('publicCount');
     const sourceIdFilter = document.getElementById('sourceIdFilter');
+    const statusFilter = document.getElementById('statusFilter');
     const adminModal = document.getElementById('adminModal');
 
     const defaultCreateBody = {
@@ -356,7 +371,28 @@ export function renderAdminUi(): Response {
     }
 
     function statusClass(status) {
-      return 'status-' + String(status || 'idle').toLowerCase();
+      return 'status-' + String(status || 'unknown').toLowerCase();
+    }
+
+    function formatMetric(value, unit) {
+      if (value === null || value === undefined || value === '') return '--';
+      const num = Number(value);
+      if (!Number.isFinite(num)) return '--';
+      return num.toFixed(num >= 10 ? 0 : 1) + unit;
+    }
+
+    function metricClass(value, reverse = false) {
+      if (value === null || value === undefined || value === '') return 'muted';
+      const num = Number(value);
+      if (!Number.isFinite(num)) return 'muted';
+      if (reverse) {
+        if (num <= 1) return 'metric-good';
+        if (num <= 5) return 'metric-mid';
+        return 'metric-bad';
+      }
+      if (num <= 100) return 'metric-good';
+      if (num <= 250) return 'metric-mid';
+      return 'metric-bad';
     }
 
     function openAdminModal() {
@@ -393,18 +429,26 @@ export function renderAdminUi(): Response {
     }
 
     function renderPublicTable(items) {
-      publicCount.textContent = items.length + ' 条';
-      if (!items.length) {
-        publicTableBody.innerHTML = '<tr><td colspan="5" class="muted">暂无公开数据</td></tr>';
+      const statusWanted = statusFilter.value;
+      const filtered = statusWanted ? items.filter((item) => String(item.status || 'unknown') === statusWanted) : items;
+      publicCount.textContent = filtered.length + ' 条';
+      if (!filtered.length) {
+        publicTableBody.innerHTML = '<tr><td colspan="11" class="muted">暂无结果</td></tr>';
         return;
       }
-      publicTableBody.innerHTML = items.map((item) => (
+      publicTableBody.innerHTML = filtered.map((item, index) => (
         '<tr>'
+        + '<td class="rank">' + (index + 1) + '</td>'
+        + '<td>' + escapeHtml(String(item.host || item.item_key || '--')) + '</td>'
+        + '<td>' + escapeHtml(String(item.port || '--')) + '</td>'
+        + '<td>' + escapeHtml(String(item.region || '--')) + '</td>'
+        + '<td class="' + metricClass(item.latency_ms) + '">' + escapeHtml(formatMetric(item.latency_ms, 'ms')) + '</td>'
+        + '<td class="' + metricClass(item.loss_pct, true) + '">' + escapeHtml(formatMetric(item.loss_pct, '%')) + '</td>'
+        + '<td>' + escapeHtml(formatMetric(item.jitter_ms, 'ms')) + '</td>'
+        + '<td class="' + statusClass(item.status) + '">' + escapeHtml(String(item.status || 'unknown')) + '</td>'
+        + '<td>' + escapeHtml(item.score === null || item.score === undefined ? '--' : String(Number(item.score).toFixed(1))) + '</td>'
+        + '<td>' + escapeHtml(String(item.checked_at || '--')) + '</td>'
         + '<td>' + escapeHtml(String(item.source_id || '')) + '</td>'
-        + '<td>' + escapeHtml(String(item.kind || '')) + '</td>'
-        + '<td>' + escapeHtml(String(item.item_key || '')) + '</td>'
-        + '<td><pre>' + escapeHtml(JSON.stringify(item.value_json ? JSON.parse(item.value_json) : item.value || {}, null, 2)) + '</pre></td>'
-        + '<td>' + escapeHtml(String(item.updated_at || '')) + '</td>'
         + '</tr>'
       )).join('');
     }
@@ -415,10 +459,10 @@ export function renderAdminUi(): Response {
         const query = new URLSearchParams();
         query.set('limit', '100');
         if (sourceId) query.set('source_id', sourceId);
-        const data = await publicApi('/api/public/items?' + query.toString());
+        const data = await publicApi('/api/public/results?' + query.toString());
         renderPublicTable(data.items || []);
       } catch (err) {
-        publicTableBody.innerHTML = '<tr><td colspan="5" class="status-failed">' + escapeHtml(err.message || String(err)) + '</td></tr>';
+        publicTableBody.innerHTML = '<tr><td colspan="11" class="status-failed">' + escapeHtml(err.message || String(err)) + '</td></tr>';
       }
     }
 
@@ -507,6 +551,7 @@ export function renderAdminUi(): Response {
     });
 
     document.getElementById('loadPublicBtn').addEventListener('click', loadPublicItems);
+    statusFilter.addEventListener('change', loadPublicItems);
 
     document.getElementById('saveTokenBtn').addEventListener('click', () => {
       saveToken();

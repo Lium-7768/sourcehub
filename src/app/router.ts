@@ -4,7 +4,7 @@ import { requireAdminAuth } from './auth';
 import { handleAdminSources } from '../api/admin/sources';
 import { handleAdminSyncRuns } from '../api/admin/sync-runs';
 import { handleAdminCron } from '../api/admin/cron';
-import { handlePublicItems } from '../api/public/items';
+import { handlePublicItems, handlePublicResults } from '../api/public/items';
 import { handlePublicExport } from '../api/public/export';
 import { renderAdminUi } from '../ui/admin';
 
@@ -29,6 +29,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
         'GET /api/admin/sync-runs/:id',
         'POST /api/admin/cron/run-once',
         'GET /api/public/items',
+        'GET /api/public/results',
         'GET /api/public/export/:sourceId?format=json|txt'
       ]
     });
@@ -58,6 +59,10 @@ export async function route(request: Request, env: Env): Promise<Response> {
 
   if (pathname === '/api/public/items') {
     return handlePublicItems(request, env);
+  }
+
+  if (pathname === '/api/public/results') {
+    return handlePublicResults(request, env);
   }
 
   const exportMatch = pathname.match(/^\/api\/public\/export\/([^/]+)$/);
