@@ -1,6 +1,6 @@
 import type { Env, SourceType } from '../../app/types';
 import { error, json } from '../../app/response';
-import { mergeExistingSourceForValidation, validateSourcePayload } from '../../app/source-validation';
+import { mergeExistingSourceForValidation, SourceValidationError, validateSourcePayload } from '../../app/source-validation';
 import { createSource, getSourceById, listSources, setSourceEnabled, updateSource } from '../../db/sources.repo';
 import { syncSource } from '../../services/sync.service';
 
@@ -66,6 +66,9 @@ export async function handleAdminSources(request: Request, env: Env, pathname: s
       const result = await syncSource(env, syncMatch[1], 'manual');
       return json({ success: true, ...result });
     } catch (err) {
+      if (err instanceof SourceValidationError) {
+        return error(err.message, 400, { fields: err.fields });
+      }
       const message = err instanceof Error ? err.message : String(err);
       const status = /frequency control|disabled/i.test(message) ? 429 : 400;
       return error(message, status);

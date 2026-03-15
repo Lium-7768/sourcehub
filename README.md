@@ -17,6 +17,7 @@
 - Admin 调试入口：`POST /api/admin/cron/run-once`
 - Source 基础配置校验（create / update）
 - 结构化校验错误返回（`validation_failed` + `fields`）
+- sync 前运行时校验（避免“配置看着合法，一跑就炸”）
 
 > 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
 
@@ -105,14 +106,15 @@ printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN
 npx wrangler deploy
 ```
 
-## Source 配置示例
+## Source 配置规则
 
 ### `text_url`
+必须：
+- `config.url` 是合法 `http/https` URL
+- 当 `parse_mode = line` 时，`config.kind` 必填
 
-适合：
-- 每行一个值的文本源
-- IP 列表
-- 简单文本列表
+可选：
+- `config.parse_mode = line | regex_ip`
 
 示例：
 
@@ -131,17 +133,18 @@ npx wrangler deploy
 }
 ```
 
-可选 `parse_mode`：
-- `line`
-- `regex_ip`
-
----
-
 ### `json_api`
-
-适合：
-- 返回 JSON 的接口源
-- 需要从 JSON 中抽字段
+必须：
+- `config.url` 是合法 `http/https` URL
+- `config.kind` 必填
+- `config.extract_path` 必填
+- `config.field_map` 必填且不能为空
+- `config.field_map` 必须至少包含一个稳定键映射：
+  - `itemKey`
+  - `item_key`
+  - `id`
+  - `ip`
+  - `domain`
 
 示例：
 
@@ -170,9 +173,26 @@ npx wrangler deploy
 ```
 
 ### `cloudflare_dns`
+必须：
+- `config.zone_id` 必填
+- `config.zone_id` 必须看起来像 Cloudflare zone id（32 位十六进制）
 
-适合：
-- 读取你自己 Cloudflare Zone 下的 DNS 记录
+可选：
+- `config.record_types`
+- `config.name_filter`
+
+如果传 `config.record_types`，目前只接受：
+- `A`
+- `AAAA`
+- `CNAME`
+- `TXT`
+- `MX`
+- `NS`
+- `SRV`
+- `CAA`
+- `PTR`
+- `HTTPS`
+- `SVCB`
 
 示例：
 
@@ -195,9 +215,7 @@ npx wrangler deploy
 
 ## 结构化校验错误
 
-现在 create / update 的配置校验失败时，会返回结构化错误，而不是只有一句字符串。
-
-示例：
+create / update / sync 前运行时校验失败时，现在统一返回结构化错误：
 
 ```json
 {
@@ -217,7 +235,20 @@ npx wrangler deploy
   "error": "validation_failed",
   "details": {
     "fields": {
-      "config.parse_mode": "must be line or regex_ip"
+      "config.field_map": "must include one stable key mapping: itemKey, item_key, id, ip, or domain"
+    }
+  }
+}
+```
+
+运行前校验还会拦这种情况：
+
+```json
+{
+  "error": "validation_failed",
+  "details": {
+    "fields": {
+      "env.CF_API_TOKEN": "required for cloudflare_dns sync"
     }
   }
 }
@@ -258,13 +289,8 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 ### `400 Bad Request`
 常见于：
 - source 配置结构不合法
-- 缺少某类 source 的必填配置
-
-现在推荐按：
-- `error`
-- `details.fields`
-
-来读校验失败原因。
+- source 配置虽然存在，但达不到当前更严格规则
+- sync 前运行时校验失败
 
 ### `429` / 频控拦截
 常见于：

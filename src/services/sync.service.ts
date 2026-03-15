@@ -1,4 +1,5 @@
 import type { Env, SourceRow } from '../app/types';
+import { SourceValidationError, validateSourceRuntime } from '../app/source-validation';
 import { getSourceById, listEnabledSources, markSourceSyncStatus } from '../db/sources.repo';
 import { createFinishedSyncRun, createSyncRun, finishSyncRun } from '../db/sync-runs.repo';
 import { upsertItems, updateSourceItemCount } from '../db/items.repo';
@@ -56,9 +57,14 @@ export async function syncSource(env: Env, sourceId: string, triggerType: 'manua
 
   assertSourceCanSync(source, triggerType);
   const runId = await createSyncRun(env, sourceId, triggerType);
-  await markSourceSyncStatus(env, sourceId, 'running');
 
   try {
+    const runtimeValidation = validateSourceRuntime(source, env);
+    if (!runtimeValidation.ok) {
+      throw new SourceValidationError(runtimeValidation.fields);
+    }
+
+    await markSourceSyncStatus(env, sourceId, 'running');
     const result = await runSourceAdapter(env, source);
 
     let inserted = 0;
