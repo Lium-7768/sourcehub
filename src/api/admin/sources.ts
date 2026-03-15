@@ -1,5 +1,6 @@
 import type { Env, SourceType } from '../../app/types';
 import { error, json } from '../../app/response';
+import { mergeExistingSourceForValidation, validateSourcePayload } from '../../app/source-validation';
 import { createSource, getSourceById, listSources, setSourceEnabled, updateSource } from '../../db/sources.repo';
 import { syncSource } from '../../services/sync.service';
 
@@ -22,9 +23,9 @@ export async function handleAdminSources(request: Request, env: Env, pathname: s
 
   if (request.method === 'POST' && pathname === '/api/admin/sources') {
     const body = await request.json<any>();
-    if (!body?.name || !body?.type || !body?.config) {
-      return error('name, type, config are required', 400);
-    }
+    const validation = validateSourcePayload(body, 'create');
+    if (!validation.ok) return error(validation.error, 400);
+
     const id = await createSource(env, body);
     return json({ success: true, id }, { status: 201 });
   }
@@ -37,7 +38,14 @@ export async function handleAdminSources(request: Request, env: Env, pathname: s
   }
 
   if ((request.method === 'PUT' || request.method === 'PATCH') && sourceMatch) {
+    const existing = await getSourceById(env, sourceMatch[1]);
+    if (!existing) return error('Source not found', 404);
+
     const body = await request.json<any>();
+    const merged = mergeExistingSourceForValidation(existing, body ?? {});
+    const validation = validateSourcePayload(merged, 'update');
+    if (!validation.ok) return error(validation.error, 400);
+
     const ok = await updateSource(env, sourceMatch[1], body ?? {});
     if (!ok) return error('Source not found', 404);
     const source = await getSourceById(env, sourceMatch[1]);

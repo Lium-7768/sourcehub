@@ -15,6 +15,7 @@
 - Admin 列表筛选（sources / sync-runs）
 - Cron 可观测性（`success / skipped / failed`）
 - Admin 调试入口：`POST /api/admin/cron/run-once`
+- Source 基础配置校验（create / update）
 
 > 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
 
@@ -204,6 +205,34 @@ npx wrangler deploy
 
 > 这个 source 依赖 Worker runtime secret：`CF_API_TOKEN`
 
+## 基础配置校验
+
+当前 create / update 已补最基础校验。
+
+### 通用校验
+- `name` 必须是非空字符串
+- `tags` 必须是字符串数组
+- `enabled` / `is_public` 必须是布尔值
+- `sync_interval_min` 必须是数字
+- `type` 必须是：`text_url | json_api | cloudflare_dns`
+- `config` 必须是对象
+
+### `text_url` 校验
+- `config.url` 必填
+- `config.kind` 如果传，必须是非空字符串
+- `config.parse_mode` 如果传，只能是 `line` 或 `regex_ip`
+
+### `json_api` 校验
+- `config.url` 必填
+- `config.kind` / `config.extract_path` 如果传，必须是非空字符串
+- `config.field_map` 如果传，必须是对象，且值必须是非空字符串
+- `config.headers` 如果传，必须是对象，且值必须是非空字符串
+
+### `cloudflare_dns` 校验
+- `config.zone_id` 必填
+- `config.record_types` 如果传，必须是非空字符串数组
+- `config.name_filter` 如果传，必须是非空字符串
+
 ## Admin 鉴权
 
 所有 `/api/admin/*` 都要求：
@@ -230,11 +259,24 @@ Authorization: Bearer YOUR_ADMIN_TOKEN
 
 ### `404 Not found`
 - 路由不存在
-- 或者资源 ID 不存在
+- 或资源 ID 不存在
 
 ### `401 Unauthorized`
 - 没带 `Authorization: Bearer ...`
 - 或 `ADMIN_TOKEN` 不正确
+
+### `400 Bad Request`
+常见于：
+- source 配置结构不合法
+- 缺少某类 source 的必填配置
+
+示例：
+
+```text
+text_url config.url is required
+json_api config.field_map must be an object
+cloudflare_dns config.zone_id is required
+```
 
 ### `429` / 频控拦截
 常见于：
