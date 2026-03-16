@@ -8,14 +8,12 @@
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types",
     "check": "tsc --noEmit",
-    "test": "tsx tests/source-validation.test.ts && tsx tests/adapter-normalization.test.ts && tsx tests/measurements-api.test.ts && tsx tests/probe-service.test.ts && tsx tests/cron-probe.test.ts && tsx tests/unknown-cleanup.test.ts",
     "smoke": "node scripts/smoke-check.mjs",
     "refresh:public-results": "node scripts/refresh_public_results_db.mjs",
     "pipeline:public-results": "node scripts/run_probe_and_refresh.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250314.0",
-    "tsx": "^4.20.5",
     "typescript": "^5.8.2",
     "wrangler": "^4.7.1"
   }

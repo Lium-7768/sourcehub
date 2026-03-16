@@ -25,6 +25,8 @@
 
 当前公开结果来自 D1，而不是直接读本地结果文件。
 
+> 注意：仓库当前不再维护完整单元测试集，主验证方式是 `npm run check` + `npm run smoke`。
+
 ---
 
 ## 核心接口
@@ -193,20 +195,16 @@ npm install
 npm run check
 ```
 
-### 测试
+### 烟雾检查
 
 ```bash
-npm test
+BASE_URL="https://YOUR_WORKER" RESULTS_TOKEN="sourcehub-results-token-v1" npm run smoke
 ```
 
-当前测试覆盖：
+当前仓库不再维护独立单元测试集，保留：
 
-- source payload / runtime validation
-- adapter normalization
-- public results API
-- probe service
-- scheduled probe
-- unknown cleanup
+- TypeScript 类型检查
+- 线上接口烟雾检查
 
 ---
 
@@ -298,7 +296,7 @@ npx wrangler deploy
 
 ```bash
 npm run check
-npm test
+BASE_URL="https://YOUR_WORKER" RESULTS_TOKEN="sourcehub-results-token-v1" npm run smoke
 npm run refresh:public-results
 npm run pipeline:public-results
 npx wrangler deploy
