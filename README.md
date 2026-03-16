@@ -2,7 +2,7 @@
 
 一个基于 **Cloudflare Workers + D1 + Cron** 的公开结果聚合与发布服务。
 
-当前仓库已经从“通用 source manager + 临时 admin UI”的探索态，收束到一条更明确的主线：
+当前仓库已经从早期的通用 source manager 方案，收束到一条很窄的主线：
 
 - 从原始样本文件中整理候选
 - 生成 probe 输入
@@ -233,17 +233,9 @@ npx wrangler whoami
 
 ### 4. 配置运行时 secret
 
-当前至少需要：
+当前主线不依赖额外运行时 secret。
 
-- `ADMIN_TOKEN`：保留给管理/内部脚本使用
-- `CF_API_TOKEN`：如果启用 Cloudflare DNS 相关能力
-
-写入方式：
-
-```bash
-printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN
-printf '%s' "$CF_API_TOKEN" | npx wrangler secret put CF_API_TOKEN
-```
+如果你后面自己扩展私有管理接口或第三方同步能力，再按需要增加 secret。
 
 ### 5. 部署
 
@@ -283,12 +275,12 @@ npx wrangler deploy
 
 ## 兼容性说明
 
-仓库里还保留了一些早期 source/admin 相关模块和脚本，用于内部调试、迁移或兼容；但**当前正式对外路径**只有：
+当前正式对外路径只有：
 
 - `GET /api/results`
 - `results/probe_results.json -> D1 -> public API`
 
-如果文档、脚本或旧调用方式和这条主线冲突，以这条主线为准。
+仓库已经移除了不再使用的 admin/export/ui/sync 旧模块；如果文档和代码有冲突，以当前主线为准。
 
 ---
 

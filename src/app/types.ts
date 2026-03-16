@@ -1,15 +1,11 @@
 export interface Env {
   DB: D1Database;
-  CF_API_TOKEN?: string;
-  ADMIN_TOKEN?: string;
 }
-
-export type SourceType = 'text_url' | 'json_api' | 'cloudflare_dns';
 
 export interface SourceRow {
   id: string;
   name: string;
-  type: SourceType;
+  type: string;
   enabled: number;
   is_public: number;
   config_json: string;
@@ -42,24 +38,4 @@ export interface ItemRow {
   lifecycle_state?: string;
   created_at: string;
   updated_at: string;
-}
-
-export interface CreateSourceInput {
-  name: string;
-  type: SourceType;
-  enabled?: boolean;
-  is_public?: boolean;
-  tags?: string[];
-  config: Record<string, unknown>;
-  sync_interval_min?: number;
-}
-
-export interface UpdateSourceInput {
-  name?: string;
-  type?: SourceType;
-  enabled?: boolean;
-  is_public?: boolean;
-  tags?: string[];
-  config?: Record<string, unknown>;
-  sync_interval_min?: number;
 }
