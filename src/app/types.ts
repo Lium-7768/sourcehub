@@ -5,15 +5,10 @@ export interface Env {
 export interface SourceRow {
   id: string;
   name: string;
-  type: string;
   enabled: number;
   is_public: number;
   config_json: string;
-  tags_json: string;
   sync_interval_min: number;
-  last_sync_at: string | null;
-  last_status: string;
-  last_error: string | null;
   probe_last_at?: string | null;
   probe_last_status?: string;
   probe_last_error?: string | null;

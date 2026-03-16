@@ -31,12 +31,9 @@ lines.push(`DELETE FROM items WHERE source_id = ${q(SOURCE_ID)};`);
 lines.push(
   `UPDATE sources SET ` +
   `name=${q('public probe results')}, ` +
-  `type=${q('json_api')}, ` +
   `enabled=1, is_public=1, ` +
   `config_json=${q(JSON.stringify({ mode: 'db_public_results', note: 'managed from file flow, exposed via DB' }))}, ` +
-  `tags_json=${q(JSON.stringify(['public', 'results', 'db-backed']))}, ` +
   `sync_interval_min=1440, ` +
-  `last_status=${q('success')}, ` +
   `item_count=${items.length}, ` +
   `updated_at=${q(now)}, ` +
   `probe_last_at=${q(now)}, ` +

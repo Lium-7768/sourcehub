@@ -258,6 +258,7 @@ npx wrangler deploy
 - `0003_probe_state.sql`：给 `sources` 增加 probe 状态字段
 - `0004_unknown_recheck.sql`：给 `items` 增加 unknown/recheck 生命周期字段与索引
 - `0006_drop_unused_tables.sql`：删除已废弃的 `sync_runs` 与 `app_settings`
+- `0007_drop_unused_source_columns.sql`：删除 `sources` 中已不再使用的旧同步字段
 
 ---
 
