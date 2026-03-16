@@ -204,12 +204,6 @@ export function renderAdminUi(): Response {
       </div>
       <div class="toolbar" style="margin-top:0;">
         <input id="sourceIdFilter" placeholder="可选：填 source_id 过滤" />
-        <select id="statusFilter">
-          <option value="">全部状态</option>
-          <option value="ok">ok</option>
-          <option value="unknown">unknown</option>
-          <option value="fail">fail</option>
-        </select>
         <button id="loadPublicBtn" class="ghost">刷新结果</button>
         <button id="openAdminBtn" class="primary">打开 Admin</button>
       </div>
@@ -219,7 +213,7 @@ export function renderAdminUi(): Response {
       <div class="section-title">
         <div>
           <h2>结果页</h2>
-          <p class="small muted">先看 host / 延迟 / 丢包 / 状态。还没测到的数据先显示 <code>--</code>。</p>
+          <p class="small muted">只展示真正测出结果的项，失败和 unknown 不再放进结果页。</p>
         </div>
         <span id="publicCount" class="small muted"></span>
       </div>
@@ -229,19 +223,16 @@ export function renderAdminUi(): Response {
             <tr>
               <th>#</th>
               <th>host</th>
-              <th>端口</th>
               <th>地区</th>
               <th>延迟</th>
               <th>丢包</th>
               <th>抖动</th>
-              <th>状态</th>
               <th>分数</th>
               <th>最近测试</th>
-              <th>source</th>
             </tr>
           </thead>
           <tbody id="publicTableBody">
-            <tr><td colspan="11" class="muted">加载中…</td></tr>
+            <tr><td colspan="7" class="muted">加载中…</td></tr>
           </tbody>
         </table>
       </div>
@@ -334,7 +325,6 @@ export function renderAdminUi(): Response {
     const publicTableBody = document.getElementById('publicTableBody');
     const publicCount = document.getElementById('publicCount');
     const sourceIdFilter = document.getElementById('sourceIdFilter');
-    const statusFilter = document.getElementById('statusFilter');
     const adminModal = document.getElementById('adminModal');
 
     const defaultCreateBody = {
@@ -429,26 +419,21 @@ export function renderAdminUi(): Response {
     }
 
     function renderPublicTable(items) {
-      const statusWanted = statusFilter.value;
-      const filtered = statusWanted ? items.filter((item) => String(item.status || 'unknown') === statusWanted) : items;
-      publicCount.textContent = filtered.length + ' 条';
-      if (!filtered.length) {
-        publicTableBody.innerHTML = '<tr><td colspan="11" class="muted">暂无结果</td></tr>';
+      publicCount.textContent = items.length + ' 条';
+      if (!items.length) {
+        publicTableBody.innerHTML = '<tr><td colspan="8" class="muted">暂无结果</td></tr>';
         return;
       }
-      publicTableBody.innerHTML = filtered.map((item, index) => (
+      publicTableBody.innerHTML = items.map((item, index) => (
         '<tr>'
         + '<td class="rank">' + (index + 1) + '</td>'
         + '<td>' + escapeHtml(String(item.host || item.item_key || '--')) + '</td>'
-        + '<td>' + escapeHtml(String(item.port || '--')) + '</td>'
         + '<td>' + escapeHtml(String(item.region || '--')) + '</td>'
         + '<td class="' + metricClass(item.latency_ms) + '">' + escapeHtml(formatMetric(item.latency_ms, 'ms')) + '</td>'
         + '<td class="' + metricClass(item.loss_pct, true) + '">' + escapeHtml(formatMetric(item.loss_pct, '%')) + '</td>'
         + '<td>' + escapeHtml(formatMetric(item.jitter_ms, 'ms')) + '</td>'
-        + '<td class="' + statusClass(item.status) + '">' + escapeHtml(String(item.status || 'unknown')) + '</td>'
         + '<td>' + escapeHtml(item.score === null || item.score === undefined ? '--' : String(Number(item.score).toFixed(1))) + '</td>'
         + '<td>' + escapeHtml(String(item.checked_at || '--')) + '</td>'
-        + '<td>' + escapeHtml(String(item.source_id || '')) + '</td>'
         + '</tr>'
       )).join('');
     }
@@ -462,7 +447,7 @@ export function renderAdminUi(): Response {
         const data = await publicApi('/api/public/results?' + query.toString());
         renderPublicTable(data.items || []);
       } catch (err) {
-        publicTableBody.innerHTML = '<tr><td colspan="11" class="status-failed">' + escapeHtml(err.message || String(err)) + '</td></tr>';
+        publicTableBody.innerHTML = '<tr><td colspan="8" class="status-failed">' + escapeHtml(err.message || String(err)) + '</td></tr>';
       }
     }
 
@@ -551,7 +536,6 @@ export function renderAdminUi(): Response {
     });
 
     document.getElementById('loadPublicBtn').addEventListener('click', loadPublicItems);
-    statusFilter.addEventListener('change', loadPublicItems);
 
     document.getElementById('saveTokenBtn').addEventListener('click', () => {
       saveToken();

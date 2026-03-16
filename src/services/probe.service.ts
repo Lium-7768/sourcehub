@@ -1,6 +1,7 @@
-import type { Env } from '../app/types';
+import type { Env, SourceRow } from '../app/types';
 import { createMeasurement } from '../db/measurements.repo';
-import { listActiveItemsBySource } from '../db/items.repo';
+import { deactivateExpiredUnknownItems, listActiveItemsBySource, markItemsPendingRecheck, resetItemsLifecycle, updateSourceItemCount } from '../db/items.repo';
+import { getSourceById, listEnabledSources, markSourceProbeStatus } from '../db/sources.repo';
 
 export interface ProbeRunInput {
   sourceId: string;
@@ -8,6 +9,17 @@ export interface ProbeRunInput {
   port?: number;
   attempts?: number;
   timeoutMs?: number;
+  region?: string | null;
+}
+
+interface ProbeDefaults {
+  enabled: boolean;
+  limit: number;
+  port?: number;
+  attempts: number;
+  timeoutMs: number;
+  intervalMin: number;
+  maxRounds: number;
   region?: string | null;
 }
 
@@ -24,6 +36,51 @@ export interface ProbeResultItem {
   jitterMs: number | null;
   status: 'ok' | 'partial' | 'fail';
   score: number;
+}
+
+interface ProbeAttemptSummary {
+  port: number;
+  attempts: number;
+  successCount: number;
+  failureCount: number;
+  latencyMs: number | null;
+  jitterMs: number | null;
+  lossPct: number;
+  status: 'ok' | 'partial' | 'fail';
+  score: number;
+}
+
+function getProbeDefaults(source: SourceRow): ProbeDefaults {
+  let config: Record<string, unknown> = {};
+  try {
+    config = JSON.parse(source.config_json ?? '{}');
+  } catch {
+    config = {};
+  }
+
+  const probe = (typeof config.probe === 'object' && config.probe && !Array.isArray(config.probe)
+    ? config.probe
+    : {}) as Record<string, unknown>;
+
+  const intOr = (value: unknown, fallback: number, min: number, max: number) => {
+    if (typeof value !== 'number' || !Number.isInteger(value)) return fallback;
+    return Math.max(min, Math.min(max, value));
+  };
+
+  const port = typeof probe.port === 'number' && Number.isInteger(probe.port)
+    ? Math.max(1, Math.min(65535, probe.port))
+    : undefined;
+
+  return {
+    enabled: probe.enabled === true,
+    limit: intOr(probe.limit, 20, 1, 100),
+    attempts: intOr(probe.attempts, 3, 1, 5),
+    timeoutMs: intOr(probe.timeout_ms, 2000, 300, 5000),
+    intervalMin: intOr(probe.interval_min, Math.max(5, Math.min(1440, Number(source.sync_interval_min ?? 60))), 5, 1440),
+    maxRounds: intOr(probe.max_rounds, 20, 1, 200),
+    port,
+    region: typeof probe.region === 'string' && probe.region.trim() ? probe.region.trim() : null,
+  };
 }
 
 function average(values: number[]): number | null {
@@ -96,72 +153,125 @@ async function probeOnce(host: string, port: number, timeoutMs: number): Promise
   }
 }
 
-function deriveHostAndPort(value: Record<string, unknown>, itemKey: string, portOverride?: number): { host: string; port: number } {
+function deriveHostAndPort(value: Record<string, unknown>, itemKey: string, portOverride?: number): { host: string; port?: number } {
   const host = String(value.ip ?? value.content ?? value.domain ?? itemKey ?? '').trim();
-  const valuePort = typeof value.port === 'number' && Number.isFinite(value.port) ? value.port : undefined;
-  const port = portOverride ?? valuePort ?? 443;
+  const rawPort = value.port;
+  const valuePort = typeof rawPort === 'number'
+    ? rawPort
+    : typeof rawPort === 'string' && rawPort.trim() && /^\d+$/.test(rawPort.trim())
+      ? Number(rawPort.trim())
+      : undefined;
+  const port = portOverride ?? (typeof valuePort === 'number' && Number.isFinite(valuePort)
+    ? Math.max(1, Math.min(65535, valuePort))
+    : undefined);
   return { host, port };
 }
 
+function buildPortPlan(portOverride: number | undefined, valuePort: number | undefined): number[] {
+  if (typeof portOverride === 'number') return [portOverride];
+  if (typeof valuePort === 'number') return [valuePort];
+  return [80, 443];
+}
+
+async function probePort(host: string, port: number, attempts: number, timeoutMs: number): Promise<ProbeAttemptSummary> {
+  const latencies: number[] = [];
+  let failures = 0;
+
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      const latency = await probeOnce(host, port, timeoutMs);
+      latencies.push(latency);
+    } catch {
+      failures += 1;
+    }
+  }
+
+  const successCount = latencies.length;
+  const failureCount = failures;
+  const lossPct = Number(((failureCount / attempts) * 100).toFixed(1));
+  const latencyMs = average(latencies);
+  const jitterMs = calcJitter(latencies);
+  const status: 'ok' | 'partial' | 'fail' = successCount === 0 ? 'fail' : failureCount === 0 ? 'ok' : 'partial';
+  const score = calcScore(latencyMs, lossPct, status);
+
+  return {
+    port,
+    attempts,
+    successCount,
+    failureCount,
+    latencyMs,
+    jitterMs,
+    lossPct,
+    status,
+    score,
+  };
+}
+
 export async function runTcpProbeForSource(env: Env, input: ProbeRunInput) {
-  const safeLimit = Math.max(1, Math.min(20, Number(input.limit ?? 5)));
-  const safeAttempts = Math.max(1, Math.min(5, Number(input.attempts ?? 3)));
-  const safeTimeoutMs = Math.max(300, Math.min(5000, Number(input.timeoutMs ?? 2000)));
+  const source = await getSourceById(env, input.sourceId);
+  if (!source) {
+    throw new Error('Source not found');
+  }
+
+  const defaults = getProbeDefaults(source);
+  const safeLimit = Math.max(1, Math.min(100, Number(input.limit ?? defaults.limit)));
+  const safeAttempts = Math.max(1, Math.min(5, Number(input.attempts ?? defaults.attempts)));
+  const safeTimeoutMs = Math.max(300, Math.min(5000, Number(input.timeoutMs ?? defaults.timeoutMs)));
+  const resolvedPort = input.port ?? defaults.port;
+  const resolvedRegion = input.region ?? defaults.region ?? null;
   const rows = await listActiveItemsBySource(env, input.sourceId, safeLimit);
   const results: ProbeResultItem[] = [];
 
   for (const row of rows as any[]) {
     const value = JSON.parse(row.value_json ?? '{}');
-    const { host, port } = deriveHostAndPort(value, row.item_key, input.port);
+    const derived = deriveHostAndPort(value, row.item_key, resolvedPort);
+    const host = derived.host;
+    const valuePort = typeof derived.port === 'number' ? derived.port : undefined;
     if (!host) continue;
 
-    const latencies: number[] = [];
-    let failures = 0;
+    const portPlan = buildPortPlan(resolvedPort, valuePort);
+    let chosen: ProbeAttemptSummary | null = null;
 
-    for (let i = 0; i < safeAttempts; i += 1) {
-      try {
-        const latency = await probeOnce(host, port, safeTimeoutMs);
-        latencies.push(latency);
-      } catch {
-        failures += 1;
-      }
+    for (const port of portPlan) {
+      const attempt = await probePort(host, port, safeAttempts, safeTimeoutMs);
+      chosen = attempt;
+      if (attempt.status !== 'fail') break;
     }
 
-    const successCount = latencies.length;
-    const failureCount = failures;
-    const lossPct = Number(((failureCount / safeAttempts) * 100).toFixed(1));
-    const latencyMs = average(latencies);
-    const jitterMs = calcJitter(latencies);
-    const status: 'ok' | 'partial' | 'fail' = successCount === 0 ? 'fail' : failureCount === 0 ? 'ok' : 'partial';
-    const score = calcScore(latencyMs, lossPct, status);
+    if (!chosen) continue;
 
     await createMeasurement(env, {
       itemId: row.id,
       sourceId: input.sourceId,
       probeType: 'tcp_connect',
-      latencyMs,
-      lossPct,
-      jitterMs,
-      status,
-      region: input.region ?? null,
-      score,
+      latencyMs: chosen.latencyMs,
+      lossPct: chosen.lossPct,
+      jitterMs: chosen.jitterMs,
+      status: chosen.status,
+      region: resolvedRegion,
+      score: chosen.score,
     });
 
     results.push({
       itemId: row.id,
       itemKey: row.item_key,
       host,
-      port,
-      attempts: safeAttempts,
-      successCount,
-      failureCount,
-      latencyMs,
-      lossPct,
-      jitterMs,
-      status,
-      score,
+      port: chosen.port,
+      attempts: chosen.attempts,
+      successCount: chosen.successCount,
+      failureCount: chosen.failureCount,
+      latencyMs: chosen.latencyMs,
+      lossPct: chosen.lossPct,
+      jitterMs: chosen.jitterMs,
+      status: chosen.status,
+      score: chosen.score,
     });
   }
+
+  const unknownIds = results.filter((item) => item.status === 'fail').map((item) => item.itemId);
+  const knownIds = results.filter((item) => item.status !== 'fail').map((item) => item.itemId);
+  await markItemsPendingRecheck(env, unknownIds, 24);
+  await resetItemsLifecycle(env, knownIds);
 
   return {
     success: true,
@@ -173,6 +283,62 @@ export async function runTcpProbeForSource(env: Env, input: ProbeRunInput) {
       attempts: safeAttempts,
       timeoutMs: safeTimeoutMs,
       probeType: 'tcp_connect',
+      port: resolvedPort ?? null,
+      region: resolvedRegion,
+      pendingRecheckCount: unknownIds.length,
     },
   };
+}
+
+function minutesSince(timestamp: string | null): number {
+  if (!timestamp) return Number.POSITIVE_INFINITY;
+  return (Date.now() - new Date(timestamp).getTime()) / 60000;
+}
+
+export async function runScheduledProbes(env: Env) {
+  const sources = await listEnabledSources(env);
+  const results: Array<{ sourceId: string; status: 'probed' | 'skipped' | 'failed'; message?: string; count?: number; rounds?: number }> = [];
+
+  for (const source of sources) {
+    const defaults = getProbeDefaults(source);
+    if (!defaults.enabled) continue;
+
+    const elapsed = minutesSince(source.probe_last_at ?? null);
+    if (elapsed < defaults.intervalMin) {
+      results.push({
+        sourceId: source.id,
+        status: 'skipped',
+        message: `Skipped probe: not due yet (${Math.floor(elapsed)}/${defaults.intervalMin} min)`,
+      });
+      continue;
+    }
+
+    try {
+      const cleanup = await deactivateExpiredUnknownItems(env, source.id);
+      if (cleanup.count > 0) {
+        await updateSourceItemCount(env, source.id);
+      }
+      await markSourceProbeStatus(env, source.id, 'probing', null, { touchProbeLastAt: false });
+
+      let total = 0;
+      let rounds = 0;
+      for (let i = 0; i < defaults.maxRounds; i += 1) {
+        const result = await runTcpProbeForSource(env, { sourceId: source.id });
+        total += result.count;
+        rounds += 1;
+        if (result.count < defaults.limit) break;
+      }
+
+      const cleanupText = cleanup.count > 0 ? `cleaned stale_unknown=${cleanup.count}` : null;
+      const statusText = cleanupText ? `${cleanupText}; rounds=${rounds}; probed=${total}` : `rounds=${rounds}; probed=${total}`;
+      await markSourceProbeStatus(env, source.id, 'success', statusText, { touchProbeLastAt: true });
+      results.push({ sourceId: source.id, status: 'probed', count: total, rounds, message: cleanupText ?? undefined });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      await markSourceProbeStatus(env, source.id, 'failed', `probe_failed: ${message}`, { touchProbeLastAt: false });
+      results.push({ sourceId: source.id, status: 'failed', message });
+    }
+  }
+
+  return results;
 }

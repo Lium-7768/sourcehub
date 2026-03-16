@@ -1,4 +1,4 @@
-import type { Env } from '../app/types';
+import type { Env, ItemRow } from '../app/types';
 import { makeId } from '../utils/id';
 import { nowIso } from '../utils/time';
 
@@ -25,7 +25,9 @@ export async function upsertItems(env: Env, items: UpsertItemInput[]) {
     if (existing?.id) {
       await env.DB.prepare(
         `UPDATE items
-         SET kind = ?, value_json = ?, tags_json = ?, checksum = ?, is_active = 1, last_seen_at = ?, updated_at = ?
+         SET kind = ?, value_json = ?, tags_json = ?, checksum = ?, is_active = 1,
+             unknown_since_at = NULL, recheck_after_at = NULL, lifecycle_state = 'active',
+             last_seen_at = ?, updated_at = ?
          WHERE id = ?`
       ).bind(
         item.kind,
@@ -43,8 +45,8 @@ export async function upsertItems(env: Env, items: UpsertItemInput[]) {
       await env.DB.prepare(
         `INSERT INTO items (
           id, source_id, kind, item_key, value_json, tags_json, checksum,
-          is_active, first_seen_at, last_seen_at, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`
+          is_active, first_seen_at, last_seen_at, unknown_since_at, recheck_after_at, lifecycle_state, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NULL, NULL, 'active', ?, ?)`
       ).bind(
         id,
         item.sourceId,
@@ -79,13 +81,78 @@ export async function updateSourceItemCount(env: Env, sourceId: string) {
 export async function listActiveItemsBySource(env: Env, sourceId: string, limit = 10) {
   const safeLimit = Math.max(1, Math.min(100, Number(limit || 10)));
   const { results } = await env.DB.prepare(
-    `SELECT id, source_id, kind, item_key, value_json, tags_json, updated_at
+    `SELECT id, source_id, kind, item_key, value_json, tags_json, updated_at, unknown_since_at, recheck_after_at, lifecycle_state
      FROM items
      WHERE source_id = ? AND is_active = 1
      ORDER BY updated_at DESC
      LIMIT ?`
-  ).bind(sourceId, safeLimit).all();
+  ).bind(sourceId, safeLimit).all<ItemRow>();
   return results;
+}
+
+export async function markItemsPendingRecheck(env: Env, itemIds: string[], hours = 24) {
+  if (!itemIds.length) return 0;
+  const now = new Date();
+  const recheck = new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
+  const nowIsoText = now.toISOString();
+  let changes = 0;
+
+  for (const id of itemIds) {
+    await env.DB.prepare(
+      `UPDATE items
+       SET unknown_since_at = COALESCE(unknown_since_at, ?),
+           recheck_after_at = ?,
+           lifecycle_state = 'pending_recheck',
+           updated_at = ?
+       WHERE id = ? AND is_active = 1`
+    ).bind(nowIsoText, recheck, nowIsoText, id).run();
+    changes += 1;
+  }
+
+  return changes;
+}
+
+export async function resetItemsLifecycle(env: Env, itemIds: string[]) {
+  if (!itemIds.length) return 0;
+  const now = nowIso();
+  let changes = 0;
+
+  for (const id of itemIds) {
+    await env.DB.prepare(
+      `UPDATE items
+       SET unknown_since_at = NULL,
+           recheck_after_at = NULL,
+           lifecycle_state = 'active',
+           updated_at = ?
+       WHERE id = ? AND is_active = 1`
+    ).bind(now, id).run();
+    changes += 1;
+  }
+
+  return changes;
+}
+
+export async function deactivateExpiredUnknownItems(env: Env, sourceId: string, now = nowIso()) {
+  const { results } = await env.DB.prepare(
+    `SELECT id FROM items
+     WHERE source_id = ? AND is_active = 1 AND lifecycle_state = 'pending_recheck'
+       AND recheck_after_at IS NOT NULL AND recheck_after_at <= ?`
+  ).bind(sourceId, now).all<{ id: string }>();
+
+  if (!results.length) return { count: 0, itemIds: [] as string[] };
+
+  const itemIds = results.map((row) => row.id);
+  for (const id of itemIds) {
+    await env.DB.prepare(
+      `UPDATE items
+       SET is_active = 0,
+           lifecycle_state = 'stale_unknown',
+           updated_at = ?
+       WHERE id = ?`
+    ).bind(now, id).run();
+  }
+
+  return { count: itemIds.length, itemIds };
 }
 
 export async function listPublicItems(env: Env, options?: { kind?: string; sourceId?: string; limit?: number }) {

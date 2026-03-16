@@ -1,413 +1,311 @@
 # SourceHub
 
-一个基于 **Cloudflare Workers + D1 + Cron Triggers** 的 source manager MVP。
+一个基于 **Cloudflare Workers + D1 + Cron** 的公开结果聚合与发布服务。
 
-当前版本已经具备：
+当前仓库已经从“通用 source manager + 临时 admin UI”的探索态，收束到一条更明确的主线：
 
-- Source CRUD（创建 / 列表 / 详情 / 更新 / 启停）
-- `cloudflare_dns` source 同步
-- `text_url` source 同步（支持 `line` / `regex_ip`）
-- `json_api` source 同步（支持 `extract_path` + `field_map`）
-- 手动触发同步
-- 保守 cron 定时同步
-- 同步频率控制
-- Public API 基础防刷
-- Admin 列表筛选（sources / sync-runs）
-- Cron 可观测性（`success / skipped / failed`）
-- Admin 调试入口：`POST /api/admin/cron/run-once`
-- Source 基础配置校验（create / update）
-- 结构化校验错误返回（`validation_failed` + `fields`）
-- sync 前运行时校验（避免“配置看着合法，一跑就炸”）
-- adapter 级失败收口（空结果 / 无效 key / 无效 IP / 过滤后无数据会直接报错）
-- sync 失败分类更清晰（`runtime_validation_failed` / `upstream_fetch_failed` / `upstream_empty` / `invalid_upstream_shape` 等）
+- 从原始样本文件中整理候选
+- 生成 probe 输入
+- 执行 TCP connect probe
+- 将结果刷新到 D1 中的正式公开 source
+- 通过 `GET /api/results` 对外提供稳定结果
 
-> 当前是 **Cloudflare 平台优先实现**。业务逻辑有可迁移空间，但运行时、数据库、cron 和 secrets 目前都依赖 Cloudflare。
+## 当前状态
 
-## License
+已稳定可用的核心能力：
 
-MIT
+- 文件流整理：`imports -> normalized -> results`
+- TCP connect probe（80/443 或指定端口）
+- probe 结果写入 D1
+- 公开结果接口：`GET /api/results`
+- 结果接口 token 鉴权
+- 定时 probe（cron）
+- unknown / pending_recheck / stale_unknown 生命周期处理
+- 自动化测试覆盖关键路径
 
-## 文档
+当前公开结果来自 D1，而不是直接读本地结果文件。
 
-- 部署与运维：`DEPLOYMENT.md`
-- API 调用示例：`API_EXAMPLES.md`
-- 自动化测试：`npm test`
-- 线上 smoke check：`npm run smoke`
-- 最小后台 UI：`/ui`
-- 公开结果接口：`/api/public/results`
+---
 
-## 当前可用 API
-
-### Admin
-- `GET /ui`
-- `GET /api/admin/sources`
-- `POST /api/admin/sources`
-- `GET /api/admin/sources/:id`
-- `PUT /api/admin/sources/:id`
-- `POST /api/admin/sources/:id/enable`
-- `POST /api/admin/sources/:id/disable`
-- `POST /api/admin/sources/:id/sync`
-- `GET /api/admin/sources/:id/measurements`
-- `POST /api/admin/sources/:id/measurements`
-- `POST /api/admin/sources/:id/probe`
-- `GET /api/admin/sync-runs`
-- `GET /api/admin/sync-runs/:id`
-- `POST /api/admin/cron/run-once`
+## 核心接口
 
 ### Public
-- `GET /api/public/items`
-- `GET /api/public/results`
-- `GET /api/public/export/:sourceId?format=json|txt`
 
-## 快速开始
+#### `GET /api/results`
 
-### 1. 安装依赖
+返回公开 probe 结果。
+
+要求带鉴权头之一：
+
+```http
+Authorization: Bearer sourcehub-results-token-v1
+```
+
+或：
+
+```http
+X-Results-Token: sourcehub-results-token-v1
+```
+
+示例：
+
+```bash
+curl 'https://YOUR_WORKER/api/results?limit=10' \
+  -H 'Authorization: Bearer sourcehub-results-token-v1'
+```
+
+查询参数：
+
+- `limit`：默认 `50`，最大 `100`
+- `source_id`：可选，只看某个公开 source
+
+返回示例：
+
+```json
+{
+  "items": [
+    {
+      "host": "163.192.47.170",
+      "latency_ms": 8,
+      "loss_pct": 0,
+      "jitter_ms": 0,
+      "score": 98.4,
+      "org": "Oracle Corporation",
+      "city": "Belmont",
+      "country": "US",
+      "checked_at": "2026-03-15T17:59:38.477Z"
+    }
+  ],
+  "meta": {
+    "limit": 10,
+    "count": 1,
+    "source": "db_results"
+  }
+}
+```
+
+### Root
+
+#### `GET /`
+
+最小状态页，返回服务名和当前公开入口。
+
+---
+
+## 数据流
+
+当前主线文件流：
+
+```text
+data/imports
+  -> data/normalized/first_pass_candidates.csv
+  -> data/normalized/probe_input.csv
+  -> data/results/probe_results.json
+  -> D1 source: src_public_results_db
+  -> GET /api/results
+```
+
+其中：
+
+- `imports/`：原始输入样本，只进不改
+- `normalized/`：清洗和去重后的中间产物
+- `results/`：probe 通过结果与失败记录
+
+补充说明见：`data/README.md`
+
+---
+
+## 可执行脚本
+
+### 1. 规范化候选输入
+
+```bash
+node scripts/normalize-candidates.mjs
+```
+
+输出：
+
+- `data/normalized/first_pass_candidates.csv`
+- `data/normalized/probe_input.csv`
+- `data/rejects/first_pass_rejects.csv`
+- `data/normalized/first_pass_summary.json`
+
+### 2. 执行 probe
+
+```bash
+node scripts/run-probe-input.mjs
+```
+
+可选环境变量：
+
+- `PROBE_LIMIT`：限制本次扫描条数
+
+输出：
+
+- `data/results/probe_results.json`
+- `data/results/probe_results.csv`
+- `data/results/probe_failures.csv`
+
+### 3. 刷新公开结果到 D1
+
+```bash
+npm run refresh:public-results
+```
+
+等价于：
+
+```bash
+node scripts/refresh_public_results_db.mjs
+```
+
+默认会把：
+
+- `data/results/probe_results.json`
+
+刷新到：
+
+- `src_public_results_db`
+
+### 4. 跑完整主线
+
+```bash
+npm run pipeline:public-results
+```
+
+等价于：
+
+1. 先跑 probe
+2. 再刷新 D1 公共结果
+
+---
+
+## 本地开发
+
+### 安装依赖
 
 ```bash
 npm install
 ```
 
-### 2. 创建 D1
+### 类型检查
 
 ```bash
-npx wrangler d1 create sourcehub
+npm run check
 ```
 
-把返回的 `database_id` 写入 `wrangler.toml`。
-
-### 3. 跑迁移
-
-```bash
-npx wrangler d1 migrations apply sourcehub --remote
-```
-
-### 4. 准备部署凭据
-
-可以参考：
-
-```bash
-cp .env.example .env
-```
-
-需要理解这 4 个值：
-
-- `CLOUDFLARE_API_TOKEN`：给 Wrangler CLI 部署 / `whoami` 使用
-- `CLOUDFLARE_ACCOUNT_ID`：Cloudflare 账号 ID
-- `CF_API_TOKEN`：给 Worker runtime 调 Cloudflare API 使用
-- `ADMIN_TOKEN`：保护 `/api/admin/*`
-
-先检查 deploy 凭据：
-
-```bash
-export CLOUDFLARE_API_TOKEN=YOUR_DEPLOY_TOKEN
-export CLOUDFLARE_ACCOUNT_ID=YOUR_ACCOUNT_ID
-npx wrangler whoami
-```
-
-### 5. 写入 Worker runtime secrets
-
-```bash
-printf '%s' "$CF_API_TOKEN" | npx wrangler secret put CF_API_TOKEN
-printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN
-```
-
-### 6. 部署
-
-```bash
-npx wrangler deploy
-```
-
-## Source 配置规则
-
-### `text_url`
-必须：
-- `config.url` 是合法 `http/https` URL
-- 当 `parse_mode = line` 时，`config.kind` 必填
-
-可选：
-- `config.parse_mode = line | regex_ip`
-
-示例：
-
-```json
-{
-  "name": "demo text source",
-  "type": "text_url",
-  "enabled": true,
-  "is_public": true,
-  "tags": ["demo", "ip"],
-  "config": {
-    "url": "https://www.cloudflare.com/ips-v4",
-    "kind": "ip",
-    "parse_mode": "regex_ip"
-  }
-}
-```
-
-### `json_api`
-必须：
-- `config.url` 是合法 `http/https` URL
-- `config.kind` 必填
-- `config.extract_path` 必填
-- `config.field_map` 必填且不能为空
-- `config.field_map` 必须至少包含一个稳定键映射：
-  - `itemKey`
-  - `item_key`
-  - `id`
-  - `ip`
-  - `domain`
-
-示例：
-
-```json
-{
-  "name": "demo json api",
-  "type": "json_api",
-  "enabled": true,
-  "is_public": false,
-  "tags": ["api", "demo"],
-  "config": {
-    "url": "https://example.com/api/nodes",
-    "extract_path": "data.items",
-    "kind": "dns_record",
-    "field_map": {
-      "itemKey": "id",
-      "name": "name",
-      "type": "type",
-      "content": "content"
-    },
-    "headers": {
-      "Authorization": "Bearer YOUR_UPSTREAM_TOKEN"
-    }
-  }
-}
-```
-
-### `cloudflare_dns`
-必须：
-- `config.zone_id` 必填
-- `config.zone_id` 必须看起来像 Cloudflare zone id（32 位十六进制）
-
-可选：
-- `config.record_types`
-- `config.name_filter`
-
-如果传 `config.record_types`，目前只接受：
-- `A`
-- `AAAA`
-- `CNAME`
-- `TXT`
-- `MX`
-- `NS`
-- `SRV`
-- `CAA`
-- `PTR`
-- `HTTPS`
-- `SVCB`
-
-示例：
-
-```json
-{
-  "name": "demo cf dns",
-  "type": "cloudflare_dns",
-  "enabled": true,
-  "is_public": false,
-  "tags": ["cloudflare", "dns"],
-  "config": {
-    "zone_id": "YOUR_ZONE_ID",
-    "record_types": ["A", "AAAA", "CNAME"],
-    "name_filter": "api"
-  }
-}
-```
-
-> 这个 source 依赖 Worker runtime secret：`CF_API_TOKEN`
-
-## 结构化校验错误
-
-create / update / sync 前运行时校验失败时，现在统一返回结构化错误：
-
-```json
-{
-  "error": "validation_failed",
-  "details": {
-    "fields": {
-      "config.url": "required"
-    }
-  }
-}
-```
-
-再比如：
-
-```json
-{
-  "error": "validation_failed",
-  "details": {
-    "fields": {
-      "config.field_map": "must include one stable key mapping: itemKey, item_key, id, ip, or domain"
-    }
-  }
-}
-```
-
-运行前校验还会拦这种情况：
-
-```json
-{
-  "error": "validation_failed",
-  "details": {
-    "fields": {
-      "env.CF_API_TOKEN": "required for cloudflare_dns sync"
-    }
-  }
-}
-```
-
-## Admin 鉴权
-
-所有 `/api/admin/*` 都要求：
-
-```http
-Authorization: Bearer YOUR_ADMIN_TOKEN
-```
-
-## 当前筛选能力
-
-### `GET /api/admin/sources`
-支持：
-- `type=text_url|json_api|cloudflare_dns`
-- `enabled=1|0|true|false`
-- `is_public=1|0|true|false`
-
-### `GET /api/admin/sync-runs`
-支持：
-- `source_id=...`
-- `status=running|success|failed|skipped`
-- `trigger_type=manual|cron`
-
-## 常见错误 / 返回
-
-### `404 Not found`
-- 路由不存在
-- 或资源 ID 不存在
-
-### `401 Unauthorized`
-- 没带 `Authorization: Bearer ...`
-- 或 `ADMIN_TOKEN` 不正确
-
-### `400 Bad Request`
-常见于：
-- source 配置结构不合法
-- source 配置虽然存在，但达不到当前更严格规则
-- sync 前运行时校验失败
-- 上游返回空数据、坏结构或无法形成有效 item
-
-### sync-runs 失败分类
-当前 `sync_runs.message` 会尽量收敛为短错误码，常见包括：
-- `runtime_validation_failed`
-- `upstream_fetch_failed`
-- `upstream_empty`
-- `invalid_upstream_shape`
-- `frequency_control`
-- `source_disabled`
-- `source_running`
-
-详细错误文本看 `sync_runs.error_text`。
-
-### `429` / 频控拦截
-常见于：
-- 刚同步完立刻再次 sync
-
-典型文案：
-
-```text
-Sync blocked by frequency control. Try again in about X minute(s)
-```
-
-### disabled source 拦截
-典型文案：
-
-```text
-Source is disabled
-```
-
-## Cron 调试
-
-当前提供：
-
-```bash
-POST /api/admin/cron/run-once
-```
-
-用于：
-- 主动执行一次 scheduled 逻辑
-- 验证 cron 的 `success / skipped / failed`
-- 不必硬等真实 cron
-
-## 当前默认规则
-
-- `sync_interval_min` 最小 5，最大 1440，默认 60
-- disabled source 不允许 sync
-- cron 默认 `*/30 * * * *`
-- `/api/public/items` 默认 `limit=50`，最大 `100`
-- `/api/public/export/:sourceId` 上限 `1000`
-
-## 推荐发布流程
-
-1. 改代码
-2. `npm run check`
-3. `npx wrangler whoami`
-4. 必要时更新 Worker secrets
-5. `npx wrangler deploy`
-6. 打线上 API 回归测试
-7. 测通后再宣告完成
-
-## 测试
-
-### 自动化测试
-
-当前已经补上两类基础自动化测试：
-- `tests/source-validation.test.ts`
-  - 覆盖 source payload / runtime validation / merge 行为
-- `tests/adapter-normalization.test.ts`
-  - 覆盖 `text_url` / `json_api` / `cloudflare_dns` adapter 的关键归一化和失败路径
-
-运行：
+### 测试
 
 ```bash
 npm test
 ```
 
-### 线上 smoke check
+当前测试覆盖：
 
-项目还提供一套最小线上自测脚本，会真实调用线上 API：
+- source payload / runtime validation
+- adapter normalization
+- public results API
+- probe service
+- scheduled probe
+- unknown cleanup
+
+---
+
+## 部署
+
+### 1. 准备 D1
 
 ```bash
-export BASE_URL='https://YOUR_WORKER_URL'
-export ADMIN_TOKEN='YOUR_ADMIN_TOKEN'
-npm run smoke
+npx wrangler d1 create sourcehub
 ```
 
-它当前会检查：
-- 根路由可达
-- 可创建 `text_url` source
-- `sync_interval_min` 会真实落库
-- 手动 sync 正常
-- public items/export 正常
-- 非法 `json_api` 创建会返回 `validation_failed`
+把返回的 `database_id` 写进 `wrangler.toml`。
 
-## CI
+### 2. 跑迁移
 
-项目当前 GitHub Actions 会执行：
-- `npm ci`
-- `npm run check`
-- `npm test`
+```bash
+npx wrangler d1 migrations apply sourcehub --remote
+```
 
-## 说明
+### 3. 准备 deploy token
 
-更详细的流程、复盘和踩坑修正，见：
+```bash
+export CLOUDFLARE_API_TOKEN=YOUR_DEPLOY_TOKEN
+npx wrangler whoami
+```
 
-- `DEPLOYMENT.md`
-- `API_EXAMPLES.md`
+### 4. 配置运行时 secret
+
+当前至少需要：
+
+- `ADMIN_TOKEN`：保留给管理/内部脚本使用
+- `CF_API_TOKEN`：如果启用 Cloudflare DNS 相关能力
+
+写入方式：
+
+```bash
+printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN
+printf '%s' "$CF_API_TOKEN" | npx wrangler secret put CF_API_TOKEN
+```
+
+### 5. 部署
+
+```bash
+npx wrangler deploy
+```
+
+---
+
+## 迁移
+
+当前迁移文件：
+
+- `0001_init.sql`
+- `0002_measurements.sql`
+- `0003_probe_state.sql`
+- `0004_unknown_recheck.sql`
+
+新增含义：
+
+- `0003_probe_state.sql`：给 `sources` 增加 probe 状态字段
+- `0004_unknown_recheck.sql`：给 `items` 增加 unknown/recheck 生命周期字段与索引
+
+---
+
+## 排序规则
+
+`GET /api/results` 当前使用稳定排序：
+
+1. `score DESC`
+2. `checked_at DESC`
+3. `item_key ASC`
+
+这样可以避免同分结果顺序漂移，保证 API 和 DB 抽样对比一致。
+
+---
+
+## 兼容性说明
+
+仓库里还保留了一些早期 source/admin 相关模块和脚本，用于内部调试、迁移或兼容；但**当前正式对外路径**只有：
+
+- `GET /api/results`
+- `results/probe_results.json -> D1 -> public API`
+
+如果文档、脚本或旧调用方式和这条主线冲突，以这条主线为准。
+
+---
+
+## 常用命令
+
+```bash
+npm run check
+npm test
+npm run refresh:public-results
+npm run pipeline:public-results
+npx wrangler deploy
+```
+
+---
+
+## License
+
+MIT

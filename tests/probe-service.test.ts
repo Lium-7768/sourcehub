@@ -22,6 +22,28 @@ class FakePreparedStatement {
 }
 
 class FakeD1Database {
+  sources = [
+    {
+      id: 'src_demo',
+      name: 'demo',
+      type: 'text_url',
+      enabled: 1,
+      is_public: 1,
+      config_json: JSON.stringify({ probe: { enabled: true, limit: 2, attempts: 3, timeout_ms: 2000, region: 'HKG' } }),
+      tags_json: '[]',
+      sync_interval_min: 5,
+      last_sync_at: null,
+      last_status: 'idle',
+      last_error: null,
+      probe_last_at: null,
+      probe_last_status: 'idle',
+      probe_last_error: null,
+      item_count: 1,
+      created_at: '2026-03-15T00:00:00.000Z',
+      updated_at: '2026-03-15T00:00:00.000Z',
+    },
+  ];
+
   items = [
     {
       id: 'item_demo',
@@ -31,6 +53,23 @@ class FakeD1Database {
       value_json: JSON.stringify({ ip: '1.1.1.1', port: 443 }),
       tags_json: '[]',
       updated_at: '2026-03-15T00:00:00.000Z',
+      unknown_since_at: null,
+      recheck_after_at: null,
+      lifecycle_state: 'active',
+      is_active: 1,
+    },
+    {
+      id: 'item_fallback',
+      source_id: 'src_demo',
+      kind: 'ip',
+      item_key: '2.2.2.2',
+      value_json: JSON.stringify({ ip: '2.2.2.2' }),
+      tags_json: '[]',
+      updated_at: '2026-03-15T00:00:00.000Z',
+      unknown_since_at: null,
+      recheck_after_at: null,
+      lifecycle_state: 'active',
+      is_active: 1,
     },
   ];
   measurements: any[] = [];
@@ -40,6 +79,12 @@ class FakeD1Database {
   }
 
   async query(sql: string, params: unknown[]) {
+    if (sql.startsWith('SELECT * FROM sources WHERE id = ?')) {
+      return this.sources.filter((row) => row.id === params[0]);
+    }
+    if (sql.includes('SELECT id FROM items') && sql.includes("lifecycle_state = 'pending_recheck'")) {
+      return [];
+    }
     if (sql.includes('FROM items\n     WHERE source_id = ? AND is_active = 1')) {
       return this.items.slice(0, Number(params[1]));
     }
@@ -62,6 +107,12 @@ class FakeD1Database {
       });
       return;
     }
+    if (sql.startsWith('UPDATE items\n       SET unknown_since_at = COALESCE')) {
+      return;
+    }
+    if (sql.startsWith('UPDATE items\n       SET unknown_since_at = NULL')) {
+      return;
+    }
     throw new Error('Unhandled exec: ' + sql);
   }
 }
@@ -76,11 +127,17 @@ async function main() {
 
   const originalConnect = (globalThis as any).__cloudflareSocketsConnect;
   let call = 0;
-  (globalThis as any).__cloudflareSocketsConnect = () => {
+  (globalThis as any).__cloudflareSocketsConnect = ({ hostname, port }: { hostname: string; port: number }) => {
     call += 1;
-    if (call <= 2) {
+    if (hostname === '1.1.1.1' && port === 443 && call <= 2) {
       return {
         opened: Promise.resolve({ remoteAddress: '1.1.1.1:443', localAddress: 'local' }),
+        close: async () => undefined,
+      };
+    }
+    if (hostname === '2.2.2.2' && port === 80) {
+      return {
+        opened: Promise.resolve({ remoteAddress: '2.2.2.2:80', localAddress: 'local' }),
         close: async () => undefined,
       };
     }
@@ -92,13 +149,13 @@ async function main() {
 
   const result = await runTcpProbeForSource(env, {
     sourceId: 'src_demo',
-    limit: 1,
+    limit: 2,
     attempts: 3,
     timeoutMs: 2000,
     region: 'HKG',
   });
 
-  assert.equal(result.count, 1);
+  assert.equal(result.count, 2);
   assert.equal(result.items[0].successCount, 2);
   assert.equal(result.items[0].failureCount, 1);
   assert.equal(result.items[0].lossPct, 33.3);
@@ -107,9 +164,14 @@ async function main() {
   assert.equal(result.items[0].status, 'partial');
   assert.ok(result.items[0].score > 0);
 
+  assert.equal(result.items[1].port, 80);
+  assert.equal(result.items[1].status, 'ok');
+  assert.equal(result.items[1].successCount, 3);
+
   const db = env.DB as unknown as FakeD1Database;
-  assert.equal(db.measurements.length, 1);
+  assert.equal(db.measurements.length, 2);
   assert.equal(db.measurements[0].probe_type, 'tcp_connect');
+  assert.equal(db.measurements[1].probe_type, 'tcp_connect');
 
   Date.now = originalNow;
   (globalThis as any).__cloudflareSocketsConnect = originalConnect;

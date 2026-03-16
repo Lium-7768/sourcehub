@@ -35,17 +35,44 @@ export async function handleAdminProbe(request: Request, env: Env, pathname: str
   const limit = typeof body.limit === 'number' ? body.limit : parsePositiveInt(url.searchParams.get('limit'), 5);
   const attempts = typeof body.attempts === 'number' ? body.attempts : parsePositiveInt(url.searchParams.get('attempts'), 3);
   const timeoutMs = typeof body.timeout_ms === 'number' ? body.timeout_ms : parsePositiveInt(url.searchParams.get('timeout_ms'), 2000);
+  const rounds = typeof body.rounds === 'number' ? body.rounds : parsePositiveInt(url.searchParams.get('rounds'), 1);
   const port = typeof body.port === 'number' ? body.port : (url.searchParams.get('port') ? parsePositiveInt(url.searchParams.get('port'), 443) : undefined);
   const region = typeof body.region === 'string' ? body.region : undefined;
 
-  const result = await runTcpProbeForSource(env, {
-    sourceId,
-    limit,
-    attempts,
-    timeoutMs,
-    port,
-    region,
-  });
+  if (rounds <= 1) {
+    const result = await runTcpProbeForSource(env, {
+      sourceId,
+      limit,
+      attempts,
+      timeoutMs,
+      port,
+      region,
+    });
+    return json(result);
+  }
 
-  return json(result);
+  const runs = [] as any[];
+  let total = 0;
+  for (let i = 0; i < Math.min(rounds, 200); i += 1) {
+    const result = await runTcpProbeForSource(env, {
+      sourceId,
+      limit,
+      attempts,
+      timeoutMs,
+      port,
+      region,
+    });
+    runs.push({ round: i + 1, count: result.count, meta: result.meta });
+    total += result.count;
+    if (result.count < limit) break;
+  }
+
+  return json({
+    success: true,
+    mode: 'rounds',
+    sourceId,
+    rounds: runs.length,
+    total,
+    runs,
+  });
 }

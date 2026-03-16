@@ -52,6 +52,41 @@ function invalid(field: string, reason: string): ValidationResult {
   };
 }
 
+function validateProbeConfig(config: Record<string, unknown>): ValidationResult {
+  if (config.probe === undefined) return { ok: true };
+  if (!isPlainObject(config.probe)) return invalid('config.probe', 'must be an object');
+
+  const probe = config.probe as Record<string, unknown>;
+
+  if (probe.enabled !== undefined && typeof probe.enabled !== 'boolean') {
+    return invalid('config.probe.enabled', 'must be a boolean');
+  }
+
+  for (const [field, min, max] of [
+    ['limit', 1, 100],
+    ['attempts', 1, 5],
+    ['timeout_ms', 300, 5000],
+    ['interval_min', 5, 1440],
+    ['max_rounds', 1, 200],
+    ['port', 1, 65535],
+  ] as const) {
+    const value = probe[field];
+    if (value === undefined) continue;
+    if (typeof value !== 'number' || !Number.isInteger(value)) {
+      return invalid(`config.probe.${field}`, 'must be an integer');
+    }
+    if (value < min || value > max) {
+      return invalid(`config.probe.${field}`, `must be between ${min} and ${max}`);
+    }
+  }
+
+  if (probe.region !== undefined && !isNonEmptyString(probe.region)) {
+    return invalid('config.probe.region', 'must be a non-empty string');
+  }
+
+  return { ok: true };
+}
+
 function validateTextUrlConfig(config: Record<string, unknown>): ValidationResult {
   if (config.url === undefined) {
     return invalid('config.url', 'required');
@@ -213,11 +248,13 @@ export function validateSourcePayload(body: unknown, mode: 'create' | 'update'):
     return { ok: true };
   }
 
-  if (type === 'text_url') return validateTextUrlConfig(config);
-  if (type === 'json_api') return validateJsonApiConfig(config);
-  if (type === 'cloudflare_dns') return validateCloudflareDnsConfig(config);
+  let configValidation: ValidationResult = { ok: true };
+  if (type === 'text_url') configValidation = validateTextUrlConfig(config);
+  if (type === 'json_api') configValidation = validateJsonApiConfig(config);
+  if (type === 'cloudflare_dns') configValidation = validateCloudflareDnsConfig(config);
+  if (!configValidation.ok) return configValidation;
 
-  return { ok: true };
+  return validateProbeConfig(config);
 }
 
 export function validateSourceRuntime(source: SourceRow, env: Env): ValidationResult {

@@ -83,6 +83,26 @@ export async function markSourceSyncStatus(
   ).bind(status, lastError, nowIso(), id).run();
 }
 
+export async function markSourceProbeStatus(
+  env: Env,
+  id: string,
+  status: string,
+  lastError: string | null = null,
+  options?: { touchProbeLastAt?: boolean }
+) {
+  const touchProbeLastAt = options?.touchProbeLastAt ?? true;
+  if (touchProbeLastAt) {
+    await env.DB.prepare(
+      `UPDATE sources SET probe_last_status = ?, probe_last_error = ?, probe_last_at = ?, updated_at = ? WHERE id = ?`
+    ).bind(status, lastError, nowIso(), nowIso(), id).run();
+    return;
+  }
+
+  await env.DB.prepare(
+    `UPDATE sources SET probe_last_status = ?, probe_last_error = ?, updated_at = ? WHERE id = ?`
+  ).bind(status, lastError, nowIso(), id).run();
+}
+
 export async function updateSource(env: Env, id: string, input: UpdateSourceInput): Promise<boolean> {
   const existing = await getSourceById(env, id);
   if (!existing) return false;
