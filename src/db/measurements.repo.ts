@@ -112,10 +112,13 @@ export async function listPublicResults(env: Env, options?: { sourceId?: string;
          LIMIT 1
        )
        WHERE i.is_active = 1 AND s.is_public = 1 AND i.source_id = ?
+         AND m.status IS NOT NULL
+         AND m.status NOT IN ('unknown', 'fail')
        ORDER BY
          CASE WHEN m.score IS NULL THEN 1 ELSE 0 END ASC,
          m.score DESC,
-         i.updated_at DESC
+         m.checked_at DESC,
+         i.item_key ASC
        LIMIT ?`
     ).bind(sourceId, limit).all();
     return results;
@@ -146,10 +149,13 @@ export async function listPublicResults(env: Env, options?: { sourceId?: string;
        LIMIT 1
      )
      WHERE i.is_active = 1 AND s.is_public = 1
+       AND m.status IS NOT NULL
+       AND m.status NOT IN ('unknown', 'fail')
      ORDER BY
        CASE WHEN m.score IS NULL THEN 1 ELSE 0 END ASC,
        m.score DESC,
-       i.updated_at DESC
+       m.checked_at DESC,
+       i.item_key ASC
      LIMIT ?`
   ).bind(limit).all();
   return results;

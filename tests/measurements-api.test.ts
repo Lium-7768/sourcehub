@@ -22,18 +22,96 @@ class FakePreparedStatement {
 }
 
 class FakeD1Database {
+  items = [
+    {
+      id: 'item_demo_1',
+      source_id: 'src_demo',
+      kind: 'ip',
+      item_key: '1.1.1.1',
+      value_json: JSON.stringify({ ip: '1.1.1.1', org: 'Oracle', city: 'Tokyo', country: 'JP' }),
+      tags_json: '[]',
+      updated_at: '2026-03-15T00:00:00.000Z',
+      is_active: 1,
+    },
+    {
+      id: 'item_demo_2',
+      source_id: 'src_demo',
+      kind: 'ip',
+      item_key: '2.2.2.2',
+      value_json: JSON.stringify({ ip: '2.2.2.2', org: 'Oracle', city: 'Osaka', country: 'JP' }),
+      tags_json: '[]',
+      updated_at: '2026-03-15T00:00:00.000Z',
+      is_active: 1,
+    },
+    {
+      id: 'item_demo_3',
+      source_id: 'src_demo',
+      kind: 'ip',
+      item_key: '3.3.3.3',
+      value_json: JSON.stringify({ ip: '3.3.3.3', org: 'Oracle', city: 'Kyoto', country: 'JP' }),
+      tags_json: '[]',
+      updated_at: '2026-03-15T00:00:00.000Z',
+      is_active: 1,
+    },
+  ];
+
+  measurements = [
+    {
+      id: 'msr_demo_1',
+      item_id: 'item_demo_1',
+      source_id: 'src_demo',
+      probe_type: 'manual',
+      latency_ms: 38,
+      loss_pct: 0,
+      jitter_ms: 2,
+      status: 'ok',
+      region: 'HKG',
+      score: 98.5,
+      checked_at: '2026-03-15T13:12:00.000Z',
+      created_at: '2026-03-15T13:12:00.000Z',
+    },
+    {
+      id: 'msr_demo_2',
+      item_id: 'item_demo_2',
+      source_id: 'src_demo',
+      probe_type: 'manual',
+      latency_ms: 39,
+      loss_pct: 0,
+      jitter_ms: 1,
+      status: 'ok',
+      region: 'HKG',
+      score: 98.5,
+      checked_at: '2026-03-15T13:13:00.000Z',
+      created_at: '2026-03-15T13:13:00.000Z',
+    },
+    {
+      id: 'msr_demo_3',
+      item_id: 'item_demo_3',
+      source_id: 'src_demo',
+      probe_type: 'manual',
+      latency_ms: 40,
+      loss_pct: 0,
+      jitter_ms: 3,
+      status: 'ok',
+      region: 'HKG',
+      score: 98.5,
+      checked_at: '2026-03-15T13:13:00.000Z',
+      created_at: '2026-03-15T13:13:00.000Z',
+    },
+  ];
+
   sources = [
     {
       id: 'src_demo',
-      name: 'demo',
-      type: 'text_url',
+      name: 'public probe results',
+      type: 'json_api',
       enabled: 1,
       is_public: 1,
       config_json: '{}',
       tags_json: '[]',
-      sync_interval_min: 5,
+      sync_interval_min: 1440,
       last_sync_at: null,
-      last_status: 'idle',
+      last_status: 'success',
       last_error: null,
       item_count: 1,
       created_at: '2026-03-15T00:00:00.000Z',
@@ -41,55 +119,16 @@ class FakeD1Database {
     },
   ];
 
-  items = [
-    {
-      id: 'item_demo',
-      source_id: 'src_demo',
-      kind: 'ip',
-      item_key: '1.1.1.1',
-      value_json: JSON.stringify({ ip: '1.1.1.1', port: 443 }),
-      tags_json: '[]',
-      updated_at: '2026-03-15T00:00:00.000Z',
-      is_active: 1,
-    },
-  ];
-
-  measurements: any[] = [];
-
   prepare(sql: string) {
     return new FakePreparedStatement(this, sql);
   }
 
   async query(sql: string, params: unknown[]) {
-    if (sql.startsWith('SELECT * FROM sources WHERE id = ?')) {
-      return this.sources.filter((row) => row.id === params[0]);
-    }
-
-    if (sql.includes('SELECT id, source_id, item_key FROM items WHERE source_id = ? AND item_key = ?')) {
-      return this.items.filter((row) => row.source_id === params[0] && row.item_key === params[1] && row.is_active === 1)
-        .map((row) => ({ id: row.id, source_id: row.source_id, item_key: row.item_key }));
-    }
-
-    if (sql.includes('FROM measurements m\n     JOIN items i ON i.id = m.item_id')) {
-      return this.measurements
-        .filter((m) => m.source_id === params[0])
-        .sort((a, b) => String(b.checked_at).localeCompare(String(a.checked_at)))
-        .slice(0, Number(params[1]))
-        .map((m) => ({
-          ...m,
-          item_key: this.items.find((item) => item.id === m.item_id)?.item_key ?? null,
-        }));
-    }
-
-    if (sql.includes('FROM items i\n     JOIN sources s ON s.id = i.source_id')) {
-      const limit = Number(params[0]);
+    if (sql.includes('FROM items i') && sql.includes('JOIN sources s ON s.id = i.source_id')) {
+      const limit = Number(params[params.length - 1]);
       return this.items
-        .filter((item) => item.is_active === 1)
-        .slice(0, limit)
         .map((item) => {
-          const m = this.measurements
-            .filter((row) => row.item_id === item.id)
-            .sort((a, b) => String(b.checked_at).localeCompare(String(a.checked_at)))[0] ?? null;
+          const m = this.measurements.find((row) => row.item_id === item.id) ?? null;
           return {
             item_id: item.id,
             source_id: item.source_id,
@@ -105,32 +144,24 @@ class FakeD1Database {
             score: m?.score ?? null,
             checked_at: m?.checked_at ?? null,
           };
-        });
+        })
+        .filter((row) => row.status !== null && row.status !== 'unknown' && row.status !== 'fail')
+        .sort((a, b) => {
+          const aNull = a.score == null ? 1 : 0;
+          const bNull = b.score == null ? 1 : 0;
+          if (aNull !== bNull) return aNull - bNull;
+          if ((b.score ?? -Infinity) !== (a.score ?? -Infinity)) return (b.score ?? -Infinity) - (a.score ?? -Infinity);
+          if ((b.checked_at ?? '') !== (a.checked_at ?? '')) return (b.checked_at ?? '').localeCompare(a.checked_at ?? '');
+          return a.item_key.localeCompare(b.item_key);
+        })
+        .slice(0, limit);
     }
 
     throw new Error('Unhandled query: ' + sql);
   }
 
-  async exec(sql: string, params: unknown[]) {
-    if (sql.startsWith('INSERT INTO measurements')) {
-      this.measurements.push({
-        id: params[0],
-        item_id: params[1],
-        source_id: params[2],
-        probe_type: params[3],
-        latency_ms: params[4],
-        loss_pct: params[5],
-        jitter_ms: params[6],
-        status: params[7],
-        region: params[8],
-        score: params[9],
-        checked_at: params[10],
-        created_at: params[11],
-      });
-      return;
-    }
-
-    throw new Error('Unhandled exec: ' + sql);
+  async exec(_sql: string, _params: unknown[]) {
+    throw new Error('No writes expected in this test');
   }
 }
 
@@ -140,45 +171,32 @@ async function main() {
     ADMIN_TOKEN: 'test-admin',
   };
 
-  const postRes = await worker.fetch(new Request('https://example.com/api/admin/sources/src_demo/measurements', {
-    method: 'POST',
-    headers: {
-      authorization: 'Bearer test-admin',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      item_key: '1.1.1.1',
-      probe_type: 'manual_probe',
-      latency_ms: 38,
-      loss_pct: 0,
-      jitter_ms: 2,
-      status: 'ok',
-      region: 'HKG',
-      score: 98.5,
-      checked_at: '2026-03-15T13:12:00.000Z',
-    }),
-  }), env);
-  assert.equal(postRes.status, 201);
-  const postBody = await postRes.json<any>();
-  assert.equal(postBody.success, true);
-  assert.equal(postBody.items[0].created, true);
+  const unauthorized = await worker.fetch(new Request('https://example.com/api/results?limit=10'), env);
+  assert.equal(unauthorized.status, 401);
 
-  const listRes = await worker.fetch(new Request('https://example.com/api/admin/sources/src_demo/measurements?limit=10', {
+  const okRes = await worker.fetch(new Request('https://example.com/api/results?limit=10', {
+    headers: { authorization: 'Bearer sourcehub-results-token-v1' },
+  }), env);
+  assert.equal(okRes.status, 200);
+  const okBody = await okRes.json<any>();
+  assert.equal(okBody.items.length, 3);
+  assert.deepEqual(okBody.items.map((item: any) => item.host), ['2.2.2.2', '3.3.3.3', '1.1.1.1']);
+  assert.equal(okBody.items[0].latency_ms, 39);
+  assert.equal(okBody.items[0].org, 'Oracle');
+  assert.equal(okBody.meta.source, 'db_results');
+
+  const oldPublic = await worker.fetch(new Request('https://example.com/api/public/results?limit=10', {
+    headers: { authorization: 'Bearer sourcehub-results-token-v1' },
+  }), env);
+  assert.equal(oldPublic.status, 404);
+
+  const ui = await worker.fetch(new Request('https://example.com/ui'), env);
+  assert.equal(ui.status, 404);
+
+  const admin = await worker.fetch(new Request('https://example.com/api/admin/sources', {
     headers: { authorization: 'Bearer test-admin' },
   }), env);
-  assert.equal(listRes.status, 200);
-  const listBody = await listRes.json<any>();
-  assert.equal(listBody.items.length, 1);
-  assert.equal(listBody.items[0].latency_ms, 38);
-
-  const publicRes = await worker.fetch(new Request('https://example.com/api/public/results?limit=10'), env);
-  assert.equal(publicRes.status, 200);
-  const publicBody = await publicRes.json<any>();
-  assert.equal(publicBody.items[0].host, '1.1.1.1');
-  assert.equal(publicBody.items[0].latency_ms, 38);
-  assert.equal(publicBody.items[0].loss_pct, 0);
-  assert.equal(publicBody.items[0].status, 'ok');
-  assert.equal(publicBody.items[0].region, 'HKG');
+  assert.equal(admin.status, 404);
 
   console.log('measurements-api.test.ts ok');
 }
