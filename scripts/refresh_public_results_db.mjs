@@ -26,7 +26,6 @@ const items = Array.isArray(payload?.items) ? payload.items : [];
 const now = nowIso();
 
 const lines = [];
-lines.push(`DELETE FROM latest_results WHERE source_id = ${q(SOURCE_ID)};`);
 lines.push(`DELETE FROM measurements WHERE source_id = ${q(SOURCE_ID)};`);
 lines.push(`DELETE FROM items WHERE source_id = ${q(SOURCE_ID)};`);
 lines.push(
@@ -34,8 +33,8 @@ lines.push(
   `name=${q('public probe results')}, ` +
   `type=${q('json_api')}, ` +
   `enabled=1, is_public=1, ` +
-  `config_json=${q(JSON.stringify({ mode: 'latest_results', note: 'managed from file flow, exposed via latest_results' }))}, ` +
-  `tags_json=${q(JSON.stringify(['public', 'results', 'latest-results']))}, ` +
+  `config_json=${q(JSON.stringify({ mode: 'db_public_results', note: 'managed from file flow, exposed via DB' }))}, ` +
+  `tags_json=${q(JSON.stringify(['public', 'results', 'db-backed']))}, ` +
   `sync_interval_min=1440, ` +
   `last_status=${q('success')}, ` +
   `item_count=${items.length}, ` +
@@ -52,7 +51,6 @@ for (const row of items) {
   const checkedAt = row.checked_at || now;
   const loss = row.loss_pct;
   const status = (loss || 0) === 0 ? 'ok' : 'partial';
-  const port = row.port == null ? 'NULL' : String(Number(row.port));
   const value = JSON.stringify({
     ip: row.host,
     port: row.port ?? null,
@@ -73,11 +71,6 @@ for (const row of items) {
   lines.push(
     `INSERT INTO measurements (id,item_id,source_id,probe_type,latency_ms,loss_pct,jitter_ms,status,region,score,checked_at,created_at) VALUES (` +
     `${q(msrId)},${q(itemId)},${q(SOURCE_ID)},${q('file_probe_import')},${latency},${lossSql},${jitter},${q(status)},${q(REGION)},${score},${q(checkedAt)},${q(now)});`
-  );
-
-  lines.push(
-    `INSERT INTO latest_results (item_id,source_id,item_key,host,port,org,city,country,latency_ms,loss_pct,jitter_ms,status,region,score,checked_at,updated_at) VALUES (` +
-    `${q(itemId)},${q(SOURCE_ID)},${q(row.host)},${q(row.host)},${port},${q(row.org ?? '')},${q(row.city ?? '')},${q(row.country ?? '')},${latency},${lossSql},${jitter},${q(status)},${q(REGION)},${score},${q(checkedAt)},${q(now)});`
   );
 }
 

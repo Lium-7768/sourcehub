@@ -15,75 +15,6 @@ export interface UpsertMeasurementInput {
   checkedAt?: string;
 }
 
-async function upsertLatestResult(env: Env, input: UpsertMeasurementInput) {
-  const row = await env.DB.prepare(
-    `SELECT i.item_key, i.value_json
-     FROM items i
-     WHERE i.id = ? AND i.source_id = ?
-     LIMIT 1`
-  ).bind(input.itemId, input.sourceId).first<{ item_key: string; value_json: string }>();
-
-  if (!row) return;
-
-  let value: Record<string, unknown> = {};
-  try {
-    value = JSON.parse(row.value_json ?? '{}');
-  } catch {
-    value = {};
-  }
-
-  const host = String(value.ip ?? value.content ?? value.domain ?? row.item_key ?? '').trim() || row.item_key;
-  const rawPort = value.port;
-  const port = typeof rawPort === 'number'
-    ? rawPort
-    : typeof rawPort === 'string' && /^\d+$/.test(rawPort.trim())
-      ? Number(rawPort.trim())
-      : null;
-
-  const checkedAt = input.checkedAt ?? nowIso();
-  const updatedAt = nowIso();
-
-  await env.DB.prepare(
-    `INSERT INTO latest_results (
-      item_id, source_id, item_key, host, port, org, city, country,
-      latency_ms, loss_pct, jitter_ms, status, region, score, checked_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(item_id) DO UPDATE SET
-      source_id = excluded.source_id,
-      item_key = excluded.item_key,
-      host = excluded.host,
-      port = excluded.port,
-      org = excluded.org,
-      city = excluded.city,
-      country = excluded.country,
-      latency_ms = excluded.latency_ms,
-      loss_pct = excluded.loss_pct,
-      jitter_ms = excluded.jitter_ms,
-      status = excluded.status,
-      region = excluded.region,
-      score = excluded.score,
-      checked_at = excluded.checked_at,
-      updated_at = excluded.updated_at`
-  ).bind(
-    input.itemId,
-    input.sourceId,
-    row.item_key,
-    host,
-    port,
-    value.org ?? null,
-    value.city ?? null,
-    value.country ?? null,
-    input.latencyMs ?? null,
-    input.lossPct ?? null,
-    input.jitterMs ?? null,
-    input.status ?? 'unknown',
-    input.region ?? null,
-    input.score ?? null,
-    checkedAt,
-    updatedAt,
-  ).run();
-}
-
 export async function createMeasurement(env: Env, input: UpsertMeasurementInput) {
   const now = nowIso();
   const checkedAt = input.checkedAt ?? now;
@@ -107,8 +38,6 @@ export async function createMeasurement(env: Env, input: UpsertMeasurementInput)
     checkedAt,
     now,
   ).run();
-
-  await upsertLatestResult(env, { ...input, checkedAt });
 }
 
 export async function listPublicResults(env: Env, options?: { sourceId?: string; limit?: number }) {
@@ -117,33 +46,74 @@ export async function listPublicResults(env: Env, options?: { sourceId?: string;
 
   if (sourceId) {
     const { results } = await env.DB.prepare(
-      `SELECT lr.*
-       FROM latest_results lr
-       JOIN sources s ON s.id = lr.source_id
-       WHERE s.is_public = 1
-         AND lr.source_id = ?
-         AND lr.status IN ('ok', 'partial')
+      `SELECT
+         i.id AS item_id,
+         i.source_id,
+         i.kind,
+         i.item_key,
+         i.value_json,
+         i.updated_at,
+         m.latency_ms,
+         m.loss_pct,
+         m.jitter_ms,
+         m.status,
+         m.region,
+         m.score,
+         m.checked_at
+       FROM items i
+       JOIN sources s ON s.id = i.source_id
+       LEFT JOIN measurements m ON m.id = (
+         SELECT m2.id
+         FROM measurements m2
+         WHERE m2.item_id = i.id
+         ORDER BY m2.checked_at DESC
+         LIMIT 1
+       )
+       WHERE i.is_active = 1 AND s.is_public = 1 AND i.source_id = ?
+         AND m.status IS NOT NULL
+         AND m.status NOT IN ('unknown', 'fail')
        ORDER BY
-         CASE WHEN lr.score IS NULL THEN 1 ELSE 0 END ASC,
-         lr.score DESC,
-         lr.checked_at DESC,
-         lr.item_key ASC
+         CASE WHEN m.score IS NULL THEN 1 ELSE 0 END ASC,
+         m.score DESC,
+         m.checked_at DESC,
+         i.item_key ASC
        LIMIT ?`
     ).bind(sourceId, limit).all();
     return results;
   }
 
   const { results } = await env.DB.prepare(
-    `SELECT lr.*
-     FROM latest_results lr
-     JOIN sources s ON s.id = lr.source_id
-     WHERE s.is_public = 1
-       AND lr.status IN ('ok', 'partial')
+    `SELECT
+       i.id AS item_id,
+       i.source_id,
+       i.kind,
+       i.item_key,
+       i.value_json,
+       i.updated_at,
+       m.latency_ms,
+       m.loss_pct,
+       m.jitter_ms,
+       m.status,
+       m.region,
+       m.score,
+       m.checked_at
+     FROM items i
+     JOIN sources s ON s.id = i.source_id
+     LEFT JOIN measurements m ON m.id = (
+       SELECT m2.id
+       FROM measurements m2
+       WHERE m2.item_id = i.id
+       ORDER BY m2.checked_at DESC
+       LIMIT 1
+     )
+     WHERE i.is_active = 1 AND s.is_public = 1
+       AND m.status IS NOT NULL
+       AND m.status NOT IN ('unknown', 'fail')
      ORDER BY
-       CASE WHEN lr.score IS NULL THEN 1 ELSE 0 END ASC,
-       lr.score DESC,
-       lr.checked_at DESC,
-       lr.item_key ASC
+       CASE WHEN m.score IS NULL THEN 1 ELSE 0 END ASC,
+       m.score DESC,
+       m.checked_at DESC,
+       i.item_key ASC
      LIMIT ?`
   ).bind(limit).all();
   return results;

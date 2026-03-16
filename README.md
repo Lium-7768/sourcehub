@@ -21,11 +21,8 @@
 - 结果接口 token 鉴权
 - 定时 probe（cron）
 - unknown / pending_recheck / stale_unknown 生命周期处理
-- 自动化测试覆盖关键路径
 
 当前公开结果来自 D1，而不是直接读本地结果文件。
-
-公开查询现在走 `latest_results`，不再每次都从 `measurements` 历史表里回溯最新值。
 
 > 注意：仓库当前不再维护完整单元测试集，主验证方式是 `npm run check` + `npm run smoke`。
 
@@ -255,13 +252,12 @@ npx wrangler deploy
 - `0002_measurements.sql`
 - `0003_probe_state.sql`
 - `0004_unknown_recheck.sql`
-- `0005_latest_results.sql`
 
 新增含义：
 
 - `0003_probe_state.sql`：给 `sources` 增加 probe 状态字段
 - `0004_unknown_recheck.sql`：给 `items` 增加 unknown/recheck 生命周期字段与索引
-- `0005_latest_results.sql`：新增公开结果快照表 `latest_results`，供 `/api/results` 直接查询
+- `0006_drop_unused_tables.sql`：删除已废弃的 `sync_runs` 与 `app_settings`
 
 ---
 
@@ -273,7 +269,6 @@ npx wrangler deploy
 2. `checked_at DESC`
 3. `item_key ASC`
 
-该排序现在直接应用于 `latest_results`。
 
 这样可以避免同分结果顺序漂移，保证 API 和 DB 抽样对比一致。
 

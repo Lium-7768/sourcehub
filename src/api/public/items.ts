@@ -41,21 +41,25 @@ export async function handlePublicResults(request: Request, env: Env): Promise<R
   }
 
   const limit = Math.min(100, Math.floor(requestedLimit));
+
   const items = await listPublicResults(env, { sourceId, limit });
 
   return json({
-    items: items.map((item: any) => ({
-      host: item.host ?? item.item_key,
-      latency_ms: item.latency_ms ?? null,
-      loss_pct: item.loss_pct ?? null,
-      jitter_ms: item.jitter_ms ?? null,
-      score: item.score ?? null,
-      org: item.org ?? null,
-      city: item.city ?? null,
-      country: item.country ?? null,
-      checked_at: item.checked_at ?? null,
-    })),
-    meta: { limit, count: items.length, source: 'latest_results' },
+    items: items.map((item: any) => {
+      const value = JSON.parse(item.value_json ?? '{}');
+      return {
+        host: value.ip ?? value.content ?? value.domain ?? item.item_key,
+        latency_ms: item.latency_ms ?? null,
+        loss_pct: item.loss_pct ?? null,
+        jitter_ms: item.jitter_ms ?? null,
+        score: item.score ?? null,
+        org: value.org ?? null,
+        city: value.city ?? null,
+        country: value.country ?? null,
+        checked_at: item.checked_at ?? null,
+      };
+    }),
+    meta: { limit, count: items.length, source: 'db_results' },
   }, {
     headers: {
       'cache-control': 'public, max-age=60, s-maxage=60',
