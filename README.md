@@ -15,7 +15,7 @@
 已稳定可用的核心能力：
 
 - 文件流整理：`imports -> normalized -> results`
-- TCP connect probe（80/443 或指定端口）
+- TCP connect probe（固定主线默认：443 / HKG / 2 attempts / 1500ms）
 - probe 结果写入 D1
 - 公开结果接口：`GET /api/results`
 - 结果接口 token 鉴权
@@ -259,6 +259,7 @@ npx wrangler deploy
 - `0004_unknown_recheck.sql`：给 `items` 增加 unknown/recheck 生命周期字段与索引
 - `0006_drop_unused_tables.sql`：删除已废弃的 `sync_runs` 与 `app_settings`
 - `0007_drop_unused_source_columns.sql`：删除 `sources` 中已不再使用的旧同步字段
+- `0008_drop_probe_config_columns.sql`：删除 `sources` 中最后一批 probe 配置列，改为代码内固定主线默认值
 
 ---
 

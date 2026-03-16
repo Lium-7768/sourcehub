@@ -32,8 +32,6 @@ lines.push(
   `UPDATE sources SET ` +
   `name=${q('public probe results')}, ` +
   `enabled=1, is_public=1, ` +
-  `config_json=${q(JSON.stringify({ mode: 'db_public_results', note: 'managed from file flow, exposed via DB' }))}, ` +
-  `sync_interval_min=1440, ` +
   `item_count=${items.length}, ` +
   `updated_at=${q(now)}, ` +
   `probe_last_at=${q(now)}, ` +

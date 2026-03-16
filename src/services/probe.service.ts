@@ -23,6 +23,17 @@ interface ProbeDefaults {
   region?: string | null;
 }
 
+const DEFAULT_PROBE: ProbeDefaults = {
+  enabled: true,
+  limit: 100,
+  attempts: 2,
+  timeoutMs: 1500,
+  intervalMin: 30,
+  maxRounds: 20,
+  port: 443,
+  region: 'HKG',
+};
+
 export interface ProbeResultItem {
   itemId: string;
   itemKey: string;
@@ -50,37 +61,8 @@ interface ProbeAttemptSummary {
   score: number;
 }
 
-function getProbeDefaults(source: SourceRow): ProbeDefaults {
-  let config: Record<string, unknown> = {};
-  try {
-    config = JSON.parse(source.config_json ?? '{}');
-  } catch {
-    config = {};
-  }
-
-  const probe = (typeof config.probe === 'object' && config.probe && !Array.isArray(config.probe)
-    ? config.probe
-    : {}) as Record<string, unknown>;
-
-  const intOr = (value: unknown, fallback: number, min: number, max: number) => {
-    if (typeof value !== 'number' || !Number.isInteger(value)) return fallback;
-    return Math.max(min, Math.min(max, value));
-  };
-
-  const port = typeof probe.port === 'number' && Number.isInteger(probe.port)
-    ? Math.max(1, Math.min(65535, probe.port))
-    : undefined;
-
-  return {
-    enabled: probe.enabled === true,
-    limit: intOr(probe.limit, 20, 1, 100),
-    attempts: intOr(probe.attempts, 3, 1, 5),
-    timeoutMs: intOr(probe.timeout_ms, 2000, 300, 5000),
-    intervalMin: intOr(probe.interval_min, Math.max(5, Math.min(1440, Number(source.sync_interval_min ?? 60))), 5, 1440),
-    maxRounds: intOr(probe.max_rounds, 20, 1, 200),
-    port,
-    region: typeof probe.region === 'string' && probe.region.trim() ? probe.region.trim() : null,
-  };
+function getProbeDefaults(_source: SourceRow): ProbeDefaults {
+  return { ...DEFAULT_PROBE };
 }
 
 function average(values: number[]): number | null {

@@ -7,8 +7,6 @@ export interface SourceRow {
   name: string;
   enabled: number;
   is_public: number;
-  config_json: string;
-  sync_interval_min: number;
   probe_last_at?: string | null;
   probe_last_status?: string;
   probe_last_error?: string | null;
