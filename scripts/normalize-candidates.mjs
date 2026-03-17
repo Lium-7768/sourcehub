@@ -8,18 +8,18 @@ const importsDir = path.join(ROOT, 'data', 'imports');
 const normalizedDir = path.join(ROOT, 'data', 'normalized');
 const rejectsDir = path.join(ROOT, 'data', 'rejects');
 
-const inputFiles = [
-  '2026-03-15-oracle-jp-batch-01.csv',
-  '2026-03-15-oracle-us-batch-01.csv',
-  '2026-03-15-aws-hk-noise-batch-01.csv',
-  '2026-03-15-oracle-sg-batch-01.csv',
-  '2026-03-15-japan-mixed-batch-01.json',
-].map((name) => path.join(importsDir, name));
-
 const firstPassOut = path.join(normalizedDir, 'first_pass_candidates.csv');
 const probeInputOut = path.join(normalizedDir, 'probe_input.csv');
 const rejectOut = path.join(rejectsDir, 'first_pass_rejects.csv');
 const summaryOut = path.join(normalizedDir, 'first_pass_summary.json');
+
+function listInputFiles() {
+  if (!fs.existsSync(importsDir)) return [];
+  return fs.readdirSync(importsDir)
+    .filter((name) => /\.(csv|json)$/i.test(name))
+    .sort((a, b) => a.localeCompare(b))
+    .map((name) => path.join(importsDir, name));
+}
 
 function parseCsvLine(line) {
   const out = [];
@@ -46,13 +46,11 @@ function parseCsvLine(line) {
 }
 
 function toCsvRow(values) {
-  return values
-    .map((value) => {
-      const s = String(value ?? '');
-      if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-      return s;
-    })
-    .join(',');
+  return values.map((value) => {
+    const s = String(value ?? '');
+    if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }).join(',');
 }
 
 function isIpv4(ip) {
@@ -67,8 +65,7 @@ function isIpv6(ip) {
 
 function normalizePort(port) {
   const s = String(port ?? '').trim();
-  if (!s) return '';
-  if (!/^\d+$/.test(s)) return '';
+  if (!s || !/^\d+$/.test(s)) return '';
   const n = Number(s);
   if (n < 1 || n > 65535) return '';
   return String(n);
@@ -119,7 +116,8 @@ function readInput(file) {
   const base = path.basename(file);
   if (file.endsWith('.json')) {
     const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-    return data.map((item) => normalizeObject(item, base));
+    const rows = Array.isArray(data) ? data : Array.isArray(data.items) ? data.items : [];
+    return rows.map((item) => normalizeObject(item, base));
   }
 
   const content = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
@@ -133,11 +131,13 @@ function readInput(file) {
   });
 }
 
+const inputFiles = listInputFiles();
 const firstPassRows = [];
 const byIp = new Map();
 const rejects = [];
 const stats = {
   files: [],
+  totalFiles: inputFiles.length,
   totalRows: 0,
   acceptedRows: 0,
   rejectedRows: 0,
@@ -170,7 +170,6 @@ for (const file of inputFiles) {
     };
 
     firstPassRows.push(candidate);
-
     const existing = byIp.get(candidate.ip);
     if (!existing) {
       byIp.set(candidate.ip, { ...candidate });

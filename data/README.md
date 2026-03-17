@@ -3,7 +3,7 @@
 当前数据目录只服务一条主线：
 
 ```text
-imports -> normalized -> results -> D1 public source -> /api/results
+imports -> normalized -> results -> src/data/public-results.json -> /api/results
 ```
 
 ## 目录说明
@@ -14,7 +14,7 @@ imports -> normalized -> results -> D1 public source -> /api/results
 规则：
 - 只进不改
 - 保留原始文件名和批次信息
-- 方便之后复盘来源和重新归一化
+- 新批次优先新增文件，不覆盖旧文件
 
 ### `normalized/`
 中间清洗产物。
@@ -22,20 +22,20 @@ imports -> normalized -> results -> D1 public source -> /api/results
 包含：
 - `first_pass_candidates.csv`：第一次标准化后的总表
 - `probe_input.csv`：按 IP 去重、适合 probe 的输入
-- `first_pass_summary.json`：这次规范化的统计摘要
+- `first_pass_summary.json`：本次规范化统计摘要
 
 ### `rejects/`
 结构化淘汰结果。
 
 包含：
-- `first_pass_rejects.csv`：第一阶段就被判定为噪音/坏结构/不在范围内的记录
+- `first_pass_rejects.csv`：第一阶段被判定为噪音 / 坏结构 / 不在范围内的记录
 
 ### `results/`
 probe 输出。
 
 包含：
-- `probe_results.json`：当前正式刷新到 D1 的输入文件
-- `probe_results.csv`：便于人工浏览和导出
+- `probe_results.json`：本轮 probe 成功结果
+- `probe_results.csv`：成功结果 CSV
 - `probe_failures.csv`：本轮 probe 未通过项
 
 ---
@@ -43,17 +43,22 @@ probe 输出。
 ## 当前正式发布链路
 
 ```text
-data/results/probe_results.json
-  -> scripts/refresh_public_results_db.mjs
-  -> D1 source: src_public_results_db
+data/imports/*
+  -> scripts/normalize-candidates.mjs
+  -> data/normalized/probe_input.csv
+  -> scripts/run-probe-input.mjs
+  -> data/results/probe_results.json
+  -> scripts/run_probe_and_refresh.mjs
+  -> src/data/public-results.json
   -> GET /api/results
 ```
 
 也就是说：
 
-- 文件结果只是中间产物
-- 正式对外以 D1 中的公开结果为准
-- Public API 不再直接读文件
+- `imports/` 是原始输入
+- `normalized/` 是可复算的中间结果
+- `results/` 是本轮探测产物
+- `src/data/public-results.json` 是公开接口真实读取的数据源
 
 ---
 
@@ -62,10 +67,10 @@ data/results/probe_results.json
 ### 1. 重新规范化输入
 
 ```bash
-node scripts/normalize-candidates.mjs
+npm run normalize:candidates
 ```
 
-### 2. 重新跑 probe
+### 2. 单独跑 probe
 
 ```bash
 node scripts/run-probe-input.mjs
@@ -77,22 +82,24 @@ node scripts/run-probe-input.mjs
 PROBE_LIMIT=200 node scripts/run-probe-input.mjs
 ```
 
-### 3. 把 probe 结果刷新进 D1
-
-```bash
-npm run refresh:public-results
-```
-
-### 4. 一口气跑完整主线
+### 3. 一口气跑完整主线
 
 ```bash
 npm run pipeline:public-results
 ```
 
+这个命令现在会自动：
+
+1. 读取 `data/imports/` 下全部 `csv/json`
+2. 生成 `normalized/` 和 `rejects/`
+3. 从 `probe_input.csv` 中读取 IP 做测试
+4. 只保留测试成功结果
+5. 更新 `src/data/public-results.json`
+
 ---
 
 ## 注意
 
-- `probe_results.json` 是正式刷新源，改它就等于改即将发布的数据
-- `imports/` 不要直接手改
-- 如果要新增批次，优先新增文件，不要覆盖旧样本
+- `imports/` 不要直接手改旧样本
+- 想加新数据，直接往 `imports/` 里新增文件
+- 对外公开只以成功探测结果为准

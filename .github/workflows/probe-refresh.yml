@@ -37,14 +37,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run probe pipeline
+      - name: Run normalize + probe pipeline
         run: npm run pipeline:public-results
 
-      - name: Commit updated result files
+      - name: Commit updated data files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/results/probe_results.json data/results/probe_results.csv data/results/probe_failures.csv src/data/public-results.json
+          git add data/normalized/first_pass_candidates.csv data/normalized/probe_input.csv data/normalized/first_pass_summary.json data/rejects/first_pass_rejects.csv data/results/probe_results.json data/results/probe_results.csv data/results/probe_failures.csv src/data/public-results.json
           if git diff --cached --quiet; then
             echo "No result changes to commit"
             exit 0
