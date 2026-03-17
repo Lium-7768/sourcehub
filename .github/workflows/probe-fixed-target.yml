@@ -3,8 +3,8 @@ name: Probe Fixed Target
 on:
   workflow_dispatch:
     inputs:
-      target_host:
-        description: Fixed target host or IP to probe
+      target_hosts:
+        description: Comma-separated fixed target hosts or IPs to probe
         required: false
         default: '61.139.2.69'
       target_ports:
@@ -35,7 +35,7 @@ jobs:
     permissions:
       contents: read
     env:
-      TARGET_HOST: ${{ github.event.inputs.target_host || '61.139.2.69' }}
+      TARGET_HOSTS: ${{ github.event.inputs.target_hosts || '61.139.2.69' }}
       TARGET_PORTS: ${{ github.event.inputs.target_ports || '80,443' }}
       PROBE_ATTEMPTS: ${{ github.event.inputs.probe_attempts || '3' }}
       PROBE_TIMEOUT_MS: ${{ github.event.inputs.probe_timeout_ms || '1500' }}

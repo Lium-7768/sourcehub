@@ -7,7 +7,13 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
 const resultsDir = path.join(ROOT, 'data', 'results');
 
-const host = String(process.env.TARGET_HOST || '').trim();
+const targetHostsRaw = String(process.env.TARGET_HOSTS || process.env.TARGET_HOST || '').trim();
+const hosts = Array.from(new Set(
+  targetHostsRaw
+    .split(/[\n,]+/)
+    .map((x) => x.trim())
+    .filter(Boolean)
+));
 const ports = String(process.env.TARGET_PORTS || '80,443')
   .split(',')
   .map((x) => x.trim())
@@ -18,8 +24,8 @@ const attempts = Math.max(1, Number(process.env.PROBE_ATTEMPTS || '3'));
 const timeoutMs = Math.max(100, Number(process.env.PROBE_TIMEOUT_MS || '1500'));
 const region = String(process.env.REGION || 'github-actions');
 
-if (!host) {
-  console.error('Missing TARGET_HOST');
+if (!hosts.length) {
+  console.error('Missing TARGET_HOSTS/TARGET_HOST');
   process.exit(1);
 }
 if (!ports.length) {
@@ -63,7 +69,7 @@ function toCsvRow(values) {
   }).join(',');
 }
 
-async function probePort(port) {
+async function probePort(host, port) {
   const latencies = [];
   const errors = [];
   for (let i = 0; i < attempts; i += 1) {
@@ -110,17 +116,20 @@ async function probePort(port) {
 }
 
 const results = [];
-for (const port of ports) {
-  results.push(await probePort(port));
+for (const host of hosts) {
+  for (const port of ports) {
+    results.push(await probePort(host, port));
+  }
 }
 
 fs.mkdirSync(resultsDir, { recursive: true });
 const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-const jsonOut = path.join(resultsDir, `fixed_target_probe_${host.replace(/[^\w.-]+/g, '_')}_${stamp}.json`);
-const csvOut = path.join(resultsDir, `fixed_target_probe_${host.replace(/[^\w.-]+/g, '_')}_${stamp}.csv`);
+const slug = hosts.join('_').replace(/[^\w.-]+/g, '_').slice(0, 120);
+const jsonOut = path.join(resultsDir, `fixed_target_probe_${slug}_${stamp}.json`);
+const csvOut = path.join(resultsDir, `fixed_target_probe_${slug}_${stamp}.csv`);
 
 fs.writeFileSync(jsonOut, JSON.stringify({
-  target: host,
+  targets: hosts,
   ports,
   attempts,
   timeout_ms: timeoutMs,
@@ -146,4 +155,4 @@ fs.writeFileSync(csvOut, [
   ])),
 ].join('\n') + '\n');
 
-console.log(JSON.stringify({ success: true, target: host, ports, attempts, timeoutMs, region, results, jsonOut, csvOut }, null, 2));
+console.log(JSON.stringify({ success: true, targets: hosts, ports, attempts, timeoutMs, region, results, jsonOut, csvOut }, null, 2));
