@@ -7,10 +7,6 @@ on:
         description: Max number of probe targets to scan in this run
         required: false
         default: '2000'
-      remote:
-        description: Write results to remote D1 (1=yes, 0=no)
-        required: false
-        default: '1'
   schedule:
     - cron: '*/30 * * * *'
 
@@ -19,22 +15,18 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  probe-and-refresh:
+  probe-and-commit:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
-      contents: read
+      contents: write
     env:
-      CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
-      CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
       PROBE_LIMIT: ${{ github.event.inputs.probe_limit || '2000' }}
-      REMOTE: ${{ github.event.inputs.remote || '1' }}
-      D1_DB_NAME: sourcehub
-      PUBLIC_SOURCE_ID: src_public_results_db
-      REGION: HKG
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -45,22 +37,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify Cloudflare credentials are present
-        run: |
-          if [ -z "${CLOUDFLARE_API_KEY}" ]; then
-            echo "Missing GitHub secret: CLOUDFLARE_API_KEY" >&2
-            exit 1
-          fi
-          if [ -z "${CLOUDFLARE_EMAIL}" ]; then
-            echo "Missing GitHub secret: CLOUDFLARE_EMAIL" >&2
-            exit 1
-          fi
-
-      - name: Apply D1 migrations
-        run: npx wrangler d1 migrations apply "$D1_DB_NAME" --remote
-
-      - name: Run probe pipeline and refresh D1
+      - name: Run probe pipeline
         run: npm run pipeline:public-results
+
+      - name: Commit updated result files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/results/probe_results.json data/results/probe_results.csv data/results/probe_failures.csv src/data/public-results.json
+          if git diff --cached --quiet; then
+            echo "No result changes to commit"
+            exit 0
+          fi
+          git commit -m "Update probe results"
+          git push
 
       - name: Upload probe artifacts
         if: always()
@@ -71,5 +61,6 @@ jobs:
             data/results/probe_results.json
             data/results/probe_results.csv
             data/results/probe_failures.csv
+            src/data/public-results.json
           if-no-files-found: warn
           retention-days: 7

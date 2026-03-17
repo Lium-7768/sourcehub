@@ -1,6 +1,4 @@
-export interface Env {
-  DB: D1Database;
-}
+export interface Env {}
 
 export interface SourceRow {
   id: string;

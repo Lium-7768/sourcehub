@@ -2,13 +2,5 @@ name = "sourcehub"
 main = "src/index.ts"
 compatibility_date = "2025-03-15"
 
-[[d1_databases]]
-binding = "DB"
-database_name = "sourcehub"
-database_id = "1386437c-4208-47e0-9a07-ee2a1976f9a7"
-
-[triggers]
-crons = ["*/30 * * * *"]
-
 [observability]
 enabled = true

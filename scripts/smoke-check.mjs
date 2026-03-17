@@ -41,7 +41,7 @@ async function main() {
   });
   assert(authed.ok, `authed /api/results failed: ${JSON.stringify(authed.json)}`);
   assert(Array.isArray(authed.json?.items), 'results items missing');
-  assert(authed.json?.meta?.source === 'db_results', 'results meta.source should be db_results');
+  assert(authed.json?.meta?.source === 'repo_file', 'results meta.source should be repo_file');
   assert(Number(authed.json?.meta?.count ?? -1) >= 0, 'results meta.count missing');
 
   if (authed.json.items.length > 0) {
