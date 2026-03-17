@@ -1,0 +1,67 @@
+name: Probe Refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe_limit:
+        description: Max number of probe targets to scan in this run
+        required: false
+        default: '2000'
+      remote:
+        description: Write results to remote D1 (1=yes, 0=no)
+        required: false
+        default: '1'
+  schedule:
+    - cron: '*/30 * * * *'
+
+concurrency:
+  group: probe-refresh
+  cancel-in-progress: false
+
+jobs:
+  probe-and-refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      PROBE_LIMIT: ${{ github.event.inputs.probe_limit || '2000' }}
+      REMOTE: ${{ github.event.inputs.remote || '1' }}
+      D1_DB_NAME: sourcehub
+      PUBLIC_SOURCE_ID: src_public_results_db
+      REGION: HKG
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Cloudflare token is present
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+            echo "Missing GitHub secret: CLOUDFLARE_API_TOKEN" >&2
+            exit 1
+          fi
+
+      - name: Run probe pipeline and refresh D1
+        run: npm run pipeline:public-results
+
+      - name: Upload probe artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: probe-results-${{ github.run_id }}
+          path: |
+            data/results/probe_results.json
+            data/results/probe_results.csv
+            data/results/probe_failures.csv
+          if-no-files-found: warn
+          retention-days: 7

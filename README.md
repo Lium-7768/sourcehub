@@ -4,6 +4,8 @@
 
 当前仓库已经从早期的通用 source manager 方案，收束到一条很窄的主线：
 
+GitHub Actions 现在也已接上这条主线：可手动触发，也可按 30 分钟定时触发，执行 probe 并把结果刷新到 D1。
+
 - 从原始样本文件中整理候选
 - 生成 probe 输入
 - 执行 TCP connect probe
@@ -178,6 +180,23 @@ npm run pipeline:public-results
 1. 先跑 probe
 2. 再刷新 D1 公共结果
 
+### 5. 通过 GitHub Actions 跑主线
+
+仓库内已提供 workflow：
+
+- `.github/workflows/probe-refresh.yml`
+
+支持：
+
+- 手动触发（`workflow_dispatch`）
+- 每 30 分钟定时触发（`schedule`）
+- 上传本次 probe 结果为 artifact
+
+手动触发时可选输入：
+
+- `probe_limit`：本次扫描条数上限，默认 `2000`
+- `remote`：是否写入远端 D1，默认 `1`
+
 ---
 
 ## 本地开发
@@ -232,9 +251,11 @@ npx wrangler whoami
 
 ### 4. 配置运行时 secret
 
-当前主线不依赖额外运行时 secret。
+运行 GitHub Actions 的 probe refresh workflow 时，需要在 GitHub 仓库 Secrets 中配置：
 
-如果你后面自己扩展私有管理接口或第三方同步能力，再按需要增加 secret。
+- `CLOUDFLARE_API_TOKEN`：用于 `wrangler d1 execute --remote`
+
+如果只是本地执行主线脚本，不需要额外 GitHub secret。
 
 ### 5. 部署
 
