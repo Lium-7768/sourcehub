@@ -8,8 +8,6 @@ interface RepoResultItem {
   loss_pct?: number | null;
   jitter_ms?: number | null;
   score?: number | null;
-  org?: string | null;
-  city?: string | null;
   country?: string | null;
   checked_at?: string | null;
 }
@@ -72,17 +70,22 @@ export async function handlePublicResults(request: Request): Promise<Response> {
     .slice(0, limit);
 
   return json({
-    items,
+    items: items.map((item) => ({
+      host: item.host,
+      port: item.port ?? null,
+      latency_ms: item.latency_ms ?? null,
+      loss_pct: item.loss_pct ?? null,
+      jitter_ms: item.jitter_ms ?? null,
+      score: item.score ?? null,
+      country: item.country ?? null,
+      checked_at: item.checked_at ?? null,
+    })),
     meta: {
       limit,
       count: items.length,
-      total_count: Array.isArray(payload.items) ? payload.items.length : 0,
       source: payload.meta?.source ?? 'repo_file',
       country: country ?? null,
       available_countries: availableCountries,
-      available_regions: [],
-      scanned: payload.meta?.scanned ?? null,
-      failed: payload.meta?.failed ?? null,
       updated_at: payload.meta?.updated_at ?? null,
     },
   }, {
