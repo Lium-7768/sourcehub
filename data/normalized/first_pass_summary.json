@@ -26,10 +26,10 @@
   ],
   "skippedFiles": [],
   "outputs": {
-    "first_pass": "/root/.openclaw/workspace/sourcehub/data/normalized/first_pass_candidates.csv",
-    "probe_input": "/root/.openclaw/workspace/sourcehub/data/normalized/probe_input.csv",
-    "rejects": "/root/.openclaw/workspace/sourcehub/data/rejects/first_pass_rejects.csv",
-    "manifest": "/root/.openclaw/workspace/sourcehub/data/normalized/import_manifest.json",
-    "quality_gate": "/root/.openclaw/workspace/sourcehub/data/normalized/quality_gate.json"
+    "first_pass": "/home/runner/work/sourcehub/sourcehub/data/normalized/first_pass_candidates.csv",
+    "probe_input": "/home/runner/work/sourcehub/sourcehub/data/normalized/probe_input.csv",
+    "rejects": "/home/runner/work/sourcehub/sourcehub/data/rejects/first_pass_rejects.csv",
+    "manifest": "/home/runner/work/sourcehub/sourcehub/data/normalized/import_manifest.json",
+    "quality_gate": "/home/runner/work/sourcehub/sourcehub/data/normalized/quality_gate.json"
   }
 }
