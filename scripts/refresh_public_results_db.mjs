@@ -26,6 +26,13 @@ const items = Array.isArray(payload?.items) ? payload.items : [];
 const now = nowIso();
 
 const lines = [];
+lines.push(
+  `INSERT OR IGNORE INTO sources (` +
+  `id, name, enabled, is_public, item_count, created_at, updated_at, probe_last_at, probe_last_status, probe_last_error` +
+  `) VALUES (` +
+  `${q(SOURCE_ID)}, ${q('public probe results')}, 1, 1, 0, ${q(now)}, ${q(now)}, NULL, ${q('idle')}, NULL` +
+  `);`
+);
 lines.push(`DELETE FROM measurements WHERE source_id = ${q(SOURCE_ID)};`);
 lines.push(`DELETE FROM items WHERE source_id = ${q(SOURCE_ID)};`);
 lines.push(

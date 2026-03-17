@@ -51,6 +51,9 @@ jobs:
             exit 1
           fi
 
+      - name: Apply D1 migrations
+        run: npx wrangler d1 migrations apply "$D1_DB_NAME" --remote
+
       - name: Run probe pipeline and refresh D1
         run: npm run pipeline:public-results
 

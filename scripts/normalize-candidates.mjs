@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = '/root/.openclaw/workspace/sourcehub';
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(SCRIPT_DIR, '..');
 const importsDir = path.join(ROOT, 'data', 'imports');
 const normalizedDir = path.join(ROOT, 'data', 'normalized');
 const rejectsDir = path.join(ROOT, 'data', 'rejects');

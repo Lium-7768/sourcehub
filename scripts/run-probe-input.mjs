@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import net from 'node:net';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = '/root/.openclaw/workspace/sourcehub';
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(SCRIPT_DIR, '..');
 const inputPath = path.join(ROOT, 'data', 'normalized', 'probe_input.csv');
 const resultsDir = path.join(ROOT, 'data', 'results');
 const jsonOut = path.join(resultsDir, 'probe_results.json');
