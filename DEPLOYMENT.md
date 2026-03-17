@@ -29,10 +29,10 @@
 
 以下旧链路已经移除：
 
-- Cloudflare D1 作为公开结果主存储
+- 旧数据库存储链路
 - Worker `scheduled()` 定时探测
 - Cloudflare Cron Trigger 驱动探测
-- “探测后刷新 D1” 这条链路
+- 旧的数据库刷新链路
 
 ---
 

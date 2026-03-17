@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS sync_runs;
-DROP TABLE IF EXISTS app_settings;

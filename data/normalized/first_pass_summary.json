@@ -14,22 +14,22 @@
   "rejectedRows": 196,
   "dedupedRows": 153,
   "uniqueIps": 1511,
-  "cacheHits": 5,
-  "cacheMisses": 0,
-  "changedFiles": [],
-  "unchangedFiles": [
+  "cacheHits": 0,
+  "cacheMisses": 5,
+  "changedFiles": [
     "2026-03-15-aws-hk-noise-batch-01.csv",
     "2026-03-15-japan-mixed-batch-01.json",
     "2026-03-15-oracle-jp-batch-01.csv",
     "2026-03-15-oracle-sg-batch-01.csv",
     "2026-03-15-oracle-us-batch-01.csv"
   ],
+  "unchangedFiles": [],
   "skippedFiles": [],
   "outputs": {
-    "first_pass": "/home/runner/work/sourcehub/sourcehub/data/normalized/first_pass_candidates.csv",
-    "probe_input": "/home/runner/work/sourcehub/sourcehub/data/normalized/probe_input.csv",
-    "rejects": "/home/runner/work/sourcehub/sourcehub/data/rejects/first_pass_rejects.csv",
-    "manifest": "/home/runner/work/sourcehub/sourcehub/data/normalized/import_manifest.json",
-    "quality_gate": "/home/runner/work/sourcehub/sourcehub/data/normalized/quality_gate.json"
+    "first_pass": "/root/.openclaw/workspace/sourcehub/data/normalized/first_pass_candidates.csv",
+    "probe_input": "/root/.openclaw/workspace/sourcehub/data/normalized/probe_input.csv",
+    "rejects": "/root/.openclaw/workspace/sourcehub/data/rejects/first_pass_rejects.csv",
+    "manifest": "/root/.openclaw/workspace/sourcehub/data/normalized/import_manifest.json",
+    "quality_gate": "/root/.openclaw/workspace/sourcehub/data/normalized/quality_gate.json"
   }
 }
