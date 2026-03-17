@@ -70,6 +70,8 @@ src/data/public-results.json
 - 更新结果文件
 - 自动 commit + push 回仓库
 - 上传 artifact
+- 当 `src/data/public-results.json` 发生变化时，尝试自动 deploy Worker
+- 如果仓库里没有配置 `CLOUDFLARE_API_TOKEN` secret，则 deploy 自动跳过
 
 ### 输入参数
 

@@ -109,6 +109,8 @@ npm run pipeline:public-results
 - 每 30 分钟定时触发
 - 运行后自动把结果文件提交回仓库
 - 上传 artifacts 方便查看本次探测结果
+- 如果仓库里已经配置 `CLOUDFLARE_API_TOKEN` secret，并且 `src/data/public-results.json` 有变化，则自动 deploy Worker
+- 如果没有这个 secret，则 deploy 步骤自动跳过，不会强制失败
 
 ## smoke
 

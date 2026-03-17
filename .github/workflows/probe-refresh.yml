@@ -17,11 +17,13 @@ concurrency:
 jobs:
   probe-and-commit:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     permissions:
       contents: write
     env:
       PROBE_LIMIT: ${{ github.event.inputs.probe_limit || '2000' }}
+    outputs:
+      public_results_changed: ${{ steps.detect.outputs.public_results_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,15 +42,29 @@ jobs:
       - name: Run normalize + probe pipeline
         run: npm run pipeline:public-results
 
+      - name: Detect changed files
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/normalized/first_pass_candidates.csv data/normalized/probe_input.csv data/normalized/first_pass_summary.json data/normalized/import_manifest.json data/normalized/quality_gate.json data/normalized/cache data/rejects/first_pass_rejects.csv data/results/probe_results.json data/results/probe_results.csv data/results/probe_failures.csv src/data/public-results.json; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "public_results_changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            if git diff --quiet -- src/data/public-results.json; then
+              echo "public_results_changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "public_results_changed=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
       - name: Commit updated data files
+        if: steps.detect.outputs.has_changes == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/normalized/first_pass_candidates.csv data/normalized/probe_input.csv data/normalized/first_pass_summary.json data/normalized/import_manifest.json data/normalized/quality_gate.json data/normalized/cache data/rejects/first_pass_rejects.csv data/results/probe_results.json data/results/probe_results.csv data/results/probe_failures.csv src/data/public-results.json
-          if git diff --cached --quiet; then
-            echo "No result changes to commit"
-            exit 0
-          fi
           git commit -m "Update probe results"
           git push
 
@@ -58,9 +74,57 @@ jobs:
         with:
           name: probe-results-${{ github.run_id }}
           path: |
+            data/normalized/first_pass_summary.json
+            data/normalized/import_manifest.json
+            data/normalized/quality_gate.json
             data/results/probe_results.json
             data/results/probe_results.csv
             data/results/probe_failures.csv
             src/data/public-results.json
           if-no-files-found: warn
           retention-days: 7
+
+  deploy-worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: probe-and-commit
+    if: needs.probe-and-commit.outputs.public_results_changed == 'true'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check deploy token availability
+        id: token
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip deploy (no Cloudflare token configured)
+        if: steps.token.outputs.available != 'true'
+        run: echo "Skipping deploy because CLOUDFLARE_API_TOKEN is not configured in GitHub Secrets."
+
+      - name: Deploy worker
+        if: steps.token.outputs.available == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler deploy
