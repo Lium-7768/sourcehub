@@ -4,10 +4,11 @@
 
 1. 原始数据进入仓库
 2. 格式化为 `data/normalized/probe_input.csv`
-3. GitHub Actions 读取这个文件做探测
-4. 只保留探测成功的 IP
-5. 写回仓库文件 `src/data/public-results.json`
-6. Cloudflare Worker 只负责读这个文件并对外提供 `/api/results`
+3. GitHub Actions 先做 imports 质量闸门和增量规范化
+4. 再读取 `probe_input.csv` 做探测
+5. 只保留探测成功的 IP
+6. 写回仓库文件 `src/data/public-results.json`
+7. Cloudflare Worker 只负责读这个文件并对外提供 `/api/results`
 
 ---
 

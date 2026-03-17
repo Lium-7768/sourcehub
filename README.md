@@ -7,8 +7,9 @@
 1. 原始数据导入仓库
 2. 格式化成 `data/normalized/probe_input.csv`
 3. GitHub Actions 读取这个处理好的文件做探测
-4. **只有探测成功的 IP** 才写入结果文件
-5. Worker 接口直接读取仓库内的 `src/data/public-results.json` 对外返回
+4. 先经过 imports 质量闸门和增量规范化
+5. **只有探测成功的 IP** 才写入结果文件
+6. Worker 接口直接读取仓库内的 `src/data/public-results.json` 对外返回
 
 也就是说：
 

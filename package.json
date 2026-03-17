@@ -10,6 +10,7 @@
     "check": "tsc --noEmit",
     "smoke": "node scripts/smoke-check.mjs",
     "normalize:candidates": "node scripts/normalize-candidates.mjs",
+    "imports:gate": "node scripts/normalize-candidates.mjs",
     "pipeline:public-results": "node scripts/run_probe_and_refresh.mjs"
   },
   "devDependencies": {

@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-03-17T12:48:15.270Z",
+  "files": {
+    "2026-03-15-aws-hk-noise-batch-01.csv": {
+      "sha256": "82045afdc2b709d65090c94d10b60fbd9bdea46e2542112f66cc765923bfa869",
+      "size": 31657,
+      "rowCount": 290,
+      "ok": true,
+      "headers": [
+        "host",
+        "ip",
+        "port",
+        "protocol",
+        "title",
+        "domain",
+        "country",
+        "city",
+        "link",
+        "org"
+      ],
+      "errors": []
+    },
+    "2026-03-15-japan-mixed-batch-01.json": {
+      "sha256": "89cb62c4c3bbb57cae8ef8e4cd4fb43feed50bf1eecdf5c27bffb208bdef9413",
+      "size": 18517,
+      "rowCount": 100,
+      "ok": true,
+      "headers": [
+        "host",
+        "ip",
+        "country",
+        "city",
+        "org"
+      ],
+      "errors": []
+    },
+    "2026-03-15-oracle-jp-batch-01.csv": {
+      "sha256": "94807f37d3e19dd9f68192a7a92ec7a154e7368205d2c9f827ee323140d571ff",
+      "size": 36968,
+      "rowCount": 338,
+      "ok": true,
+      "headers": [
+        "host",
+        "ip",
+        "port",
+        "protocol",
+        "title",
+        "domain",
+        "country",
+        "city",
+        "link",
+        "org"
+      ],
+      "errors": []
+    },
+    "2026-03-15-oracle-sg-batch-01.csv": {
+      "sha256": "ed243d3c140cfe184020a43fe3a103e72e0a058fa9fa69f595120a53b63a6003",
+      "size": 15132,
+      "rowCount": 132,
+      "ok": true,
+      "headers": [
+        "host",
+        "ip",
+        "port",
+        "protocol",
+        "title",
+        "domain",
+        "country",
+        "city",
+        "link",
+        "org"
+      ],
+      "errors": []
+    },
+    "2026-03-15-oracle-us-batch-01.csv": {
+      "sha256": "24393c044642afa0a089cdbe4c9a3295e5afab06161c3e5d5a15b564aba52ebb",
+      "size": 114451,
+      "rowCount": 1000,
+      "ok": true,
+      "headers": [
+        "host",
+        "ip",
+        "port",
+        "protocol",
+        "title",
+        "domain",
+        "country",
+        "city",
+        "link",
+        "org"
+      ],
+      "errors": []
+    }
+  }
+}

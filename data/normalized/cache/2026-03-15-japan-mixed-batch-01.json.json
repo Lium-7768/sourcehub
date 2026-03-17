@@ -1,0 +1,1027 @@
+{
+  "meta": {
+    "size": 18517,
+    "sha256": "89cb62c4c3bbb57cae8ef8e4cd4fb43feed50bf1eecdf5c27bffb208bdef9413",
+    "rowCount": 100,
+    "headers": [
+      "host",
+      "ip",
+      "country",
+      "city",
+      "org"
+    ]
+  },
+  "firstPassRows": [
+    {
+      "ip": "195.78.48.31",
+      "port": "",
+      "org": "NEAROUTE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "unknown.itsidc.com",
+      "score": 0
+    },
+    {
+      "ip": "195.78.48.89",
+      "port": "",
+      "org": "NEAROUTE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "unknown.itsidc.com",
+      "score": 0
+    },
+    {
+      "ip": "140.83.34.97",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Inzai",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "140.83.34.97",
+      "score": 5
+    },
+    {
+      "ip": "56.155.90.6",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-56-155-90-6.ap-northeast-3.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "34.97.219.144",
+      "port": "",
+      "org": "GOOGLE-CLOUD-PLATFORM - Google LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "144.219.97.34.bc.googleusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "142.91.108.54",
+      "port": "",
+      "org": "LEASEWEB-AS-AP Leaseweb Japan K.K.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "54.108.91.142.hosted.by.hostdzire.com",
+      "score": 0
+    },
+    {
+      "ip": "23.47.122.207",
+      "port": "",
+      "org": "AKAMAI-ASN1",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "a23-47-122-207.deploy.static.akamaitechnologies.com",
+      "score": 0
+    },
+    {
+      "ip": "139.180.206.78",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "139.180.206.78.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "165.154.231.51",
+      "port": "",
+      "org": "SCLOUDPTELTD-AS Scloud Pte Ltd",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "165.154.231.51",
+      "score": 3
+    },
+    {
+      "ip": "74.226.154.119",
+      "port": "",
+      "org": "MICROSOFT-CORP-MSN-AS-BLOCK - Microsoft Corporation",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "74.226.154.119",
+      "score": 3
+    },
+    {
+      "ip": "18.183.231.122",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-18-183-231-122.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "35.72.35.136",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "35.72.35.136",
+      "score": 3
+    },
+    {
+      "ip": "23.249.25.36",
+      "port": "",
+      "org": "PRIME-SEC - Prime Security Corp.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "23.249.25.36",
+      "score": 3
+    },
+    {
+      "ip": "141.147.174.196",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Inzai",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "141.147.174.196",
+      "score": 5
+    },
+    {
+      "ip": "45.66.129.11",
+      "port": "",
+      "org": "XTOM-JAPAN xTom Japan Corporation",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "45.66.129.11",
+      "score": 3
+    },
+    {
+      "ip": "23.106.134.67",
+      "port": "",
+      "org": "IT7NET - IT7 Networks Inc",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "23.106.134.67.16clouds.com",
+      "score": 0
+    },
+    {
+      "ip": "47.245.11.183",
+      "port": "",
+      "org": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "47.245.11.183",
+      "score": 3
+    },
+    {
+      "ip": "23.106.142.118",
+      "port": "",
+      "org": "IT7NET - IT7 Networks Inc",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "23.106.142.118.16clouds.com",
+      "score": 0
+    },
+    {
+      "ip": "52.68.134.227",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-52-68-134-227.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "156.231.140.19",
+      "port": "",
+      "org": "ACCK-LTD - ACCK LLC",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "156.231.140.19",
+      "score": 3
+    },
+    {
+      "ip": "47.245.12.116",
+      "port": "",
+      "org": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "47.245.12.116",
+      "score": 3
+    },
+    {
+      "ip": "64.176.55.85",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "64.176.55.85.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "64.176.55.11",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "64.176.55.11.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "64.176.55.74",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "64.176.55.74.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "8.209.211.0",
+      "port": "",
+      "org": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "8.209.211.0",
+      "score": 3
+    },
+    {
+      "ip": "46.250.255.19",
+      "port": "",
+      "org": "CAPL-AS-AP Contabo Asia Private Limited",
+      "city": "Ebara",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "vmi3070456.contaboserver.net",
+      "score": 0
+    },
+    {
+      "ip": "139.162.101.44",
+      "port": "",
+      "org": "AKAMAI-LINODE-AP Akamai Connected Cloud",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "139-162-101-44.ip.linodeusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "57.181.20.206",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-57-181-20-206.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "167.179.115.112",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "167.179.115.112.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "172.238.14.152",
+      "port": "",
+      "org": "AKAMAI-LINODE-AP Akamai Connected Cloud",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "172-238-14-152.ip.linodeusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "34.84.142.192",
+      "port": "",
+      "org": "GOOGLE-CLOUD-PLATFORM - Google LLC",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "192.142.84.34.bc.googleusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "160.251.209.140",
+      "port": "",
+      "org": "GMOOSK-NET GMO Internet Group, Inc.",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "v160-251-209-140.tkj9.static.cnode.jp",
+      "score": 0
+    },
+    {
+      "ip": "54.249.193.169",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-54-249-193-169.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "138.2.54.127",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "138.2.54.127",
+      "score": 5
+    },
+    {
+      "ip": "138.2.54.176",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "138.2.54.176",
+      "score": 5
+    },
+    {
+      "ip": "142.248.150.4",
+      "port": "",
+      "org": "SAKURA-AS",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "142.248.150.4",
+      "score": 3
+    },
+    {
+      "ip": "167.179.82.110",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "167.179.82.110",
+      "score": 3
+    },
+    {
+      "ip": "154.83.92.115",
+      "port": "",
+      "org": "AkileCloud Network",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.83.92.115",
+      "score": 3
+    },
+    {
+      "ip": "133.167.66.12",
+      "port": "",
+      "org": "SAKURA-C SAKURA Internet Inc.",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "os3-363-14508.vs.sakura.ne.jp",
+      "score": 0
+    },
+    {
+      "ip": "23.195.128.207",
+      "port": "",
+      "org": "AKAMAI-ASN1",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "a23-195-128-207.deploy.static.akamaitechnologies.com",
+      "score": 0
+    },
+    {
+      "ip": "82.40.45.129",
+      "port": "",
+      "org": "CYBERVERSE-BACKBONE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "82.40.45.129",
+      "score": 3
+    },
+    {
+      "ip": "82.40.45.189",
+      "port": "",
+      "org": "CYBERVERSE-BACKBONE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "82.40.45.189",
+      "score": 3
+    },
+    {
+      "ip": "82.40.46.177",
+      "port": "",
+      "org": "CYBERVERSE-BACKBONE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "82.40.46.177",
+      "score": 3
+    },
+    {
+      "ip": "168.138.209.146",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Inzai",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "168.138.209.146",
+      "score": 5
+    },
+    {
+      "ip": "64.176.42.33",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "64.176.42.33.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "47.74.39.85",
+      "port": "",
+      "org": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "47.74.39.85",
+      "score": 3
+    },
+    {
+      "ip": "163.61.207.74",
+      "port": "",
+      "org": "DODO-CORE DODO K.K.",
+      "city": "Funabashi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "163.61.207.74",
+      "score": 3
+    },
+    {
+      "ip": "47.245.28.90",
+      "port": "",
+      "org": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "47.245.28.90",
+      "score": 3
+    },
+    {
+      "ip": "178.157.61.21",
+      "port": "",
+      "org": "IT7NET - IT7 Networks Inc",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "178.157.61.21.16clouds.com",
+      "score": 0
+    },
+    {
+      "ip": "74.113.96.137",
+      "port": "",
+      "org": "DDPS - DDPS Networks, LLC",
+      "city": "Kanda-jinbōchō",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "74.113.96.137",
+      "score": 3
+    },
+    {
+      "ip": "74.113.96.142",
+      "port": "",
+      "org": "DDPS - DDPS Networks, LLC",
+      "city": "Kanda-jinbōchō",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "74.113.96.142",
+      "score": 3
+    },
+    {
+      "ip": "43.133.15.59",
+      "port": "",
+      "org": "TENCENT-NET-AP-CN Tencent Building, Kejizhongyi Avenue",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "43.133.15.59",
+      "score": 3
+    },
+    {
+      "ip": "74.113.96.196",
+      "port": "",
+      "org": "DDPS - DDPS Networks, LLC",
+      "city": "Kanda-jinbōchō",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "74.113.96.196",
+      "score": 3
+    },
+    {
+      "ip": "54.178.10.61",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-54-178-10-61.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "13.114.234.229",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-13-114-234-229.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "43.167.185.225",
+      "port": "",
+      "org": "TENCENT-NET-AP-CN Tencent Building, Kejizhongyi Avenue",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "43.167.185.225",
+      "score": 3
+    },
+    {
+      "ip": "43.167.202.104",
+      "port": "",
+      "org": "TENCENT-NET-AP-CN Tencent Building, Kejizhongyi Avenue",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "43.167.202.104",
+      "score": 3
+    },
+    {
+      "ip": "134.122.194.186",
+      "port": "",
+      "org": "CTGSERVERLIMITED-AS-AP CTG Server Limited",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "134.122.194.186",
+      "score": 3
+    },
+    {
+      "ip": "34.85.44.225",
+      "port": "",
+      "org": "GOOGLE-CLOUD-PLATFORM - Google LLC",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "225.44.85.34.bc.googleusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "43.206.143.245",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-43-206-143-245.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "202.182.99.107",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "202.182.99.107.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "38.47.104.110",
+      "port": "",
+      "org": "VMISS - VMISS Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "38.47.104.110",
+      "score": 3
+    },
+    {
+      "ip": "161.33.158.241",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Inzai",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "161.33.158.241",
+      "score": 5
+    },
+    {
+      "ip": "138.2.35.25",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "138.2.35.25",
+      "score": 5
+    },
+    {
+      "ip": "58.191.42.197",
+      "port": "",
+      "org": "OPTAGE OPTAGE Inc.",
+      "city": "Kobe",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "h58-191-42-197.ablenetvps.ne.jp",
+      "score": 0
+    },
+    {
+      "ip": "13.230.34.30",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-13-230-34-30.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "140.83.56.85",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "140.83.56.85",
+      "score": 5
+    },
+    {
+      "ip": "195.245.242.207",
+      "port": "",
+      "org": "XTOM-JAPAN xTom Japan Corporation",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "s53296.vps.hosting",
+      "score": 0
+    },
+    {
+      "ip": "64.118.148.129",
+      "port": "",
+      "org": "EDCL-AS-AP Eons Data Communications Limited",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "64.118.148.129",
+      "score": 3
+    },
+    {
+      "ip": "43.206.147.73",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-43-206-147-73.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "150.230.62.27",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "150.230.62.27",
+      "score": 5
+    },
+    {
+      "ip": "45.76.97.165",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "45.76.97.165",
+      "score": 3
+    },
+    {
+      "ip": "13.230.69.144",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-13-230-69-144.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "116.80.91.168",
+      "port": "",
+      "org": "INFOSPHERE NTT PC Communications, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "116-80-91-168.indigo.static.arena.ne.jp",
+      "score": 0
+    },
+    {
+      "ip": "212.50.246.25",
+      "port": "",
+      "org": "IT7NET - IT7 Networks Inc",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "212.50.246.25.16clouds.com",
+      "score": 0
+    },
+    {
+      "ip": "45.32.22.204",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "45.32.22.204.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "166.1.61.85",
+      "port": "",
+      "org": "HOST-AS-AP Host Universal Pty Ltd",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "yobanok.jp",
+      "score": 0
+    },
+    {
+      "ip": "163.61.207.200",
+      "port": "",
+      "org": "DODO-CORE DODO K.K.",
+      "city": "Funabashi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "163.61.207.200",
+      "score": 3
+    },
+    {
+      "ip": "168.138.37.152",
+      "port": "",
+      "org": "ORACLE-BMC-31898 - Oracle Corporation",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "168.138.37.152",
+      "score": 5
+    },
+    {
+      "ip": "198.13.47.253",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "198.13.47.253.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "3.115.38.151",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-3-115-38-151.ap-northeast-1.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "103.27.132.118",
+      "port": "",
+      "org": "SHOCK-1 - Shock Hosting LLC",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "103.27.132.118",
+      "score": 3
+    },
+    {
+      "ip": "153.127.43.153",
+      "port": "",
+      "org": "SAKURA-A SAKURA Internet Inc.",
+      "city": "Ebara",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ik1-419-41899.vs.sakura.ne.jp",
+      "score": 0
+    },
+    {
+      "ip": "207.148.103.2",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "207.148.103.2.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "15.168.8.100",
+      "port": "",
+      "org": "AMAZON-02 - Amazon.com, Inc.",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "ec2-15-168-8-100.ap-northeast-3.compute.amazonaws.com",
+      "score": 0
+    },
+    {
+      "ip": "143.14.105.145",
+      "port": "",
+      "org": "CYBERVERSE-BACKBONE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "143.14.105.145",
+      "score": 3
+    },
+    {
+      "ip": "143.14.105.100",
+      "port": "",
+      "org": "CYBERVERSE-BACKBONE",
+      "city": "Tokyo",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "143.14.105.100",
+      "score": 3
+    },
+    {
+      "ip": "45.32.42.151",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Ōi",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "45.32.42.151.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "34.97.29.17",
+      "port": "",
+      "org": "GOOGLE-CLOUD-PLATFORM - Google LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "17.29.97.34.bc.googleusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "172.234.95.183",
+      "port": "",
+      "org": "AKAMAI-LINODE-AP Akamai Connected Cloud",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "172.234.95.183",
+      "score": 3
+    },
+    {
+      "ip": "64.176.44.108",
+      "port": "",
+      "org": "AS-VULTR - The Constant Company, LLC",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "64.176.44.108.vultrusercontent.com",
+      "score": 0
+    },
+    {
+      "ip": "154.36.156.80",
+      "port": "",
+      "org": "NETLAB-SDN - NetLab Global",
+      "city": "Ebara",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.36.156.80",
+      "score": 3
+    },
+    {
+      "ip": "38.47.99.231",
+      "port": "",
+      "org": "VMISS - VMISS Inc.",
+      "city": "Osaka",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "38.47.99.231",
+      "score": 3
+    },
+    {
+      "ip": "154.197.108.100",
+      "port": "",
+      "org": "LCS-AS-AP LARUS Limited",
+      "city": "Asagaya-minami",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.197.108.100",
+      "score": 3
+    },
+    {
+      "ip": "154.197.108.101",
+      "port": "",
+      "org": "LCS-AS-AP LARUS Limited",
+      "city": "Asagaya-minami",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.197.108.101",
+      "score": 3
+    },
+    {
+      "ip": "154.197.108.102",
+      "port": "",
+      "org": "LCS-AS-AP LARUS Limited",
+      "city": "Asagaya-minami",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.197.108.102",
+      "score": 3
+    },
+    {
+      "ip": "154.197.108.103",
+      "port": "",
+      "org": "LCS-AS-AP LARUS Limited",
+      "city": "Asagaya-minami",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.197.108.103",
+      "score": 3
+    },
+    {
+      "ip": "154.197.108.104",
+      "port": "",
+      "org": "LCS-AS-AP LARUS Limited",
+      "city": "Asagaya-minami",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.197.108.104",
+      "score": 3
+    },
+    {
+      "ip": "154.197.108.105",
+      "port": "",
+      "org": "LCS-AS-AP LARUS Limited",
+      "city": "Asagaya-minami",
+      "country": "Japan",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "sample_host": "154.197.108.105",
+      "score": 3
+    }
+  ],
+  "rejects": [
+    {
+      "ip": "240d:1a:97c:8c00::5",
+      "port": "",
+      "protocol": "",
+      "title": "",
+      "domain": "",
+      "host": "",
+      "link": "",
+      "country": "Japan",
+      "city": "Tokyo",
+      "org": "SO-NET Sony Network Communications Inc.",
+      "source_file": "2026-03-15-japan-mixed-batch-01.json",
+      "reason": "ipv6_not_in_scope"
+    }
+  ],
+  "stats": {
+    "totalRows": 100,
+    "acceptedRows": 99,
+    "rejectedRows": 1
+  }
+}

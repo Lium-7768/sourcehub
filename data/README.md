@@ -23,6 +23,9 @@ imports -> normalized -> results -> src/data/public-results.json -> /api/results
 - `first_pass_candidates.csv`：第一次标准化后的总表
 - `probe_input.csv`：按 IP 去重、适合 probe 的输入
 - `first_pass_summary.json`：本次规范化统计摘要
+- `quality_gate.json`：imports 质量闸门结果
+- `import_manifest.json`：输入文件指纹清单（增量判断依据）
+- `cache/`：按文件缓存的规范化结果，用于避免每次全量重跑
 
 ### `rejects/`
 结构化淘汰结果。
@@ -90,11 +93,13 @@ npm run pipeline:public-results
 
 这个命令现在会自动：
 
-1. 读取 `data/imports/` 下全部 `csv/json`
-2. 生成 `normalized/` 和 `rejects/`
-3. 从 `probe_input.csv` 中读取 IP 做测试
-4. 只保留测试成功结果
-5. 更新 `src/data/public-results.json`
+1. 扫描 `data/imports/` 下全部 `csv/json`
+2. 先做 imports 质量闸门（空文件 / 超大文件 / 缺字段 / 不支持结构 / 重复批次 stem）
+3. 基于 `import_manifest.json` + `cache/` 做增量规范化，没变的文件直接复用缓存
+4. 生成 `normalized/` 和 `rejects/`
+5. 从 `probe_input.csv` 中读取 IP 做测试
+6. 只保留测试成功结果
+7. 更新 `src/data/public-results.json`
 
 ---
 
