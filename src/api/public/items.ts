@@ -7,6 +7,17 @@ interface RepoResultItem {
   latency_ms?: number | null;
   loss_pct?: number | null;
   jitter_ms?: number | null;
+  ping_avg_ms?: number | null;
+  ping_min_ms?: number | null;
+  ping_max_ms?: number | null;
+  ping_loss_pct?: number | null;
+  ping_ok?: boolean | null;
+  tcp_avg_ms?: number | null;
+  tcp_min_ms?: number | null;
+  tcp_max_ms?: number | null;
+  tcp_jitter_ms?: number | null;
+  tcp_loss_pct?: number | null;
+  tcp_ok?: boolean | null;
   score?: number | null;
   country?: string | null;
   checked_at?: string | null;
@@ -76,6 +87,17 @@ export async function handlePublicResults(request: Request): Promise<Response> {
       latency_ms: item.latency_ms ?? null,
       loss_pct: item.loss_pct ?? null,
       jitter_ms: item.jitter_ms ?? null,
+      ping_avg_ms: item.ping_avg_ms ?? null,
+      ping_min_ms: item.ping_min_ms ?? null,
+      ping_max_ms: item.ping_max_ms ?? null,
+      ping_loss_pct: item.ping_loss_pct ?? null,
+      ping_ok: item.ping_ok ?? null,
+      tcp_avg_ms: item.tcp_avg_ms ?? null,
+      tcp_min_ms: item.tcp_min_ms ?? null,
+      tcp_max_ms: item.tcp_max_ms ?? null,
+      tcp_jitter_ms: item.tcp_jitter_ms ?? null,
+      tcp_loss_pct: item.tcp_loss_pct ?? null,
+      tcp_ok: item.tcp_ok ?? null,
       score: item.score ?? null,
       country: item.country ?? null,
       checked_at: item.checked_at ?? null,
