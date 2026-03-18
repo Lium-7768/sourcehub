@@ -28,7 +28,7 @@
 
 ## API
 
-结果接口的 token 现在优先读取 Worker 环境变量 `RESULTS_API_TOKEN`。如果未配置，当前仍会回退到仓库里的兼容默认值，建议尽快在线上环境中配置掉。
+结果接口的 token 现在只读取 Worker 环境变量 `RESULTS_API_TOKEN`。如果未配置，接口会直接返回服务端配置错误。
 
 ### `POST /api/results`
 

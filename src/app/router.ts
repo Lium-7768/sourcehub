@@ -278,6 +278,12 @@ export async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (pathname === '/ui/results') {
+    const resultsToken = getResultsApiToken(env);
+    if (!resultsToken) {
+      return error('Server misconfigured', 500, {
+        hint: 'RESULTS_API_TOKEN is not configured',
+      });
+    }
     const body = {
       limit: Number(url.searchParams.get('limit') || '20'),
       country: (url.searchParams.get('country') || '').trim() || null,
@@ -285,7 +291,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
     return handlePublicResults(new Request(new URL('/api/results', url.origin).toString(), {
       method: 'POST',
       headers: new Headers({
-        'authorization': `Bearer ${getResultsApiToken(env)}`,
+        'authorization': `Bearer ${resultsToken}`,
         'accept': 'application/json',
         'content-type': 'application/json',
       }),
