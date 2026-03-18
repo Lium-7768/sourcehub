@@ -1,11 +1,20 @@
-host,port,latency_ms,loss_pct,jitter_ms,score,org,city,country,checked_at
-129.121.73.82,80,24.5,0,5,95.1,Oracle Corporation,Burlington,US,2026-03-17T15:00:54.780Z
-129.146.129.30,443,48.5,0,1,90.3,Oracle Corporation,Phoenix,US,2026-03-17T15:00:55.382Z
-129.146.104.110,443,49.5,0,3,90.1,Oracle Corporation,Phoenix,US,2026-03-17T15:00:54.880Z
-129.146.120.12,8443,50,0,2,90,Oracle Corporation,Phoenix,US,2026-03-17T15:00:54.981Z
-129.146.125.108,8443,50,0,2,90,Oracle Corporation,Phoenix,US,2026-03-17T15:00:55.184Z
-129.146.127.77,443,50.5,0,3,89.9,Oracle Corporation,Phoenix,US,2026-03-17T15:00:55.285Z
-129.146.121.203,8443,51,0,0,89.8,Oracle Corporation,Phoenix,US,2026-03-17T15:00:55.084Z
-103.27.132.118,443,143.5,0,1,71.3,SHOCK-1 - Shock Hosting LLC,Tokyo,Japan,2026-03-17T15:00:53.849Z
-129.121.34.61,443,143.5,0,5,71.3,Oracle Corporation,Burlington,US,2026-03-17T15:00:54.730Z
-116.80.91.168,443,146,0,4,70.8,"INFOSPHERE NTT PC Communications, Inc.",Tokyo,Japan,2026-03-17T15:00:54.443Z
+host,port,latency_ms,loss_pct,jitter_ms,ping_avg_ms,ping_min_ms,ping_max_ms,ping_loss_pct,ping_ok,tcp_avg_ms,tcp_min_ms,tcp_max_ms,tcp_jitter_ms,tcp_loss_pct,tcp_ok,score,org,city,country,checked_at
+129.146.121.203,8443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:03:56.595Z
+129.146.127.77,443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:04:00.691Z
+129.146.129.30,443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:04:02.739Z
+129.146.132.240,443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:04:04.788Z
+129.146.137.214,443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:04:12.980Z
+129.146.143.39,443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:04:19.124Z
+129.146.165.161,443,3.5,0,1,,,,100,false,3.5,3,4,1,0,true,99.3,Oracle Corporation,Phoenix,US,2026-03-18T03:04:21.171Z
+129.146.120.12,8443,4,0,0,,,,100,false,4,4,4,0,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:03:54.548Z
+129.146.125.108,8443,4,0,0,,,,100,false,4,4,4,0,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:03:58.644Z
+129.146.136.106,443,4,0,0,,,,100,false,4,4,4,0,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:04:08.884Z
+129.146.137.136,443,4,0,2,,,,100,false,4,3,5,2,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:04:10.934Z
+129.146.138.164,443,4,0,0,,,,100,false,4,4,4,0,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:04:15.029Z
+129.146.143.204,443,4,0,0,,,,100,false,4,4,4,0,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:04:17.077Z
+129.146.173.121,8443,4,0,0,,,,100,false,4,4,4,0,0,true,99.2,Oracle Corporation,Phoenix,US,2026-03-18T03:04:23.220Z
+129.146.104.110,443,4.5,0,1,,,,100,false,4.5,4,5,1,0,true,99.1,Oracle Corporation,Phoenix,US,2026-03-18T03:03:52.501Z
+129.121.73.82,80,56,0,8,,,,100,false,56,52,60,8,0,true,88.8,Oracle Corporation,Burlington,US,2026-03-18T03:03:50.428Z
+103.27.132.118,443,109,0,0,,,,100,false,109,109,109,0,0,true,78.2,SHOCK-1 - Shock Hosting LLC,Tokyo,Japan,2026-03-18T03:03:43.429Z
+116.80.91.168,443,111,0,2,,,,100,false,111,110,112,2,0,true,77.8,"INFOSPHERE NTT PC Communications, Inc.",Tokyo,Japan,2026-03-18T03:03:45.895Z
+129.121.34.61,443,164,0,0,,,,100,false,164,164,164,0,0,true,67.2,Oracle Corporation,Burlington,US,2026-03-18T03:03:48.277Z
