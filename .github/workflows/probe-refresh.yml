@@ -21,7 +21,8 @@ jobs:
     permissions:
       contents: write
     env:
-      PROBE_LIMIT: ${{ github.event.inputs.probe_limit || '2000' }}
+      PROBE_LIMIT: ${{ github.event.inputs.probe_limit || '300' }}
+      PROBE_CONCURRENCY: '20'
     outputs:
       public_results_changed: ${{ steps.detect.outputs.public_results_changed }}
     steps:

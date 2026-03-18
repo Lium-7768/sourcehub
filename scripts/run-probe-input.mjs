@@ -212,10 +212,12 @@ async function probeHost(host, preferredPort) {
 }
 
 const limit = Number(process.env.PROBE_LIMIT || '100');
+const concurrency = Math.max(1, Number(process.env.PROBE_CONCURRENCY || '20'));
 const rows = readRows(inputPath).slice(0, limit);
 const passed = [];
 const failed = [];
-for (const row of rows) {
+
+async function processRow(row) {
   const preferredPort = row.port && /^\d+$/.test(row.port) ? Number(row.port) : null;
   const result = await probeHost(row.ip, preferredPort);
   if (result.ok) {
@@ -255,6 +257,20 @@ for (const row of rows) {
       tcp_error: result.tcp.error,
     });
   }
+}
+
+for (let i = 0; i < rows.length; i += concurrency) {
+  const batch = rows.slice(i, i + concurrency);
+  await Promise.all(batch.map(processRow));
+  console.log(JSON.stringify({
+    progress: {
+      processed: Math.min(i + concurrency, rows.length),
+      total: rows.length,
+      concurrency,
+      passed: passed.length,
+      failed: failed.length,
+    },
+  }));
 }
 
 passed.sort((a, b) => b.score - a.score || a.host.localeCompare(b.host));
