@@ -1,13 +1,19 @@
+import type { Env } from './types';
 import { error } from './response';
 
-const RESULTS_API_TOKEN = 'sourcehub-results-token-v1';
+const FALLBACK_RESULTS_API_TOKEN = 'sourcehub-results-token-v1';
 
-export function requireResultsToken(request: Request): Response | null {
+export function getResultsApiToken(env?: Env): string {
+  return env?.RESULTS_API_TOKEN?.trim() || FALLBACK_RESULTS_API_TOKEN;
+}
+
+export function requireResultsToken(request: Request, env?: Env): Response | null {
+  const resultsApiToken = getResultsApiToken(env);
   const authHeader = request.headers.get('authorization') ?? '';
-  const expectedBearer = `Bearer ${RESULTS_API_TOKEN}`;
+  const expectedBearer = `Bearer ${resultsApiToken}`;
   const tokenHeader = request.headers.get('x-results-token') ?? '';
 
-  if (authHeader === expectedBearer || tokenHeader === RESULTS_API_TOKEN) {
+  if (authHeader === expectedBearer || tokenHeader === resultsApiToken) {
     return null;
   }
 

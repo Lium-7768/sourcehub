@@ -1,4 +1,6 @@
-export interface Env {}
+export interface Env {
+  RESULTS_API_TOKEN?: string;
+}
 
 export interface SourceRow {
   id: string;

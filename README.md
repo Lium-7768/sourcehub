@@ -28,6 +28,8 @@
 
 ## API
 
+结果接口的 token 现在优先读取 Worker 环境变量 `RESULTS_API_TOKEN`。如果未配置，当前仍会回退到仓库里的兼容默认值，建议尽快在线上环境中配置掉。
+
 ### `POST /api/results`
 
 需要 Bearer Token，并通过 JSON body 提交查询参数。
@@ -118,7 +120,7 @@ npm run pipeline:public-results
 
 ```bash
 BASE_URL="https://your-worker.workers.dev" \
-RESULTS_TOKEN="sourcehub-results-token-v1" \
+RESULTS_TOKEN="your-results-token" \
 npm run smoke
 ```
 

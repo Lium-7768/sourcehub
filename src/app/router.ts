@@ -1,6 +1,6 @@
 import type { Env } from './types';
 import { error, html, json } from './response';
-import { requireResultsToken } from './auth';
+import { getResultsApiToken, requireResultsToken } from './auth';
 import { handlePublicResults } from '../api/public/items';
 
 function renderUi(): string {
@@ -285,7 +285,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
     return handlePublicResults(new Request(new URL('/api/results', url.origin).toString(), {
       method: 'POST',
       headers: new Headers({
-        'authorization': 'Bearer sourcehub-results-token-v1',
+        'authorization': `Bearer ${getResultsApiToken(env)}`,
         'accept': 'application/json',
         'content-type': 'application/json',
       }),
@@ -294,7 +294,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (pathname === '/api/results') {
-    const authError = requireResultsToken(request);
+    const authError = requireResultsToken(request, env);
     if (authError) return authError;
     return handlePublicResults(request);
   }

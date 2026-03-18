@@ -2,5 +2,10 @@ name = "sourcehub"
 main = "src/index.ts"
 compatibility_date = "2025-03-15"
 
+[vars]
+# Set a real token in the Cloudflare Worker environment.
+# Current code still has a compatibility fallback, but production should rely on this var.
+RESULTS_API_TOKEN = "change-me-in-cloudflare"
+
 [observability]
 enabled = true
