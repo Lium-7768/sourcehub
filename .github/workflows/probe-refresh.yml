@@ -6,9 +6,9 @@ on:
       probe_limit:
         description: Max number of probe targets to scan in this run
         required: false
-        default: '2000'
+        default: '300'
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '0 * * * *'
 
 concurrency:
   group: probe-refresh
