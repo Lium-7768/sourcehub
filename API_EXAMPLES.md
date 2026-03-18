@@ -1,12 +1,10 @@
 # SourceHub API Examples
 
-当前版本只保留最小公开结果接口。
-
 先约定环境变量：
 
 ```bash
 export BASE_URL='https://sourcehub.lium840471184.workers.dev'
-export RESULTS_TOKEN='sourcehub-results-token-v1'
+export RESULTS_TOKEN='your-results-token'
 ```
 
 ---
@@ -30,26 +28,46 @@ $BASE_URL/ui
 ### 2.1 默认读取
 
 ```bash
-curl "$BASE_URL/api/results?limit=10" \
-  -H "Authorization: Bearer $RESULTS_TOKEN"
+curl "$BASE_URL/api/results" \
+  -H "Authorization: Bearer $RESULTS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":10}'
 ```
 
 ### 2.2 按国家筛选
 
 ```bash
-curl "$BASE_URL/api/results?limit=20&country=US" \
-  -H "Authorization: Bearer $RESULTS_TOKEN"
+curl "$BASE_URL/api/results" \
+  -H "Authorization: Bearer $RESULTS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":20,"country":"US"}'
 ```
 
 ### 2.3 未鉴权访问（应返回 401）
 
 ```bash
-curl "$BASE_URL/api/results?limit=1"
+curl "$BASE_URL/api/results" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":1}'
 ```
 
 ---
 
-## 3. 返回格式
+## 3. UI 结果接口
+
+`/ui/results` 现在也只接受 `POST`。
+
+```bash
+curl "$BASE_URL/ui/results" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":20,"country":"JP"}'
+```
+
+旧的 `GET /ui/results?limit=...&country=...` 已经返回 405。
+
+---
+
+## 4. 返回格式
 
 当前 `/api/results` 直接读取仓库文件 `src/data/public-results.json`。
 
@@ -64,9 +82,16 @@ curl "$BASE_URL/api/results?limit=1"
       "latency_ms": 33,
       "loss_pct": 0,
       "jitter_ms": 0,
+      "ping_avg_ms": null,
+      "ping_loss_pct": 100,
+      "ping_ok": false,
+      "tcp_avg_ms": 33,
+      "tcp_jitter_ms": 0,
+      "tcp_loss_pct": 0,
+      "tcp_ok": true,
       "score": 93.4,
       "country": "US",
-      "checked_at": "2026-03-17T12:05:51.309Z"
+      "checked_at": "2026-03-18T07:40:40.998Z"
     }
   ],
   "meta": {
@@ -74,25 +99,16 @@ curl "$BASE_URL/api/results?limit=1"
     "count": 1,
     "source": "repo_file",
     "country": null,
-    "available_countries": ["US"],
-    "scanned": 20,
-    "failed": 1,
-    "updated_at": "2026-03-17T12:05:51.432Z"
+    "available_countries": ["JP", "SG", "US"],
+    "updated_at": "2026-03-18T07:40:40.998Z"
   }
 }
 ```
 
 ---
 
-## 4. 本地 smoke
+## 5. 本地 smoke
 
 ```bash
 BASE_URL="$BASE_URL" RESULTS_TOKEN="$RESULTS_TOKEN" npm run smoke
 ```
-
-当前 smoke 会检查：
-
-- `/` 正常
-- 未鉴权 `/api/results` 返回 401
-- 已鉴权 `/api/results` 返回 200
-- `meta.source === "repo_file"`

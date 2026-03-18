@@ -7,7 +7,7 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
 const probeJson = path.join(ROOT, 'data', 'results', 'probe_results.json');
 const publicJson = path.join(ROOT, 'src', 'data', 'public-results.json');
-const probeLimit = process.env.PROBE_LIMIT || '2000';
+const probeLimit = process.env.PROBE_LIMIT || '300';
 
 execFileSync('node', ['scripts/normalize-candidates.mjs'], {
   stdio: 'inherit',

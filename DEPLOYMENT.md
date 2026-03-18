@@ -1,14 +1,13 @@
 # SourceHub Deployment & Operations
 
-当前版本已经收敛为一条很简单的链路：
+当前版本只有一条正式链路：
 
-1. 原始数据进入仓库
-2. 格式化为 `data/normalized/probe_input.csv`
-3. GitHub Actions 先做 imports 质量闸门和增量规范化
-4. 再读取 `probe_input.csv` 做探测
-5. 只保留探测成功的 IP
-6. 写回仓库文件 `src/data/public-results.json`
-7. Cloudflare Worker 只负责读这个文件并对外提供 `/api/results`
+1. 原始数据进入仓库 `data/imports/`
+2. 规范化为 `data/normalized/probe_input.csv`
+3. GitHub Actions 做 probe
+4. 只保留成功结果
+5. 写回 `src/data/public-results.json`
+6. Cloudflare Worker 只负责读取该文件并对外提供接口
 
 ---
 
@@ -25,37 +24,35 @@
 - Worker 名称：`sourcehub`
 - Worker URL：`https://sourcehub.lium840471184.workers.dev`
 
-### 当前不再使用的旧组件
+### 当前已废弃的旧链路
 
-以下旧链路已经移除：
+以下思路已经不再是当前实现：
 
-- 旧数据库存储链路
-- Worker `scheduled()` 定时探测
+- 数据库存储公开结果
+- Worker `scheduled()` 自己做探测
 - Cloudflare Cron Trigger 驱动探测
-- 旧的数据库刷新链路
+- 旧的探测后刷库链路
 
 ---
 
-## 2. 现在真正生效的数据源
+## 2. 当前真实数据源
 
-公开结果直接来自仓库文件：
+Worker 直接读取：
 
 ```text
 src/data/public-results.json
 ```
 
-这个文件由 GitHub Actions 更新。
-
 中间文件：
 
-- `data/normalized/probe_input.csv`：处理好的待探测 IP 列表
-- `data/results/probe_results.json`：成功结果
-- `data/results/probe_results.csv`：成功结果 CSV
-- `data/results/probe_failures.csv`：失败结果
+- `data/normalized/probe_input.csv`
+- `data/results/probe_results.json`
+- `data/results/probe_results.csv`
+- `data/results/probe_failures.csv`
 
 ---
 
-## 3. 当前 GitHub Actions
+## 3. GitHub Actions
 
 主 workflow：
 
@@ -63,43 +60,50 @@ src/data/public-results.json
 .github/workflows/probe-refresh.yml
 ```
 
-作用：
+当前行为：
 
-- 手动触发或定时触发
+- 支持手动触发和定时触发
+- 每 **1 小时** 定时运行
+- 默认 `PROBE_LIMIT=300`
+- 默认 `PROBE_CONCURRENCY=20`
 - 运行 `npm run pipeline:public-results`
-- 更新结果文件
-- 自动 commit + push 回仓库
+- 自动提交结果文件回仓库
 - 上传 artifact
-- 当 `src/data/public-results.json` 发生变化时，尝试自动 deploy Worker
-- 如果仓库里没有配置 `CLOUDFLARE_API_TOKEN` secret，则 deploy 自动跳过
-
-### 输入参数
-
-- `probe_limit`：本次最多测试多少条，默认 `2000`
+- 当 `src/data/public-results.json` 有变化时自动 deploy Worker
 
 ---
 
-## 4. 本地运行
+## 4. Worker 环境变量
 
-### 4.1 安装依赖
+当前至少需要：
+
+- `RESULTS_API_TOKEN`：结果接口鉴权 token
+
+`/api/results` 与 `/ui/results` 都已经收口到 `POST`，并且依赖这个 token。
+
+---
+
+## 5. 本地运行
+
+### 安装依赖
 
 ```bash
 npm install
 ```
 
-### 4.2 类型检查
+### 类型检查
 
 ```bash
 npm run check
 ```
 
-### 4.3 跑主线
+### 跑主线
 
 ```bash
 npm run pipeline:public-results
 ```
 
-会生成：
+输出：
 
 - `data/results/probe_results.json`
 - `data/results/probe_results.csv`
@@ -108,11 +112,9 @@ npm run pipeline:public-results
 
 ---
 
-## 5. 部署
+## 6. 部署
 
-当前 Worker 只负责提供接口，不再负责探测或落库。
-
-部署：
+当前 Worker 只负责提供接口，不负责 probe。
 
 ```bash
 npm run deploy
@@ -120,26 +122,26 @@ npm run deploy
 
 ---
 
-## 6. smoke 检查
+## 7. smoke 检查
 
 ```bash
 BASE_URL='https://sourcehub.lium840471184.workers.dev' \
-RESULTS_TOKEN='sourcehub-results-token-v1' \
+RESULTS_TOKEN='your-results-token' \
 npm run smoke
 ```
 
 检查点：
 
 - `/` 可访问
-- `/api/results` 未鉴权返回 401
-- `/api/results` 已鉴权正常返回
+- `POST /api/results` 未鉴权返回 401
+- `POST /api/results` 已鉴权正常返回
 - 返回元信息中的 `source` 为 `repo_file`
 
 ---
 
-## 7. 当前维护原则
+## 8. 维护原则
 
-- 仓库文件优先，尽量不要再引回数据库中间层
-- 公开结果只保留测试成功的 IP
-- Worker 尽量保持只读、只展示
-- 多余逻辑直接删，不保留双轨
+- 仓库文件优先，不再引回数据库中间层
+- 公开结果只保留探测成功的 IP
+- Worker 保持只读、只展示
+- 清理旧遗留，但不做无必要的大删库/大删文件

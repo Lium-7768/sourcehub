@@ -53,7 +53,7 @@ data/imports/*
   -> data/results/probe_results.json
   -> scripts/run_probe_and_refresh.mjs
   -> src/data/public-results.json
-  -> GET /api/results
+  -> POST /api/results
 ```
 
 也就是说：
