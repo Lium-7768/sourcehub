@@ -212,17 +212,21 @@ function renderUi(): string {
     async function loadResults() {
       const limit = Math.max(1, Math.min(100, Number(limitEl.value || 20)));
       const country = countryEl.value.trim() || initialCountry;
-      const params = new URLSearchParams({ limit: String(limit) });
-      if (country) params.set('country', country);
 
       loadBtn.disabled = true;
       setStatus('加载中...');
 
       try {
-        const res = await fetch('/ui/results?' + params.toString(), {
+        const res = await fetch('/ui/results', {
+          method: 'POST',
           headers: {
-            'Accept': 'application/json'
-          }
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            limit,
+            country: country || null,
+          }),
         });
         const data = await res.json().catch(() => ({}));
 
@@ -278,16 +282,23 @@ export async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (pathname === '/ui/results') {
+    if (request.method !== 'POST') {
+      return error('Method not allowed', 405, {
+        hint: 'Use POST /ui/results with JSON body',
+      });
+    }
     const resultsToken = getResultsApiToken(env);
     if (!resultsToken) {
       return error('Server misconfigured', 500, {
         hint: 'RESULTS_API_TOKEN is not configured',
       });
     }
-    const body = {
-      limit: Number(url.searchParams.get('limit') || '20'),
-      country: (url.searchParams.get('country') || '').trim() || null,
-    };
+    let bodyText = '{}';
+    try {
+      bodyText = await request.text();
+    } catch {
+      return error('Invalid request body', 400);
+    }
     return handlePublicResults(new Request(new URL('/api/results', url.origin).toString(), {
       method: 'POST',
       headers: new Headers({
@@ -295,7 +306,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
         'accept': 'application/json',
         'content-type': 'application/json',
       }),
-      body: JSON.stringify(body),
+      body: bodyText || '{}',
     }));
   }
 
