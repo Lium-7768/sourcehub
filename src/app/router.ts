@@ -269,7 +269,7 @@ export async function route(request: Request, env: Env): Promise<Response> {
     return json({
       name: 'sourcehub',
       status: 'ok',
-      endpoints: ['GET /api/results', 'GET /ui'],
+      endpoints: ['POST /api/results', 'GET /ui'],
     });
   }
 
@@ -278,12 +278,18 @@ export async function route(request: Request, env: Env): Promise<Response> {
   }
 
   if (pathname === '/ui/results') {
-    return handlePublicResults(new Request(new URL('/api/results' + url.search, url.origin).toString(), {
-      method: request.method,
+    const body = {
+      limit: Number(url.searchParams.get('limit') || '20'),
+      country: (url.searchParams.get('country') || '').trim() || null,
+    };
+    return handlePublicResults(new Request(new URL('/api/results', url.origin).toString(), {
+      method: 'POST',
       headers: new Headers({
         'authorization': 'Bearer sourcehub-results-token-v1',
         'accept': 'application/json',
+        'content-type': 'application/json',
       }),
+      body: JSON.stringify(body),
     }));
   }
 

@@ -28,15 +28,17 @@
 
 ## API
 
-### `GET /api/results`
+### `POST /api/results`
 
-需要 Bearer Token。
+需要 Bearer Token，并通过 JSON body 提交查询参数。
 
 示例：
 
 ```bash
-curl "$BASE_URL/api/results?limit=5" \
-  -H "Authorization: Bearer $RESULTS_TOKEN"
+curl "$BASE_URL/api/results" \
+  -H "Authorization: Bearer $RESULTS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":5}'
 ```
 
 返回示例：
@@ -106,7 +108,7 @@ npm run pipeline:public-results
 支持：
 
 - 手动触发
-- 每 30 分钟定时触发
+- 每 1 小时定时触发
 - 运行后自动把结果文件提交回仓库
 - 上传 artifacts 方便查看本次探测结果
 - 如果仓库里已经配置 `CLOUDFLARE_API_TOKEN` secret，并且 `src/data/public-results.json` 有变化，则自动 deploy Worker

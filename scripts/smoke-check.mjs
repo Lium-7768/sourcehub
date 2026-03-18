@@ -6,8 +6,8 @@ function requireArg(name) {
   return value;
 }
 
-async function http(url, headers = {}) {
-  const res = await fetch(url, { headers });
+async function http(url, { method = 'GET', headers = {}, body } = {}) {
+  const res = await fetch(url, { method, headers, body });
   const text = await res.text();
   let json;
   try {
@@ -31,13 +31,25 @@ async function main() {
   assert(root.json?.status === 'ok', 'root status should be ok');
   assert(Array.isArray(root.json?.endpoints), 'root endpoints missing');
 
-  const unauthed = await http(`${baseUrl}/api/results?limit=1`);
-  assert(unauthed.status === 401, `unauthed /api/results should be 401, got ${unauthed.status}`);
+  const unauthed = await http(`${baseUrl}/api/results`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ limit: 1 }),
+  });
+  assert(unauthed.status === 401, `unauthed POST /api/results should be 401, got ${unauthed.status}`);
 
-  const authed = await http(`${baseUrl}/api/results?limit=5`, {
-    Authorization: `Bearer ${resultsToken}`,
-    Accept: 'application/json',
-    'User-Agent': 'sourcehub-smoke/1.0',
+  const authed = await http(`${baseUrl}/api/results`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resultsToken}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'sourcehub-smoke/1.0',
+    },
+    body: JSON.stringify({ limit: 5 }),
   });
   assert(authed.ok, `authed /api/results failed: ${JSON.stringify(authed.json)}`);
   assert(Array.isArray(authed.json?.items), 'results items missing');

@@ -51,9 +51,23 @@ function compareNullableDesc(a: number | string | null | undefined, b: number | 
 }
 
 export async function handlePublicResults(request: Request): Promise<Response> {
-  const url = new URL(request.url);
-  const country = normalizeCountry(url.searchParams.get('country'));
-  const requestedLimit = Number(url.searchParams.get('limit') ?? '50');
+  if (request.method !== 'POST') {
+    return error('Method not allowed', 405, {
+      hint: 'Use POST /api/results with Authorization: Bearer <results-token>',
+    });
+  }
+
+  let body: Record<string, unknown> = {};
+  try {
+    body = request.headers.get('content-type')?.includes('application/json')
+      ? await request.json()
+      : {};
+  } catch {
+    return error('Invalid JSON body', 400);
+  }
+
+  const country = normalizeCountry(body.country);
+  const requestedLimit = Number(body.limit ?? 50);
 
   if (!Number.isFinite(requestedLimit) || requestedLimit < 1) {
     return error('limit must be a positive integer', 400);
