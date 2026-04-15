@@ -1,6 +1,6 @@
 ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
-129.146.104.110,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.135.44,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
+129.146.104.110,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.241.23,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.228.56,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.241.234,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
@@ -93,10 +93,10 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 134.185.91.108,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.96.177,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.97.33,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
-137.131.16.222,443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
-137.131.8.105,443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
-137.131.29.190,2443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
 137.131.8.2,443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
+137.131.8.105,443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
+137.131.16.222,443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
+137.131.29.190,2443,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
 137.131.19.74,2053,Oracle Corporation,La Jolla,US,false,,100,all_tcp_ports_failed
 138.2.104.238,443,Oracle Corporation,Singapore,SG,false,,100,all_tcp_ports_failed
 138.2.106.64,443,Oracle Corporation,Singapore,SG,false,,100,all_tcp_ports_failed
