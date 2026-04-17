@@ -1,174 +1,172 @@
 host,port,latency_ms,loss_pct,jitter_ms,ping_avg_ms,ping_min_ms,ping_max_ms,ping_loss_pct,ping_ok,tcp_avg_ms,tcp_min_ms,tcp_max_ms,tcp_jitter_ms,tcp_loss_pct,tcp_ok,score,org,city,country,checked_at
-132.226.53.176,8880,18,0,0,,,,100,false,18,18,18,0,0,true,96.4,Oracle Corporation,Ashburn,US,2026-04-17T08:30:29.072Z
-129.80.239.6,8443,19,0,2,,,,100,false,19,18,20,2,0,true,96.2,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.770Z
-129.146.173.121,8443,51.5,0,3,,,,100,false,51.5,50,53,3,0,true,89.7,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.315Z
-136.248.68.146,80,138,0,0,,,,100,false,138,138,138,0,0,true,72.4,Oracle Corporation,Wayland,US,2026-04-17T08:31:54.496Z
-103.27.132.118,443,143,0,4,,,,100,false,143,141,145,4,0,true,71.4,SHOCK-1 - Shock Hosting LLC,Tokyo,Japan,2026-04-17T08:24:01.000Z
-134.122.194.186,443,144.5,0,1,,,,100,false,144.5,144,145,1,0,true,71.1,CTGSERVERLIMITED-AS-AP CTG Server Limited,Tokyo,Japan,2026-04-17T08:31:11.906Z
-132.145.127.93,443,145,0,2,,,,100,false,145,144,146,2,0,true,71,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.894Z
-116.80.91.168,443,145.5,0,1,,,,100,false,145.5,145,146,1,0,true,70.9,"INFOSPHERE NTT PC Communications, Inc.",Tokyo,Japan,2026-04-17T08:23:59.648Z
-133.167.66.12,443,148,0,0,,,,100,false,148,148,148,0,0,true,70.4,SAKURA-C SAKURA Internet Inc.,Osaka,Japan,2026-04-17T08:31:13.265Z
-138.2.41.12,443,148.5,0,1,,,,100,false,148.5,148,149,1,0,true,70.3,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.885Z
-134.185.111.151,3000,201.5,0,9,,,,100,false,201.5,197,206,9,0,true,59.7,Oracle Corporation,Belmont,US,2026-04-17T08:31:11.871Z
-129.150.52.71,443,211,0,16,,,,100,false,211,203,219,16,0,true,57.8,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.786Z
-129.153.172.64,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:26:50.814Z
-129.158.241.2,8443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:27:34.782Z
-129.158.50.59,8443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:27:34.782Z
-129.159.84.71,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:27:34.783Z
-129.213.54.81,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.750Z
-129.80.132.4,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.750Z
-129.80.180.249,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.751Z
-129.80.224.246,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.751Z
-129.80.224.7,8443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.751Z
-129.80.255.149,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:29:01.182Z
-129.80.47.196,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:29:01.182Z
-129.80.68.208,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:29:01.182Z
-132.145.166.33,443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:30:29.054Z
-132.145.209.143,8443,16,50,0,,,,100,false,16,16,16,0,50,true,56.8,Oracle Corporation,Ashburn,US,2026-04-17T08:30:29.054Z
-129.121.73.82,80,17,50,0,,,,100,false,17,17,17,0,50,true,56.6,Oracle Corporation,Burlington,US,2026-04-17T08:23:59.232Z
-129.158.198.241,8443,17,50,0,,,,100,false,17,17,17,0,50,true,56.6,Oracle Corporation,Ashburn,US,2026-04-17T08:27:34.782Z
-129.159.119.161,443,17,50,0,,,,100,false,17,17,17,0,50,true,56.6,Oracle Corporation,Ashburn,US,2026-04-17T08:27:34.783Z
-129.213.22.27,443,17,50,0,,,,100,false,17,17,17,0,50,true,56.6,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.750Z
-129.213.60.47,443,18,50,0,,,,100,false,18,18,18,0,50,true,56.4,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.752Z
-129.80.211.77,443,18,50,0,,,,100,false,18,18,18,0,50,true,56.4,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.753Z
-132.145.165.127,443,18,50,0,,,,100,false,18,18,18,0,50,true,56.4,Oracle Corporation,Ashburn,US,2026-04-17T08:30:29.056Z
-132.226.48.243,443,18,50,0,,,,100,false,18,18,18,0,50,true,56.4,Oracle Corporation,Ashburn,US,2026-04-17T08:30:29.057Z
-129.213.36.42,443,19,50,0,,,,100,false,19,19,19,0,50,true,56.2,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.752Z
-129.80.113.95,443,19,50,0,,,,100,false,19,19,19,0,50,true,56.2,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.753Z
-129.80.146.124,8443,19,50,0,,,,100,false,19,19,19,0,50,true,56.2,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.753Z
-129.80.245.249,443,19,50,0,,,,100,false,19,19,19,0,50,true,56.2,Oracle Corporation,Ashburn,US,2026-04-17T08:29:01.184Z
-132.145.217.215,443,19,50,0,,,,100,false,19,19,19,0,50,true,56.2,Oracle Corporation,Ashburn,US,2026-04-17T08:30:29.057Z
-129.213.120.186,443,20,50,0,,,,100,false,20,20,20,0,50,true,56,Oracle Corporation,Ashburn,US,2026-04-17T08:27:34.788Z
-129.213.126.80,4443,20,50,0,,,,100,false,20,20,20,0,50,true,56,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.753Z
-129.213.55.160,80,21,50,0,,,,100,false,21,21,21,0,50,true,55.8,Oracle Corporation,Ashburn,US,2026-04-17T08:28:18.755Z
-129.146.127.77,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.261Z
-129.146.143.39,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.263Z
-129.146.84.32,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,Phoenix,US,2026-04-17T08:26:08.412Z
-129.153.220.206,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.844Z
-129.153.77.227,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,Phoenix,US,2026-04-17T08:27:34.811Z
-129.159.37.136,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,San Jose,US,2026-04-17T08:27:34.812Z
-132.226.112.137,443,45,50,0,,,,100,false,45,45,45,0,50,true,51,Oracle Corporation,Phoenix,US,2026-04-17T08:30:29.084Z
-129.146.121.203,8443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.261Z
-129.146.137.136,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.262Z
-129.146.137.214,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.262Z
-129.146.138.164,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.262Z
-129.146.143.204,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.263Z
-129.146.24.202,8443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.013Z
-129.146.56.190,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.981Z
-129.146.86.75,20000,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:08.412Z
-129.146.9.224,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:08.412Z
-129.153.115.165,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.844Z
-129.153.126.127,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.844Z
-129.153.200.99,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.844Z
-129.153.221.229,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.845Z
-129.159.42.237,8443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,San Jose,US,2026-04-17T08:27:34.813Z
-137.131.8.2,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.700Z
-138.2.224.183,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,San Jose,US,2026-04-17T08:33:20.669Z
-138.2.226.71,443,46,50,0,,,,100,false,46,46,46,0,50,true,50.8,Oracle Corporation,San Jose,US,2026-04-17T08:33:20.669Z
-129.146.2.46,443,47,50,0,,,,100,false,47,47,47,0,50,true,50.6,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.013Z
-129.153.122.95,443,47,50,0,,,,100,false,47,47,47,0,50,true,50.6,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.845Z
-129.153.208.95,443,47,50,0,,,,100,false,47,47,47,0,50,true,50.6,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.846Z
-129.159.34.196,443,47,50,0,,,,100,false,47,47,47,0,50,true,50.6,Oracle Corporation,San Jose,US,2026-04-17T08:27:34.814Z
-129.146.213.162,443,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.014Z
-129.146.47.193,443,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.982Z
-129.159.47.168,2053,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,San Jose,US,2026-04-17T08:27:34.815Z
-137.131.59.0,443,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.702Z
-138.2.226.178,443,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,San Jose,US,2026-04-17T08:33:20.671Z
-138.2.227.217,8880,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,San Jose,US,2026-04-17T08:33:20.671Z
-138.2.238.240,443,48,50,0,,,,100,false,48,48,48,0,50,true,50.4,Oracle Corporation,San Jose,US,2026-04-17T08:34:04.638Z
-129.146.136.106,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.265Z
-132.226.110.161,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T08:30:29.087Z
-132.226.88.54,8443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T08:31:11.518Z
-137.131.5.203,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.703Z
-138.2.232.216,8443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,San Jose,US,2026-04-17T08:34:04.638Z
-138.2.236.155,9999,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,San Jose,US,2026-04-17T08:34:04.638Z
-129.146.120.12,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.265Z
-129.146.188.242,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.016Z
-129.146.188.78,444,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.016Z
-129.146.196.8,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.017Z
-129.146.240.254,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.017Z
-129.146.34.42,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.984Z
-129.146.47.116,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.984Z
-129.146.76.113,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:26:08.416Z
-132.226.116.67,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T08:30:29.089Z
-137.131.55.145,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.704Z
-129.146.125.108,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.266Z
-129.146.129.30,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.267Z
-129.146.132.240,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.267Z
-129.146.165.161,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:23:59.268Z
-129.146.199.96,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.017Z
-129.146.24.105,5000,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.018Z
-129.146.24.229,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.018Z
-129.146.246.118,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.018Z
-129.146.246.3,80,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.018Z
-129.146.252.85,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.984Z
-129.146.252.95,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.984Z
-129.146.3.163,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.984Z
-129.146.36.178,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.985Z
-129.146.47.160,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.985Z
-129.146.48.121,2052,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.985Z
-129.146.49.224,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.986Z
-129.146.85.151,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:08.417Z
-129.153.124.177,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.849Z
-129.153.203.157,20000,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.849Z
-129.153.77.133,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:27:34.816Z
-129.153.97.149,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:27:34.816Z
-132.226.124.16,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:30:29.090Z
-132.226.125.73,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:30:29.090Z
-132.226.97.154,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T08:31:11.521Z
-137.131.19.31,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.704Z
-137.131.20.151,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.704Z
-137.131.58.128,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,La Jolla,US,2026-04-17T08:32:36.705Z
-129.146.174.117,443,52,50,0,,,,100,false,52,52,52,0,50,true,49.6,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.017Z
-129.146.20.44,443,52,50,0,,,,100,false,52,52,52,0,50,true,49.6,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.018Z
-129.146.26.34,443,52,50,0,,,,100,false,52,52,52,0,50,true,49.6,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.985Z
-132.226.26.196,443,52,50,0,,,,100,false,52,52,52,0,50,true,49.6,Oracle Corporation,Phoenix,US,2026-04-17T08:30:29.091Z
-129.146.185.214,443,57,50,0,,,,100,false,57,57,57,0,50,true,48.6,Oracle Corporation,Phoenix,US,2026-04-17T08:24:42.023Z
-129.146.84.188,443,57,50,0,,,,100,false,57,57,57,0,50,true,48.6,Oracle Corporation,Phoenix,US,2026-04-17T08:26:08.423Z
-129.146.44.48,8443,58,50,0,,,,100,false,58,58,58,0,50,true,48.4,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.992Z
-129.153.70.168,4433,58,50,0,,,,100,false,58,58,58,0,50,true,48.4,Oracle Corporation,Phoenix,US,2026-04-17T08:26:50.857Z
-129.146.46.164,443,61,50,0,,,,100,false,61,61,61,0,50,true,47.8,Oracle Corporation,Phoenix,US,2026-04-17T08:25:25.995Z
-129.153.96.228,443,61,50,0,,,,100,false,61,61,61,0,50,true,47.8,Oracle Corporation,Phoenix,US,2026-04-17T08:27:34.826Z
-130.110.249.47,443,112,50,0,,,,100,false,112,112,112,0,50,true,37.6,Oracle Corporation,Windsor,US,2026-04-17T08:29:01.279Z
-129.121.34.61,443,134,50,0,,,,100,false,134,134,134,0,50,true,33.2,Oracle Corporation,Burlington,US,2026-04-17T08:23:59.349Z
-136.248.115.138,443,134,50,0,,,,100,false,134,134,134,0,50,true,33.2,Oracle Corporation,Wayland,US,2026-04-17T08:31:54.357Z
-138.2.18.82,8880,141,50,0,,,,100,false,141,141,141,0,50,true,31.8,Oracle Corporation,Tokyo,JP,2026-04-17T08:33:20.763Z
-131.186.39.8,4444,143,50,0,,,,100,false,143,143,143,0,50,true,31.4,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.749Z
-131.186.41.101,443,143,50,0,,,,100,false,143,143,143,0,50,true,31.4,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.749Z
-132.145.126.33,443,143,50,0,,,,100,false,143,143,143,0,50,true,31.4,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.750Z
-132.145.127.203,2053,143,50,0,,,,100,false,143,143,143,0,50,true,31.4,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.750Z
-132.226.11.209,9443,144,50,0,,,,100,false,144,144,144,0,50,true,31.2,Oracle Corporation,Tokyo,JP,2026-04-17T08:30:29.182Z
-138.2.31.37,443,144,50,0,,,,100,false,144,144,144,0,50,true,31.2,Oracle Corporation,Tokyo,JP,2026-04-17T08:34:04.734Z
-131.186.45.156,443,145,50,0,,,,100,false,145,145,145,0,50,true,31,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.751Z
-132.145.127.84,443,145,50,0,,,,100,false,145,145,145,0,50,true,31,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.753Z
-132.226.7.85,443,145,50,0,,,,100,false,145,145,145,0,50,true,31,Oracle Corporation,Tokyo,JP,2026-04-17T08:31:11.615Z
-138.2.22.128,443,145,50,0,,,,100,false,145,145,145,0,50,true,31,Oracle Corporation,Tokyo,JP,2026-04-17T08:33:20.768Z
-13.114.234.229,80,146,50,0,,,,100,false,146,146,146,0,50,true,30.8,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,2026-04-17T08:29:01.312Z
-132.145.125.101,443,146,50,0,,,,100,false,146,146,146,0,50,true,30.8,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.753Z
-132.226.0.87,10443,146,50,0,,,,100,false,146,146,146,0,50,true,30.8,Oracle Corporation,Tokyo,JP,2026-04-17T08:30:29.184Z
-138.2.10.226,443,146,50,0,,,,100,false,146,146,146,0,50,true,30.8,Oracle Corporation,Tokyo,JP,2026-04-17T08:32:36.800Z
-138.2.31.40,443,146,50,0,,,,100,false,146,146,146,0,50,true,30.8,Oracle Corporation,Tokyo,JP,2026-04-17T08:34:04.736Z
-131.186.42.81,443,147,50,0,,,,100,false,147,147,147,0,50,true,30.6,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:46.753Z
-138.2.35.25,443,147,50,0,,,,100,false,147,147,147,0,50,true,30.6,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.738Z
-138.2.36.167,443,147,50,0,,,,100,false,147,147,147,0,50,true,30.6,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.738Z
-138.2.36.109,443,148,50,0,,,,100,false,148,148,148,0,50,true,30.4,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.739Z
-138.2.32.6,443,150,50,0,,,,100,false,150,150,150,0,50,true,30,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.741Z
-138.2.36.3,443,150,50,0,,,,100,false,150,150,150,0,50,true,30,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.741Z
-138.2.39.24,443,150,50,0,,,,100,false,150,150,150,0,50,true,30,Oracle Corporation,Osaka,JP,2026-04-17T08:34:04.741Z
-131.186.35.251,443,152,50,0,,,,100,false,152,152,152,0,50,true,29.6,Oracle Corporation,Tokyo,JP,2026-04-17T08:29:01.319Z
-134.185.99.132,443,197,50,0,,,,100,false,197,197,197,0,50,true,20.6,Oracle Corporation,Belmont,US,2026-04-17T08:31:54.420Z
-134.185.104.199,443,200,50,0,,,,100,false,200,200,200,0,50,true,20,Oracle Corporation,Belmont,US,2026-04-17T08:31:11.670Z
-129.150.41.40,443,203,50,0,,,,100,false,203,203,203,0,50,true,19.4,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.570Z
-129.150.55.155,443,203,50,0,,,,100,false,203,203,203,0,50,true,19.4,Oracle Corporation,Singapore,SG,2026-04-17T08:26:51.000Z
-129.150.35.29,587,204,50,0,,,,100,false,204,204,204,0,50,true,19.2,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.570Z
-129.150.48.17,443,204,50,0,,,,100,false,204,204,204,0,50,true,19.2,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.571Z
-134.185.88.235,2096,204,50,0,,,,100,false,204,204,204,0,50,true,19.2,Oracle Corporation,Belmont,US,2026-04-17T08:31:54.427Z
-134.185.84.201,8443,205,50,0,,,,100,false,205,205,205,0,50,true,19,Oracle Corporation,Belmont,US,2026-04-17T08:31:54.427Z
-129.150.46.130,9527,216,50,0,,,,100,false,216,216,216,0,50,true,16.8,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.584Z
-138.2.103.213,443,217,50,0,,,,100,false,217,217,217,0,50,true,16.6,Oracle Corporation,Singapore,SG,2026-04-17T08:32:36.872Z
-138.2.107.0,443,217,50,0,,,,100,false,217,217,217,0,50,true,16.6,Oracle Corporation,Singapore,SG,2026-04-17T08:32:36.872Z
-138.2.101.183,443,218,50,0,,,,100,false,218,218,218,0,50,true,16.4,Oracle Corporation,Singapore,SG,2026-04-17T08:32:36.872Z
-138.2.102.105,443,218,50,0,,,,100,false,218,218,218,0,50,true,16.4,Oracle Corporation,Singapore,SG,2026-04-17T08:32:36.873Z
-129.150.63.187,8443,219,50,0,,,,100,false,219,219,219,0,50,true,16.2,Oracle Corporation,Singapore,SG,2026-04-17T08:26:51.017Z
-129.150.50.84,443,220,50,0,,,,100,false,220,220,220,0,50,true,16,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.587Z
-129.150.36.185,65,229,50,0,,,,100,false,229,229,229,0,50,true,14.2,Oracle Corporation,Singapore,SG,2026-04-17T08:26:08.595Z
+132.226.53.176,8880,27,0,4,,,,100,false,27,25,29,4,0,true,94.6,Oracle Corporation,Ashburn,US,2026-04-17T10:14:50.217Z
+129.80.239.6,8443,28.5,0,3,,,,100,false,28.5,27,30,3,0,true,94.3,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.916Z
+129.146.173.121,8443,50.5,0,1,,,,100,false,50.5,50,51,1,0,true,89.9,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.505Z
+103.27.132.118,443,135,0,0,,,,100,false,135,135,135,0,0,true,73,SHOCK-1 - Shock Hosting LLC,Tokyo,Japan,2026-04-17T10:08:22.175Z
+132.145.127.93,443,136,0,0,,,,100,false,136,136,136,0,0,true,72.8,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:08.004Z
+116.80.91.168,443,137,0,2,,,,100,false,137,136,138,2,0,true,72.6,"INFOSPHERE NTT PC Communications, Inc.",Tokyo,Japan,2026-04-17T10:08:20.824Z
+134.122.194.186,443,138.5,0,1,,,,100,false,138.5,138,139,1,0,true,72.3,CTGSERVERLIMITED-AS-AP CTG Server Limited,Tokyo,Japan,2026-04-17T10:15:33.009Z
+138.2.41.12,443,142,0,6,,,,100,false,142,139,145,6,0,true,71.6,Oracle Corporation,Osaka,JP,2026-04-17T10:18:26.000Z
+133.167.66.12,443,143.5,0,9,,,,100,false,143.5,139,148,9,0,true,71.3,SAKURA-C SAKURA Internet Inc.,Osaka,Japan,2026-04-17T10:15:34.386Z
+136.248.68.146,80,143.5,0,5,,,,100,false,143.5,141,146,5,0,true,71.3,Oracle Corporation,Wayland,US,2026-04-17T10:16:15.635Z
+134.185.111.151,3000,168.5,0,7,,,,100,false,168.5,165,172,7,0,true,66.3,Oracle Corporation,Belmont,US,2026-04-17T10:15:32.932Z
+129.150.52.71,443,203,0,6,,,,100,false,203,200,206,6,0,true,59.4,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.897Z
+129.158.241.2,8443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:11:55.917Z
+129.158.50.59,8443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:11:55.916Z
+129.213.120.186,443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:11:55.918Z
+129.80.113.95,443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.885Z
+129.80.245.249,443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:13:22.316Z
+129.80.68.208,443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:13:22.317Z
+132.145.165.127,443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:14:50.188Z
+132.226.48.243,443,23,50,0,,,,100,false,23,23,23,0,50,true,55.4,Oracle Corporation,Ashburn,US,2026-04-17T10:14:50.189Z
+129.153.172.64,443,24,50,0,,,,100,false,24,24,24,0,50,true,55.2,Oracle Corporation,Ashburn,US,2026-04-17T10:11:11.949Z
+129.213.126.80,4443,24,50,0,,,,100,false,24,24,24,0,50,true,55.2,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.884Z
+129.213.22.27,443,24,50,0,,,,100,false,24,24,24,0,50,true,55.2,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.884Z
+129.213.60.47,443,24,50,0,,,,100,false,24,24,24,0,50,true,55.2,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.885Z
+129.121.73.82,80,25,50,0,,,,100,false,25,25,25,0,50,true,55,Oracle Corporation,Burlington,US,2026-04-17T10:08:20.431Z
+129.213.36.42,443,25,50,0,,,,100,false,25,25,25,0,50,true,55,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.887Z
+129.80.146.124,8443,25,50,0,,,,100,false,25,25,25,0,50,true,55,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.887Z
+129.80.180.249,443,25,50,0,,,,100,false,25,25,25,0,50,true,55,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.887Z
+129.159.119.161,443,26,50,0,,,,100,false,26,26,26,0,50,true,54.8,Oracle Corporation,Ashburn,US,2026-04-17T10:11:55.920Z
+129.80.211.77,443,26,50,0,,,,100,false,26,26,26,0,50,true,54.8,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.888Z
+129.80.255.149,443,26,50,0,,,,100,false,26,26,26,0,50,true,54.8,Oracle Corporation,Ashburn,US,2026-04-17T10:13:22.319Z
+129.80.47.196,443,26,50,0,,,,100,false,26,26,26,0,50,true,54.8,Oracle Corporation,Ashburn,US,2026-04-17T10:13:22.319Z
+129.158.198.241,8443,28,50,0,,,,100,false,28,28,28,0,50,true,54.4,Oracle Corporation,Ashburn,US,2026-04-17T10:11:55.922Z
+129.80.132.4,443,29,50,0,,,,100,false,29,29,29,0,50,true,54.2,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.890Z
+132.145.166.33,443,29,50,0,,,,100,false,29,29,29,0,50,true,54.2,Oracle Corporation,Ashburn,US,2026-04-17T10:14:50.195Z
+129.213.55.160,80,30,50,0,,,,100,false,30,30,30,0,50,true,54,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.891Z
+129.80.224.246,443,30,50,0,,,,100,false,30,30,30,0,50,true,54,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.892Z
+129.80.224.7,8443,30,50,0,,,,100,false,30,30,30,0,50,true,54,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.892Z
+132.145.209.143,8443,30,50,0,,,,100,false,30,30,30,0,50,true,54,Oracle Corporation,Ashburn,US,2026-04-17T10:14:50.195Z
+129.159.84.71,443,31,50,0,,,,100,false,31,31,31,0,50,true,53.8,Oracle Corporation,Ashburn,US,2026-04-17T10:11:55.925Z
+129.213.54.81,443,32,50,0,,,,100,false,32,32,32,0,50,true,53.6,Oracle Corporation,Ashburn,US,2026-04-17T10:12:39.893Z
+132.145.217.215,443,33,50,0,,,,100,false,33,33,33,0,50,true,53.4,Oracle Corporation,Ashburn,US,2026-04-17T10:14:50.198Z
+129.159.37.136,443,38,50,0,,,,100,false,38,38,38,0,50,true,52.4,Oracle Corporation,San Jose,US,2026-04-17T10:11:55.932Z
+138.2.236.155,9999,38,50,0,,,,100,false,38,38,38,0,50,true,52.4,Oracle Corporation,San Jose,US,2026-04-17T10:18:25.755Z
+138.2.238.240,443,38,50,0,,,,100,false,38,38,38,0,50,true,52.4,Oracle Corporation,San Jose,US,2026-04-17T10:18:25.755Z
+129.159.34.196,443,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:11:55.933Z
+129.159.42.237,8443,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:11:55.933Z
+129.159.47.168,2053,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:11:55.933Z
+138.2.224.183,443,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:17:41.789Z
+138.2.226.178,443,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:17:41.789Z
+138.2.226.71,443,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:17:41.789Z
+138.2.227.217,8880,39,50,0,,,,100,false,39,39,39,0,50,true,52.2,Oracle Corporation,San Jose,US,2026-04-17T10:17:41.789Z
+138.2.232.216,8443,40,50,0,,,,100,false,40,40,40,0,50,true,52,Oracle Corporation,San Jose,US,2026-04-17T10:18:25.756Z
+129.146.125.108,8443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.456Z
+129.146.136.106,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.457Z
+129.146.185.214,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.188.242,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.142Z
+129.146.48.121,2052,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.49.224,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.153.124.177,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.974Z
+129.153.208.95,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.975Z
+129.153.221.229,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.976Z
+129.153.97.149,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:11:55.942Z
+132.226.116.67,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,Phoenix,US,2026-04-17T10:14:50.215Z
+137.131.59.0,443,49,50,0,,,,100,false,49,49,49,0,50,true,50.2,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.830Z
+129.146.121.203,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.457Z
+129.146.129.30,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.137.136,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.138.164,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.143.204,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.165.161,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.174.117,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.188.78,444,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.196.8,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.199.96,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.2.46,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.213.162,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.143Z
+129.146.24.105,5000,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.24.202,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.24.229,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.240.254,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.246.118,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.246.3,80,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.252.85,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.110Z
+129.146.252.95,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.110Z
+129.146.26.34,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.3.163,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.34.42,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.36.178,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.44.48,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.47.116,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.47.160,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.111Z
+129.146.56.190,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.112Z
+129.146.76.113,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:10:29.543Z
+129.146.84.188,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:10:29.543Z
+129.146.86.75,20000,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:10:29.543Z
+129.146.9.224,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:10:29.543Z
+129.153.220.206,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.977Z
+132.226.110.161,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:14:50.216Z
+132.226.112.137,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:14:50.215Z
+132.226.124.16,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:14:50.216Z
+132.226.125.73,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:14:50.216Z
+132.226.88.54,8443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,Phoenix,US,2026-04-17T10:15:32.647Z
+137.131.5.203,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.831Z
+137.131.58.128,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.831Z
+137.131.8.2,443,50,50,0,,,,100,false,50,50,50,0,50,true,50,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.831Z
+129.146.120.12,8443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.457Z
+129.146.127.77,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.132.240,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.458Z
+129.146.137.214,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.459Z
+129.146.143.39,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:08:20.459Z
+129.146.20.44,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:09:03.144Z
+129.146.85.151,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:10:29.544Z
+129.153.115.165,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.976Z
+129.153.126.127,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.976Z
+129.153.200.99,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.976Z
+129.153.203.157,20000,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.976Z
+129.153.77.227,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:55.943Z
+132.226.26.196,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,Phoenix,US,2026-04-17T10:14:50.217Z
+137.131.19.31,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.831Z
+137.131.55.145,443,51,50,0,,,,100,false,51,51,51,0,50,true,49.8,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.832Z
+129.146.84.32,443,56,50,0,,,,100,false,56,56,56,0,50,true,48.8,Oracle Corporation,Phoenix,US,2026-04-17T10:10:29.550Z
+129.153.122.95,443,56,50,0,,,,100,false,56,56,56,0,50,true,48.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.981Z
+129.153.77.133,443,56,50,0,,,,100,false,56,56,56,0,50,true,48.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:55.948Z
+132.226.97.154,8443,56,50,0,,,,100,false,56,56,56,0,50,true,48.8,Oracle Corporation,Phoenix,US,2026-04-17T10:15:32.653Z
+137.131.20.151,8443,56,50,0,,,,100,false,56,56,56,0,50,true,48.8,Oracle Corporation,La Jolla,US,2026-04-17T10:16:57.837Z
+129.153.70.168,4433,61,50,0,,,,100,false,61,61,61,0,50,true,47.8,Oracle Corporation,Phoenix,US,2026-04-17T10:11:11.987Z
+129.146.46.164,443,63,50,0,,,,100,false,63,63,63,0,50,true,47.4,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.124Z
+129.146.47.193,443,88,50,0,,,,100,false,88,88,88,0,50,true,42.4,Oracle Corporation,Phoenix,US,2026-04-17T10:09:47.149Z
+130.110.249.47,443,120,50,0,,,,100,false,120,120,120,0,50,true,36,Oracle Corporation,Windsor,US,2026-04-17T10:13:22.414Z
+129.153.96.228,443,123,50,0,,,,100,false,123,123,123,0,50,true,35.4,Oracle Corporation,Phoenix,US,2026-04-17T10:11:56.017Z
+131.186.35.251,443,133,50,0,,,,100,false,133,133,133,0,50,true,33.4,Oracle Corporation,Tokyo,JP,2026-04-17T10:13:22.428Z
+131.186.39.8,4444,133,50,0,,,,100,false,133,133,133,0,50,true,33.4,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.866Z
+132.145.127.84,443,133,50,0,,,,100,false,133,133,133,0,50,true,33.4,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.868Z
+131.186.41.101,443,135,50,0,,,,100,false,135,135,135,0,50,true,33,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.868Z
+132.145.125.101,443,135,50,0,,,,100,false,135,135,135,0,50,true,33,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.870Z
+132.145.126.33,443,135,50,0,,,,100,false,135,135,135,0,50,true,33,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.870Z
+138.2.22.128,443,135,50,0,,,,100,false,135,135,135,0,50,true,33,Oracle Corporation,Tokyo,JP,2026-04-17T10:17:41.885Z
+138.2.31.40,443,135,50,0,,,,100,false,135,135,135,0,50,true,33,Oracle Corporation,Tokyo,JP,2026-04-17T10:18:25.853Z
+132.226.0.87,10443,136,50,0,,,,100,false,136,136,136,0,50,true,32.8,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:50.301Z
+131.186.45.156,443,137,50,0,,,,100,false,137,137,137,0,50,true,32.6,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.871Z
+132.145.127.203,2053,137,50,0,,,,100,false,137,137,137,0,50,true,32.6,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.872Z
+132.226.7.85,443,137,50,0,,,,100,false,137,137,137,0,50,true,32.6,Oracle Corporation,Tokyo,JP,2026-04-17T10:15:32.733Z
+138.2.18.82,8880,137,50,0,,,,100,false,137,137,137,0,50,true,32.6,Oracle Corporation,Tokyo,JP,2026-04-17T10:17:41.886Z
+136.248.115.138,443,138,50,0,,,,100,false,138,138,138,0,50,true,32.4,Oracle Corporation,Wayland,US,2026-04-17T10:16:15.490Z
+138.2.10.226,443,138,50,0,,,,100,false,138,138,138,0,50,true,32.4,Oracle Corporation,Tokyo,JP,2026-04-17T10:16:57.919Z
+13.114.234.229,80,139,50,0,,,,100,false,139,139,139,0,50,true,32.2,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,2026-04-17T10:13:22.432Z
+131.186.42.81,443,139,50,0,,,,100,false,139,139,139,0,50,true,32.2,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:07.873Z
+138.2.31.37,443,139,50,0,,,,100,false,139,139,139,0,50,true,32.2,Oracle Corporation,Tokyo,JP,2026-04-17T10:18:25.856Z
+138.2.32.6,443,140,50,0,,,,100,false,140,140,140,0,50,true,32,Oracle Corporation,Osaka,JP,2026-04-17T10:18:25.858Z
+138.2.36.3,443,140,50,0,,,,100,false,140,140,140,0,50,true,32,Oracle Corporation,Osaka,JP,2026-04-17T10:18:25.858Z
+132.226.11.209,9443,141,50,0,,,,100,false,141,141,141,0,50,true,31.8,Oracle Corporation,Tokyo,JP,2026-04-17T10:14:50.306Z
+138.2.36.109,443,142,50,0,,,,100,false,142,142,142,0,50,true,31.6,Oracle Corporation,Osaka,JP,2026-04-17T10:18:25.860Z
+138.2.36.167,443,142,50,0,,,,100,false,142,142,142,0,50,true,31.6,Oracle Corporation,Osaka,JP,2026-04-17T10:18:25.860Z
+129.121.34.61,443,143,50,0,,,,100,false,143,143,143,0,50,true,31.4,Oracle Corporation,Burlington,US,2026-04-17T10:08:20.550Z
+138.2.35.25,443,151,50,0,,,,100,false,151,151,151,0,50,true,29.8,Oracle Corporation,Osaka,JP,2026-04-17T10:18:25.869Z
+134.185.99.132,443,167,50,0,,,,100,false,167,167,167,0,50,true,26.6,Oracle Corporation,Belmont,US,2026-04-17T10:16:15.518Z
+134.185.104.199,443,170,50,0,,,,100,false,170,170,170,0,50,true,26,Oracle Corporation,Belmont,US,2026-04-17T10:15:32.767Z
+129.150.55.155,443,195,50,0,,,,100,false,195,195,195,0,50,true,21,Oracle Corporation,Singapore,SG,2026-04-17T10:11:12.120Z
+129.150.35.29,587,196,50,0,,,,100,false,196,196,196,0,50,true,20.8,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.690Z
+129.150.46.130,9527,196,50,0,,,,100,false,196,196,196,0,50,true,20.8,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.690Z
+129.150.48.17,443,200,50,0,,,,100,false,200,200,200,0,50,true,20,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.694Z
+134.185.84.201,8443,200,50,0,,,,100,false,200,200,200,0,50,true,20,Oracle Corporation,Belmont,US,2026-04-17T10:16:15.550Z
+134.185.88.235,2096,200,50,0,,,,100,false,200,200,200,0,50,true,20,Oracle Corporation,Belmont,US,2026-04-17T10:16:15.550Z
+129.150.50.84,443,219,50,0,,,,100,false,219,219,219,0,50,true,16.2,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.713Z
+138.2.101.183,443,219,50,0,,,,100,false,219,219,219,0,50,true,16.2,Oracle Corporation,Singapore,SG,2026-04-17T10:16:58.001Z
+129.150.63.187,8443,222,50,0,,,,100,false,222,222,222,0,50,true,15.6,Oracle Corporation,Singapore,SG,2026-04-17T10:11:12.147Z
+129.150.36.185,65,224,50,0,,,,100,false,224,224,224,0,50,true,15.2,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.718Z
+138.2.107.0,443,230,50,0,,,,100,false,230,230,230,0,50,true,14,Oracle Corporation,Singapore,SG,2026-04-17T10:16:58.012Z
+129.150.41.40,443,231,50,0,,,,100,false,231,231,231,0,50,true,13.8,Oracle Corporation,Singapore,SG,2026-04-17T10:10:29.725Z
+138.2.102.105,443,233,50,0,,,,100,false,233,233,233,0,50,true,13.4,Oracle Corporation,Singapore,SG,2026-04-17T10:16:58.015Z
