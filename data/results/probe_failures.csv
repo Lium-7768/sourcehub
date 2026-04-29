@@ -1,12 +1,12 @@
 ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
-129.146.135.44,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.104.110,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
+129.146.135.44,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.241.234,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.241.23,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.191.182,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.248.65,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
-129.146.254.25,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.51.158,8443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
+129.146.254.25,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.64.119,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.36.33,8443,ORACLE-BMC-31898,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.55.116,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
@@ -36,8 +36,8 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 129.80.135.219,443,ORACLE-BMC-31898,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.151.218,443,Oracle Corporation,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.228.226,443,Oracle Corporation,Ashburn,US,false,,100,all_tcp_ports_failed
-131.186.34.205,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.34.48,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
+131.186.34.205,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 129.80.242.71,2083,Oracle Corporation,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.249.155,587,ORACLE-BMC-31898,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.37.170,444,ORACLE-BMC-31898,Ashburn,US,false,,100,all_tcp_ports_failed
@@ -74,6 +74,7 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 134.185.107.85,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.108.153,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.108.199,8443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
+134.185.110.100,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.110.149,443,ORACLE-BMC-31898,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.110.208,443,ORACLE-BMC-31898,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.110.40,8443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
@@ -116,8 +117,8 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 138.2.228.82,1988,Oracle Corporation,San Jose,US,false,,100,all_tcp_ports_failed
 138.2.231.62,443,Oracle Corporation,San Jose,US,false,,100,all_tcp_ports_failed
 138.2.29.16,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
-138.2.3.89,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.3.84,4433,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
+138.2.3.89,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.26.66,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.29.223,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.31.137,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
