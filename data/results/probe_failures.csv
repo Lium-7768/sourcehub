@@ -5,8 +5,8 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 129.146.241.23,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.191.182,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.248.65,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
-129.146.51.158,8443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.254.25,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
+129.146.51.158,8443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.64.119,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.36.33,8443,ORACLE-BMC-31898,Phoenix,US,false,,100,all_tcp_ports_failed
 129.146.55.116,443,Oracle Corporation,Phoenix,US,false,,100,all_tcp_ports_failed
@@ -49,6 +49,7 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 131.186.34.48,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.37.129,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 13.230.34.30,,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,false,,100,all_tcp_ports_failed
+13.230.69.144,,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,false,,100,all_tcp_ports_failed
 131.186.38.156,8443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.39.42,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.39.88,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
@@ -70,6 +71,7 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 134.185.100.65,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.101.249,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.102.141,443,ORACLE-BMC-31898,Belmont,US,false,,100,all_tcp_ports_failed
+134.185.106.71,443,ORACLE-BMC-31898,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.107.145,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.107.85,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
 134.185.108.153,443,Oracle Corporation,Belmont,US,false,,100,all_tcp_ports_failed
