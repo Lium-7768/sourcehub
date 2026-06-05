@@ -44,6 +44,7 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 129.80.151.218,443,Oracle Corporation,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.228.226,443,Oracle Corporation,Ashburn,US,false,,100,all_tcp_ports_failed
 131.186.34.205,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
+13.230.34.30,,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,false,,100,all_tcp_ports_failed
 129.80.242.71,2083,Oracle Corporation,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.249.155,587,ORACLE-BMC-31898,Ashburn,US,false,,100,all_tcp_ports_failed
 129.80.37.170,444,ORACLE-BMC-31898,Ashburn,US,false,,100,all_tcp_ports_failed
@@ -54,7 +55,6 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 131.186.33.68,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.34.48,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.37.129,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
-13.230.34.30,,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,false,,100,all_tcp_ports_failed
 13.230.69.144,,"AMAZON-02 - Amazon.com, Inc.",Tokyo,Japan,false,,100,all_tcp_ports_failed
 131.186.38.156,8443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 131.186.39.42,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
@@ -110,10 +110,11 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 138.2.106.64,443,Oracle Corporation,Singapore,SG,false,,100,all_tcp_ports_failed
 138.2.11.225,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.110.137,8443,Oracle Corporation,Singapore,SG,false,,100,all_tcp_ports_failed
-138.2.16.61,8443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.15.102,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
+138.2.16.61,8443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.111.233,443,Oracle Corporation,Singapore,SG,false,,100,all_tcp_ports_failed
 138.2.111.37,443,Oracle Corporation,Singapore,SG,false,,100,all_tcp_ports_failed
+138.2.14.215,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.17.28,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.19.153,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.19.236,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
@@ -124,9 +125,10 @@ ip,port,org,city,country,ping_ok,ping_avg_ms,ping_loss_pct,tcp_error
 138.2.228.82,1988,Oracle Corporation,San Jose,US,false,,100,all_tcp_ports_failed
 138.2.231.62,443,Oracle Corporation,San Jose,US,false,,100,all_tcp_ports_failed
 138.2.3.84,4433,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
-138.2.29.16,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.3.89,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
+138.2.29.16,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.26.66,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.29.223,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.30.222,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
+138.2.31.137,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
 138.2.31.40,443,Oracle Corporation,Tokyo,JP,false,,100,all_tcp_ports_failed
